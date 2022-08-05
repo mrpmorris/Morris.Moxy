@@ -1,3 +1,3 @@
 # Releases
 
-## New in min.maj
+## New in 0.1
