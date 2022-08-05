@@ -1,0 +1,38 @@
+<Project>
+  <PropertyGroup>
+	<LangVersion>10</LangVersion>
+	<Version>0.1.0</Version>
+
+	<Authors>Peter Morris</Authors>
+	<Company />
+	<Copyright>Peter Morris</Copyright>
+	<PackageLicenseFile></PackageLicenseFile>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+	<PackageProjectUrl>https://github.com/mrpmorris/Morris.Moxy</PackageProjectUrl>
+	<PackageIconUrl />
+	<RepositoryUrl>https://github.com/mrpmorris/Morris.Moxy</RepositoryUrl>
+	<RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <PropertyGroup>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
+	<PackageIcon>small-logo.png</PackageIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<None Include="..\..\..\Images\small-logo.png">
+	  <Pack>True</Pack>
+	  <PackagePath>\</PackagePath>
+	</None>
+	<None Include="..\..\..\README.md">
+	  <Pack>True</Pack>
+	  <PackagePath>\</PackagePath>
+	</None>
+  </ItemGroup>
+
+  <PropertyGroup>
+	<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+	<NoWarn>NU5118</NoWarn>
+  </PropertyGroup>
+</Project>

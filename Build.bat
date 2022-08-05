@@ -1,0 +1,1 @@
+dotnet build Source\PackageName.sln -c Release
