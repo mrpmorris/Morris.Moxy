@@ -1,5 +1,6 @@
 <Project>
   <PropertyGroup>
+	<TargetFramework>netstandard2.0</TargetFramework>
 	<LangVersion>10</LangVersion>
 	<Version>0.1.0</Version>
 

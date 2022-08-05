@@ -1,5 +1,45 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-	<TargetFramework>netstandard2.0</TargetFramework>
+	<Nullable>enable</Nullable>
+	<ImplicitUsings>true</ImplicitUsings>
+	<PackageId>Morris.Moxy</PackageId>
+	<Description>A C# mix-in code generator</Description>
+	<IncludeBuildOutput>false</IncludeBuildOutput>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="bin" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3" PrivateAssets="all" />
+	<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="bin\Debug\netstandard2.0\\Morris.Moxy.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<!-- Generator package dependencies -->
+	<PackageReference Include="Scriban.Signed" Version="5.5.0" PrivateAssets="all" GeneratePathProperty="true" />
+	<PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" PrivateAssets="all" GeneratePathProperty="true" />
+	<PackageReference Include="Microsoft.CSharp" Version="4.7.0" PrivateAssets="all" GeneratePathProperty="true" />
+  </ItemGroup>
+
+  <PropertyGroup>
+	<GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetDependencyTargetPaths</GetTargetPathDependsOn>
+  </PropertyGroup>
+
+  <Target Name="GetDependencyTargetPaths">
+	<ItemGroup>
+	  <TargetPathWithTargetPlatformMoniker Include="$(PKGScriban_Signed)\lib\netstandard2.0\Scriban.Signed.dll" IncludeRuntimeDependency="false" />
+	  <TargetPathWithTargetPlatformMoniker Include="$(PKGSystem_Threading_Tasks_Extensions)\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll" IncludeRuntimeDependency="false" />
+	  <TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_CSharp)\lib\netstandard2.0\Microsoft.CSharp.dll" IncludeRuntimeDependency="false" />
+	</ItemGroup>
+  </Target>
+
 </Project>
