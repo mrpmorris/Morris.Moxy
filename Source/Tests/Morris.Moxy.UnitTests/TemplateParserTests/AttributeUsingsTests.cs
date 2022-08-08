@@ -215,4 +215,67 @@ public class AttributeUsingsTests
 		Assert.Empty(parsedTemplate.ClassUsingClauses);
 		Assert.Equal(parsedTemplate.TemplateSource, expected);
 	}
+
+	[Fact]
+	public void WhenSourceHasNonWhitespaceBeforeHeaderMarker_ThenResultTemplateSourceShouldEqualTheInputString()
+	{
+		string expected = "hello\r\n@moxy\r\n@attribute using System\r\n@moxy\r\nHello";
+
+		bool success = TemplateParser.TryParse(expected, out ParsedTemplate parsedTemplate);
+
+		Assert.True(success);
+		Assert.Empty(parsedTemplate.AttributeUsingClauses);
+		Assert.Empty(parsedTemplate.AttributeOptionalProperties);
+		Assert.Empty(parsedTemplate.AttributeRequiredProperties);
+		Assert.Empty(parsedTemplate.ClassUsingClauses);
+		Assert.Equal(parsedTemplate.TemplateSource, expected);
+	}
+
+	/// <summary>
+	/// If there is non-whitespace before the first @moxy then this is all just template body,
+	/// so a missing @moxy is not an error
+	/// </summary>
+	[Fact]
+	public void WhenSourceHasNonWhitespaceBeforeHeaderMarker_ThenMissingHeaderMarkerIsIgnored()
+	{
+		string expected = "hello\r\n@moxy\r\n@attribute using System\r\nHello";
+
+		bool success = TemplateParser.TryParse(expected, out ParsedTemplate parsedTemplate);
+
+		Assert.True(success);
+		Assert.Empty(parsedTemplate.AttributeUsingClauses);
+		Assert.Empty(parsedTemplate.AttributeOptionalProperties);
+		Assert.Empty(parsedTemplate.AttributeRequiredProperties);
+		Assert.Empty(parsedTemplate.ClassUsingClauses);
+		Assert.Equal(parsedTemplate.TemplateSource, expected);
+	}
+
+	[Theory]
+	[InlineData("")]
+	[InlineData("\r\n")]
+	[InlineData("  \r\n")]
+	[InlineData("  \r\n  \r\n")]
+	public void WhenSourceHasHeaders_ThenResultTemplateSourceShouldEqualTheInputStringAfterTheClosingHeaderMarker(string inputPadding)
+	{
+		string source = $"{inputPadding}" +
+			$"@moxy\r\n" +
+			$"{AttributeUsingClauses}" +
+			$"{AttributeRequiredPropertiesWithoutDefaultValues}" +
+			$"{AttributeRequiredPropertiesWithDefaultValues}" +
+			$"{AttributeOptionalPropertiesWithoutDefaultValues}" +
+			$"{AttributeOptionalPropertiesWithDefaultValues}" +
+			$"{ClassUsingClauses}" +
+			$"@moxy\r\n" +
+			$"Hello!";
+
+		bool success = TemplateParser.TryParse(source, out ParsedTemplate parsedTemplate);
+
+		Assert.True(success);
+		Assert.Equal(2, parsedTemplate.AttributeUsingClauses.Length);
+		Assert.Equal(4, parsedTemplate.AttributeOptionalProperties.Length);
+		Assert.Equal(4, parsedTemplate.AttributeRequiredProperties.Length);
+		Assert.Equal(2, parsedTemplate.ClassUsingClauses.Length);
+		Assert.Equal("Hello!", parsedTemplate.TemplateSource);
+	}
+
 }
