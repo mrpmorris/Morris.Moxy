@@ -1,7 +1,7 @@
 ﻿namespace MixInAMethod
 {
   // TODO
-  // [SayHello]
+  //[SayHello]
   internal class Person
   {
   }
