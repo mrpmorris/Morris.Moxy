@@ -30,34 +30,42 @@ public class AttributeUsingsTests
 		"@class using System.Text.Json\r\n";
 
 
-	[Fact]
-	public void WhenSourceContainsAttributeUsingClauses_ThenResultShouldContainsAttributeUsingClauses()
+	[Theory]
+	[InlineData("")]
+	[InlineData("\r\n")]
+	[InlineData("  \r\n")]
+	[InlineData("  \r\n  \r\n")]
+	public void WhenSourceContainsAttributeUsingClauses_ThenResultShouldContainsAttributeUsingClauses(string inputPadding)
 	{
-		string source = $"---\r\n{AttributeUsingClauses}---\r\n";
+		string source = $"{inputPadding}@moxy\r\n{AttributeUsingClauses}@moxy\r\n";
 		bool success = TemplateParser.TryParse(source, out ParsedTemplate parsedTemplate);
 
 		Assert.True(success);
-		Assert.Empty(parsedTemplate.ClassUsingClauses);
 		Assert.Empty(parsedTemplate.AttributeOptionalProperties);
 		Assert.Empty(parsedTemplate.AttributeRequiredProperties);
-		Assert.Empty(parsedTemplate.TemplateSource);
+		Assert.Empty(parsedTemplate.ClassUsingClauses);
+		Assert.Equal("", parsedTemplate.TemplateSource);
 		Assert.True(
 			Enumerable.SequenceEqual(
 				parsedTemplate.AttributeUsingClauses,
 				new string[] { "System", "System.Text" }));
 	}
 
-	[Fact]
-	public void WhenSourceContainsRequiredPropertiesWithoutDefaultValues_ThenResultShouldContainRequiredPropertiesWithoutDefaultValues()
+	[Theory]
+	[InlineData("")]
+	[InlineData("\r\n")]
+	[InlineData("  \r\n")]
+	[InlineData("  \r\n  \r\n")]
+	public void WhenSourceContainsRequiredPropertiesWithoutDefaultValues_ThenResultShouldContainRequiredPropertiesWithoutDefaultValues(string inputPadding)
 	{
-		string source = $"---\r\n{AttributeRequiredPropertiesWithoutDefaultValues}---\r\n";
+		string source = $"{inputPadding}@moxy\r\n{AttributeRequiredPropertiesWithoutDefaultValues}@moxy\r\n";
 		bool success = TemplateParser.TryParse(source, out ParsedTemplate parsedTemplate);
 
 		Assert.True(success);
-		Assert.Empty(parsedTemplate.ClassUsingClauses);
 		Assert.Empty(parsedTemplate.AttributeUsingClauses);
 		Assert.Empty(parsedTemplate.AttributeOptionalProperties);
-		Assert.Empty(parsedTemplate.TemplateSource);
+		Assert.Empty(parsedTemplate.ClassUsingClauses);
+		Assert.Equal("", parsedTemplate.TemplateSource);
 
 		Assert.Equal(
 			new TemplateAttributeProperty(
@@ -74,18 +82,22 @@ public class AttributeUsingsTests
 			parsedTemplate.AttributeRequiredProperties[1]);
 	}
 
-	[Fact]
-	public void WhenSourceContainsRequiredPropertiesWithDefaultValues_ThenResultShouldContainRequiredPropertiesWithDefaultValues()
+	[Theory]
+	[InlineData("")]
+	[InlineData("\r\n")]
+	[InlineData("  \r\n")]
+	[InlineData("  \r\n  \r\n")]
+	public void WhenSourceContainsRequiredPropertiesWithDefaultValues_ThenResultShouldContainRequiredPropertiesWithDefaultValues(string inputPadding)
 	{
-		string source = $"---\r\n{AttributeRequiredPropertiesWithDefaultValues}---\r\n";
+		string source = $"{inputPadding}@moxy\r\n{AttributeRequiredPropertiesWithDefaultValues}@moxy\r\n";
 		bool success = TemplateParser.TryParse(source, out ParsedTemplate parsedTemplate);
 
 		Assert.True(success);
 
-		Assert.Empty(parsedTemplate.ClassUsingClauses);
 		Assert.Empty(parsedTemplate.AttributeUsingClauses);
 		Assert.Empty(parsedTemplate.AttributeOptionalProperties);
-		Assert.Empty(parsedTemplate.TemplateSource);
+		Assert.Empty(parsedTemplate.ClassUsingClauses);
+		Assert.Equal("", parsedTemplate.TemplateSource);
 
 		Assert.Equal(
 			new TemplateAttributeProperty(
@@ -102,17 +114,21 @@ public class AttributeUsingsTests
 			parsedTemplate.AttributeRequiredProperties[1]);
 	}
 
-	[Fact]
-	public void WhenSourceContainsOptionalPropertiesWithoutDefaultValues_ThenResultShouldContainOptionalPropertiesWithoutDefaultValues()
+	[Theory]
+	[InlineData("")]
+	[InlineData("\r\n")]
+	[InlineData("  \r\n")]
+	[InlineData("  \r\n  \r\n")]
+	public void WhenSourceContainsOptionalPropertiesWithoutDefaultValues_ThenResultShouldContainOptionalPropertiesWithoutDefaultValues(string inputPadding)
 	{
-		string source = $"---\r\n{AttributeOptionalPropertiesWithoutDefaultValues}---\r\n";
+		string source = $"{inputPadding}@moxy\r\n{AttributeOptionalPropertiesWithoutDefaultValues}@moxy\r\n";
 		bool success = TemplateParser.TryParse(source, out ParsedTemplate parsedTemplate);
 
 		Assert.True(success);
-		Assert.Empty(parsedTemplate.ClassUsingClauses);
 		Assert.Empty(parsedTemplate.AttributeUsingClauses);
 		Assert.Empty(parsedTemplate.AttributeRequiredProperties);
-		Assert.Empty(parsedTemplate.TemplateSource);
+		Assert.Empty(parsedTemplate.ClassUsingClauses);
+		Assert.Equal("", parsedTemplate.TemplateSource);
 
 		Assert.Equal(
 			new TemplateAttributeProperty(
@@ -129,18 +145,22 @@ public class AttributeUsingsTests
 			parsedTemplate.AttributeOptionalProperties[1]);
 	}
 
-	[Fact]
-	public void WhenSourceContainsOptionalPropertiesWithDefaultValues_ThenResultShouldContainOptionalPropertiesWithDefaultValues()
+	[Theory]
+	[InlineData("")]
+	[InlineData("\r\n")]
+	[InlineData("  \r\n")]
+	[InlineData("  \r\n  \r\n")]
+	public void WhenSourceContainsOptionalPropertiesWithDefaultValues_ThenResultShouldContainOptionalPropertiesWithDefaultValues(string inputPadding)
 	{
-		string source = $"---\r\n{AttributeOptionalPropertiesWithDefaultValues}---\r\n";
+		string source = $"{inputPadding}@moxy\r\n{AttributeOptionalPropertiesWithDefaultValues}@moxy\r\n";
 		bool success = TemplateParser.TryParse(source, out ParsedTemplate parsedTemplate);
 
 		Assert.True(success);
 
-		Assert.Empty(parsedTemplate.ClassUsingClauses);
 		Assert.Empty(parsedTemplate.AttributeUsingClauses);
 		Assert.Empty(parsedTemplate.AttributeRequiredProperties);
-		Assert.Empty(parsedTemplate.TemplateSource);
+		Assert.Empty(parsedTemplate.ClassUsingClauses);
+		Assert.Equal("", parsedTemplate.TemplateSource);
 
 		Assert.Equal(
 			new TemplateAttributeProperty(
@@ -157,20 +177,42 @@ public class AttributeUsingsTests
 			parsedTemplate.AttributeOptionalProperties[1]);
 	}
 
-	[Fact]
-	public void WhenSourceContainsClassUsingClauses_ThenResultShouldContainsClassUsingClauses()
+	[Theory]
+	[InlineData("")]
+	[InlineData("\r\n")]
+	[InlineData("  \r\n")]
+	[InlineData("  \r\n  \r\n")]
+	public void WhenSourceContainsClassUsingClauses_ThenResultShouldContainsClassUsingClauses(string inputPadding)
 	{
-		string source = $"---\r\n{ClassUsingClauses}---\r\n";
+		string source = $"{inputPadding}@moxy\r\n{ClassUsingClauses}@moxy\r\n";
 		bool success = TemplateParser.TryParse(source, out ParsedTemplate parsedTemplate);
 
 		Assert.True(success);
 		Assert.Empty(parsedTemplate.AttributeUsingClauses);
 		Assert.Empty(parsedTemplate.AttributeOptionalProperties);
 		Assert.Empty(parsedTemplate.AttributeRequiredProperties);
-		Assert.Empty(parsedTemplate.TemplateSource);
+		Assert.Equal("", parsedTemplate.TemplateSource);
 		Assert.True(
 			Enumerable.SequenceEqual(
 				parsedTemplate.ClassUsingClauses,
 				new string[] { "Newtonsoft.Json", "System.Text.Json" }));
+	}
+
+	[Theory]
+	[InlineData("")]
+	[InlineData("\r\n")]
+	[InlineData("\r")]
+	[InlineData("\n")]
+	public void WhenSourceHasNoHeaderMarker_ThenResultTemplateSourceShouldEqualTheInputString(string inputTerminator)
+	{
+		string expected = $"1\r\n2\r\n3${inputTerminator}";
+		bool success = TemplateParser.TryParse(expected, out ParsedTemplate parsedTemplate);
+
+		Assert.True(success);
+		Assert.Empty(parsedTemplate.AttributeUsingClauses);
+		Assert.Empty(parsedTemplate.AttributeOptionalProperties);
+		Assert.Empty(parsedTemplate.AttributeRequiredProperties);
+		Assert.Empty(parsedTemplate.ClassUsingClauses);
+		Assert.Equal(parsedTemplate.TemplateSource, expected);
 	}
 }

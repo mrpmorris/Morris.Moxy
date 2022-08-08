@@ -1,6 +1,7 @@
 ﻿using Morris.Moxy.DataStructures;
 using Morris.Moxy.TemplatePreprocessing;
 using System.Collections.Immutable;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Morris.Moxy
@@ -23,82 +24,148 @@ namespace Morris.Moxy
 			if (input is null)
 				throw new ArgumentNullException(nameof(input));
 
-			var attributeUsings = new List<string>();
-			var attributeRequiredProperties = new List<TemplateAttributeProperty>();
-			var attributeOptionalProperties = new List<TemplateAttributeProperty>();
-			var classUsings = new List<string>();
+			if (!TrySeparateTemplateHeaderAndBody(
+				input: input,
+				out ImmutableArray<(int, string)> headerLines,
+				out string body,
+				out CompilationError? compilationError))
+			{
+				parsedTemplate = new ParsedTemplate(Enumerable.Repeat(compilationError!.Value, 1).ToImmutableArray());
+				return false;
+			}
 
-			bool headerMarkerDetected = false;
+			var attributeUsingClausesBuilder = ImmutableArray.CreateBuilder<string>();
+			var attributeRequiredPropertiesBuilder = ImmutableArray.CreateBuilder<TemplateAttributeProperty>();
+			var attributeOptionalPropertiesBuilder = ImmutableArray.CreateBuilder<TemplateAttributeProperty>();
+			var classUsingClausesBuilder = ImmutableArray.CreateBuilder<string>();
+			var compilationErrorsBuilder = ImmutableArray.CreateBuilder<CompilationError>();
+
+			foreach ((int Number, string Value) headerLine in headerLines)
+			{
+				string trimmedHeaderLine = headerLine.Value.Trim();
+				var matches = Regex.Matches(trimmedHeaderLine);
+
+				if (matches.Count == 0)
+					compilationErrorsBuilder.Add(CompilationErrors.UnknownOrMalformedHeader with { Line = headerLine.Number });
+				else
+				{
+					Match match = matches[0];
+					
+					if (match.Groups[2].Success) // attribute, using
+						attributeUsingClausesBuilder.Add(match.Groups[4].Value);
+					else if (match.Groups[6].Success) // attribute required/optional
+					{
+						var property = new TemplateAttributeProperty(
+							Name: match.Groups[9].Value,
+							TypeName: match.Groups[8].Value,
+							DefaultValue: match.Groups[10].Success ? match.Groups[10].Value : null);
+
+						if (string.Equals("required", match.Groups[7].Value, StringComparison.OrdinalIgnoreCase))
+							attributeRequiredPropertiesBuilder.Add(property);
+						else
+							attributeOptionalPropertiesBuilder.Add(property);
+					}
+					else if (match.Groups[13].Success) //class
+						classUsingClausesBuilder.Add(match.Groups[14].Value);
+				}
+			}
+
+			if (compilationErrorsBuilder.Count != 0)
+			{
+				parsedTemplate = new ParsedTemplate(compilationErrors: compilationErrorsBuilder.ToImmutable());
+				return false;
+			}
+
+			parsedTemplate = new ParsedTemplate(
+				attributeUsingClauses: attributeUsingClausesBuilder.ToImmutable(),
+				classUsingClauses: classUsingClausesBuilder.ToImmutable(),
+				attributeRequiredProperties: attributeRequiredPropertiesBuilder.ToImmutable(),
+				attributeOptionalProperties: attributeOptionalPropertiesBuilder.ToImmutable(),
+				templateSource: body);
+			return true;
+		}
+
+		public static bool TrySeparateTemplateHeaderAndBody(
+			string input,
+			out ImmutableArray<(int, string)> headerLines,
+			out string body,
+			out CompilationError? compilationError)
+		{
+			if (input is null)
+				throw new ArgumentNullException(paramName: nameof(input));
+
+			body = "";
+			var headerLinesBuilder = ImmutableArray.CreateBuilder<(int, string)>();
+
+			ParsingState parsingState = ParsingState.Unknown;
 			using var reader = new StringReader(input);
-			bool finished = false;
+			int lineNumber = 0;
 			while (true)
 			{
-				string? trimmedLine = reader.ReadLine()?.Trim();
-				if (!headerMarkerDetected && trimmedLine == "") continue;
-
-				finished = trimmedLine is null;
-				if (!finished && headerMarkerDetected && trimmedLine == "---")
-					finished = true;
-
-				if (finished)
+				string? line = reader.ReadLine();
+				// End of input
+				if (line is null)
 				{
-					string remainingSource =
-					headerMarkerDetected
-					? reader.ReadToEnd()
-					: input;
-
-					parsedTemplate = new ParsedTemplate(
-						attributeUsingClauses: attributeUsings.ToImmutableArray(),
-						classUsingClauses: classUsings.ToImmutableArray(),
-						attributeRequiredProperties: attributeRequiredProperties.ToImmutableArray(),
-						attributeOptionalProperties: attributeOptionalProperties.ToImmutableArray(),
-						templateSource: reader.ReadToEnd());
+					if (parsingState == ParsingState.InHeader)
+					{
+						headerLines = ImmutableArray<(int, string)>.Empty;
+						compilationError = CompilationErrors.NoClosingHeaderMarkerFound with { Line = lineNumber };
+						return false;
+					}
+					headerLines = headerLinesBuilder.ToImmutable();
+					compilationError = null;
 					return true;
 				}
 
-
-				if (!headerMarkerDetected)
+				// Next line
+				lineNumber++;
+				switch (parsingState)
 				{
-					if (trimmedLine != "---")
-					{
-						parsedTemplate = ParsedTemplate.Empty;
-						return false;
-					}
-					headerMarkerDetected = true;
-					continue;
+					case ParsingState.Unknown:
+						if (line.TrimEnd() == "@moxy")
+							parsingState = ParsingState.InHeader;
+						else
+						{
+							// An input with headers cannot have any non-whitespace before @moxy
+							// If we get anything that is not whitespace before we find @moxy
+							// then we return the input
+							if (!string.IsNullOrWhiteSpace(line))
+							{
+								body = input;
+								reader.ReadToEnd(); // Go to end of input
+								parsingState = ParsingState.Finished;
+							}
+						}
+						break;
+
+					case ParsingState.InHeader:
+						if (line.TrimEnd() == "@moxy")
+						{
+							// If we are in the header and find a closing @moxy then the rest of the input
+							// is the body
+							body = reader.ReadToEnd();
+							parsingState = ParsingState.Finished;
+						}
+						else
+						{
+							// Ignore comments in the header
+							if (line.TrimStart().StartsWith("//")) continue;
+
+							// Keep track of the line number + header value
+							headerLinesBuilder.Add((lineNumber, line));
+						}
+						break;
+
+					default: throw new NotImplementedException(parsingState.ToString());
 				}
-
-				if (trimmedLine == "---")
-				{
-				}
-
-				var matches = Regex.Matches(trimmedLine);
-
-				if (matches.Count == 0)
-					throw new InvalidOperationException(trimmedLine);
-
-				Match match = matches[0];
-				if (match.Groups[2].Success) // attribute, using
-					attributeUsings.Add(match.Groups[4].Value);
-				else
-				if (match.Groups[6].Success) // attribute required/optional
-				{
-					var property = new TemplateAttributeProperty(
-						Name: match.Groups[9].Value,
-						TypeName: match.Groups[8].Value,
-						DefaultValue: match.Groups[10].Success ? match.Groups[10].Value : null);
-
-					if (string.Equals("required", match.Groups[7].Value, StringComparison.OrdinalIgnoreCase))
-						attributeRequiredProperties.Add(property);
-					else
-						attributeOptionalProperties.Add(property);
-				}
-				else
-				if (match.Groups[13].Success) //class
-					classUsings.Add(match.Groups[14].Value);
-				else
-					throw new NotImplementedException();
 			}
+		}
+
+		private enum ParsingState
+		{
+			Unknown,
+			InHeader,
+			Finished
 		}
 	}
 }
