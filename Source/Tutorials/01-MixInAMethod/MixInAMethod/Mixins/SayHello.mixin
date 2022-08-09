@@ -1,9 +1,11 @@
 ﻿@moxy
 @attribute using System
-@attribute using System.Text
+@attribute using System.Text.Json
+@attribute required string Name = ""
+@attribute required int Age = 42
 @moxy
 
 public void SayHello()
 {
-  Console.WriteLine("Hello");
+  Console.WriteLine("Hello.");
 }
