@@ -1,7 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Morris.Moxy.DataStructures;
 using Morris.Moxy.TemplateHandlers;
-using System.Text;
 
 namespace Morris.Moxy
 {
@@ -10,8 +9,8 @@ namespace Morris.Moxy
 	{
 		public void Initialize(IncrementalGeneratorInitializationContext context)
 		{
-			IncrementalValuesProvider<ParsedTemplate> parsedTemplates =
-				TemplateSelectors.SelectTemplateNamesAndSources(context.AdditionalTextsProvider);
+			IncrementalValuesProvider<ValidatedResult<ParsedTemplate>> parsedTemplates =
+				TemplateSelectors.Select(context.AdditionalTextsProvider);
 
 			var combined = context.CompilationProvider.Combine(parsedTemplates.Collect());
 
@@ -19,13 +18,7 @@ namespace Morris.Moxy
 				combined,
 				static (productionContext, x) =>
 				{
-					var sb = new StringBuilder();
-					sb.AppendLine("public class Testercles {");
-					foreach (var item in x.Right)
-						sb.AppendLine(item.TemplateSource);
-					sb.AppendLine("}");
-					string sourceText = sb.ToString();
-					productionContext.AddSource("hahaha.g.cs", sourceText!);
+					productionContext.AddSource("hahaha.g.cs", "");
 				});
 		}
 	}

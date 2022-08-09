@@ -38,16 +38,16 @@ public class ParseTests
 	public void WhenSourceContainsAttributeUsingClauses_ThenResultShouldContainsAttributeUsingClauses(string inputPadding)
 	{
 		string source = $"{inputPadding}@moxy\r\n{AttributeUsingClauses}@moxy\r\n";
-		ParsedTemplate parsedTemplate = TemplateParser.Parse("", "", source);
+		ValidatedResult<ParsedTemplate> parsedTemplate = TemplateParser.Parse("", "", source);
 
 		Assert.True(parsedTemplate.Success);
-		Assert.Empty(parsedTemplate.AttributeOptionalProperties);
-		Assert.Empty(parsedTemplate.AttributeRequiredProperties);
-		Assert.Empty(parsedTemplate.ClassUsingClauses);
-		Assert.Equal("", parsedTemplate.TemplateSource);
+		Assert.Empty(parsedTemplate.Value.AttributeOptionalProperties);
+		Assert.Empty(parsedTemplate.Value.AttributeRequiredProperties);
+		Assert.Empty(parsedTemplate.Value.ClassUsingClauses);
+		Assert.Equal("", parsedTemplate.Value.TemplateSource);
 		Assert.True(
 			Enumerable.SequenceEqual(
-				parsedTemplate.AttributeUsingClauses,
+				parsedTemplate.Value.AttributeUsingClauses,
 				new string[] { "System", "System.Text" }));
 	}
 
@@ -59,27 +59,27 @@ public class ParseTests
 	public void WhenSourceContainsRequiredPropertiesWithoutDefaultValues_ThenResultShouldContainRequiredPropertiesWithoutDefaultValues(string inputPadding)
 	{
 		string source = $"{inputPadding}@moxy\r\n{AttributeRequiredPropertiesWithoutDefaultValues}@moxy\r\n";
-		ParsedTemplate parsedTemplate = TemplateParser.Parse("", "", source);
+		ValidatedResult<ParsedTemplate> result = TemplateParser.Parse("", "", source);
 
-		Assert.True(parsedTemplate.Success);
-		Assert.Empty(parsedTemplate.AttributeUsingClauses);
-		Assert.Empty(parsedTemplate.AttributeOptionalProperties);
-		Assert.Empty(parsedTemplate.ClassUsingClauses);
-		Assert.Equal("", parsedTemplate.TemplateSource);
+		Assert.True(result.Success);
+		Assert.Empty(result.Value.AttributeUsingClauses);
+		Assert.Empty(result.Value.AttributeOptionalProperties);
+		Assert.Empty(result.Value.ClassUsingClauses);
+		Assert.Equal("", result.Value.TemplateSource);
 
 		Assert.Equal(
 			new TemplateAttributeProperty(
 				Name: "Age",
 				TypeName: "int",
 				DefaultValue: null),
-			parsedTemplate.AttributeRequiredProperties[0]);
+			result.Value.AttributeRequiredProperties[0]);
 
 		Assert.Equal(
 			new TemplateAttributeProperty(
 				Name: "Name",
 				TypeName: "string",
 				DefaultValue: null),
-			parsedTemplate.AttributeRequiredProperties[1]);
+			result.Value.AttributeRequiredProperties[1]);
 	}
 
 	[Theory]
@@ -90,27 +90,27 @@ public class ParseTests
 	public void WhenSourceContainsRequiredPropertiesWithDefaultValues_ThenResultShouldContainRequiredPropertiesWithDefaultValues(string inputPadding)
 	{
 		string source = $"{inputPadding}@moxy\r\n{AttributeRequiredPropertiesWithDefaultValues}@moxy\r\n";
-		ParsedTemplate parsedTemplate = TemplateParser.Parse("", "", source);
+		ValidatedResult<ParsedTemplate> result = TemplateParser.Parse("", "", source);
 
-		Assert.True(parsedTemplate.Success);
-		Assert.Empty(parsedTemplate.AttributeUsingClauses);
-		Assert.Empty(parsedTemplate.AttributeOptionalProperties);
-		Assert.Empty(parsedTemplate.ClassUsingClauses);
-		Assert.Equal("", parsedTemplate.TemplateSource);
+		Assert.True(result.Success);
+		Assert.Empty(result.Value.AttributeUsingClauses);
+		Assert.Empty(result.Value.AttributeOptionalProperties);
+		Assert.Empty(result.Value.ClassUsingClauses);
+		Assert.Equal("", result.Value.TemplateSource);
 
 		Assert.Equal(
 			new TemplateAttributeProperty(
 				Name: "GivenName",
 				TypeName: "string",
 				DefaultValue: "\"Peter\""),
-			parsedTemplate.AttributeRequiredProperties[0]);
+			result.Value.AttributeRequiredProperties[0]);
 
 		Assert.Equal(
 			new TemplateAttributeProperty(
 				Name: "FamilyName",
 				TypeName: "string",
 				DefaultValue: "\"Morris\""),
-			parsedTemplate.AttributeRequiredProperties[1]);
+			result.Value.AttributeRequiredProperties[1]);
 	}
 
 	[Theory]
@@ -121,27 +121,27 @@ public class ParseTests
 	public void WhenSourceContainsOptionalPropertiesWithoutDefaultValues_ThenResultShouldContainOptionalPropertiesWithoutDefaultValues(string inputPadding)
 	{
 		string source = $"{inputPadding}@moxy\r\n{AttributeOptionalPropertiesWithoutDefaultValues}@moxy\r\n";
-		ParsedTemplate parsedTemplate = TemplateParser.Parse("", "", source);
+		ValidatedResult<ParsedTemplate> result = TemplateParser.Parse("", "", source);
 
-		Assert.True(parsedTemplate.Success);
-		Assert.Empty(parsedTemplate.AttributeUsingClauses);
-		Assert.Empty(parsedTemplate.AttributeRequiredProperties);
-		Assert.Empty(parsedTemplate.ClassUsingClauses);
-		Assert.Equal("", parsedTemplate.TemplateSource);
+		Assert.True(result.Success);
+		Assert.Empty(result.Value.AttributeUsingClauses);
+		Assert.Empty(result.Value.AttributeRequiredProperties);
+		Assert.Empty(result.Value.ClassUsingClauses);
+		Assert.Equal("", result.Value.TemplateSource);
 
 		Assert.Equal(
 			new TemplateAttributeProperty(
 				Name: "OptionalIntNoDefault",
 				TypeName: "int",
 				DefaultValue: null),
-			parsedTemplate.AttributeOptionalProperties[0]);
+			result.Value.AttributeOptionalProperties[0]);
 
 		Assert.Equal(
 			new TemplateAttributeProperty(
 				Name: "OptionalStringNoDefault",
 				TypeName: "string",
 				DefaultValue: null),
-			parsedTemplate.AttributeOptionalProperties[1]);
+			result.Value.AttributeOptionalProperties[1]);
 	}
 
 	[Theory]
@@ -152,27 +152,27 @@ public class ParseTests
 	public void WhenSourceContainsOptionalPropertiesWithDefaultValues_ThenResultShouldContainOptionalPropertiesWithDefaultValues(string inputPadding)
 	{
 		string source = $"{inputPadding}@moxy\r\n{AttributeOptionalPropertiesWithDefaultValues}@moxy\r\n";
-		ParsedTemplate parsedTemplate = TemplateParser.Parse("", "", source);
+		ValidatedResult<ParsedTemplate> result = TemplateParser.Parse("", "", source);
 
-		Assert.True(parsedTemplate.Success);
-		Assert.Empty(parsedTemplate.AttributeUsingClauses);
-		Assert.Empty(parsedTemplate.AttributeRequiredProperties);
-		Assert.Empty(parsedTemplate.ClassUsingClauses);
-		Assert.Equal("", parsedTemplate.TemplateSource);
+		Assert.True(result.Success);
+		Assert.Empty(result.Value.AttributeUsingClauses);
+		Assert.Empty(result.Value.AttributeRequiredProperties);
+		Assert.Empty(result.Value.ClassUsingClauses);
+		Assert.Equal("", result.Value.TemplateSource);
 
 		Assert.Equal(
 			new TemplateAttributeProperty(
 				Name: "OptionalIntWithDefault",
 				TypeName: "int",
 				DefaultValue: "42"),
-			parsedTemplate.AttributeOptionalProperties[0]);
+			result.Value.AttributeOptionalProperties[0]);
 
 		Assert.Equal(
 			new TemplateAttributeProperty(
 				Name: "OptionalStringWithDefault",
 				TypeName: "string",
 				DefaultValue: "\"Eggs are nice\""),
-			parsedTemplate.AttributeOptionalProperties[1]);
+			result.Value.AttributeOptionalProperties[1]);
 	}
 
 	[Theory]
@@ -183,16 +183,16 @@ public class ParseTests
 	public void WhenSourceContainsClassUsingClauses_ThenResultShouldContainsClassUsingClauses(string inputPadding)
 	{
 		string source = $"{inputPadding}@moxy\r\n{ClassUsingClauses}@moxy\r\n";
-		ParsedTemplate parsedTemplate = TemplateParser.Parse("", "", source);
+		ValidatedResult<ParsedTemplate> result = TemplateParser.Parse("", "", source);
 
-		Assert.True(parsedTemplate.Success);
-		Assert.Empty(parsedTemplate.AttributeUsingClauses);
-		Assert.Empty(parsedTemplate.AttributeOptionalProperties);
-		Assert.Empty(parsedTemplate.AttributeRequiredProperties);
-		Assert.Equal("", parsedTemplate.TemplateSource);
+		Assert.True(result.Success);
+		Assert.Empty(result.Value.AttributeUsingClauses);
+		Assert.Empty(result.Value.AttributeOptionalProperties);
+		Assert.Empty(result.Value.AttributeRequiredProperties);
+		Assert.Equal("", result.Value.TemplateSource);
 		Assert.True(
 			Enumerable.SequenceEqual(
-				parsedTemplate.ClassUsingClauses,
+				result.Value.ClassUsingClauses,
 				new string[] { "Newtonsoft.Json", "System.Text.Json" }));
 	}
 
@@ -204,14 +204,14 @@ public class ParseTests
 	public void WhenSourceHasNoHeaderMarker_ThenResultTemplateSourceShouldEqualTheInputString(string inputTerminator)
 	{
 		string expected = $"1\r\n2\r\n3${inputTerminator}";
-		ParsedTemplate parsedTemplate = TemplateParser.Parse("", "", expected);
+		ValidatedResult<ParsedTemplate> result = TemplateParser.Parse("", "", expected);
 
-		Assert.True(parsedTemplate.Success);
-		Assert.Empty(parsedTemplate.AttributeUsingClauses);
-		Assert.Empty(parsedTemplate.AttributeOptionalProperties);
-		Assert.Empty(parsedTemplate.AttributeRequiredProperties);
-		Assert.Empty(parsedTemplate.ClassUsingClauses);
-		Assert.Equal(parsedTemplate.TemplateSource, expected);
+		Assert.True(result.Success);
+		Assert.Empty(result.Value.AttributeUsingClauses);
+		Assert.Empty(result.Value.AttributeOptionalProperties);
+		Assert.Empty(result.Value.AttributeRequiredProperties);
+		Assert.Empty(result.Value.ClassUsingClauses);
+		Assert.Equal(result.Value.TemplateSource, expected);
 	}
 
 	[Fact]
@@ -219,14 +219,14 @@ public class ParseTests
 	{
 		string expected = "hello\r\n@moxy\r\n@attribute using System\r\n@moxy\r\nHello";
 
-		ParsedTemplate parsedTemplate = TemplateParser.Parse("", "", expected);
+		ValidatedResult<ParsedTemplate> result = TemplateParser.Parse("", "", expected);
 
-		Assert.True(parsedTemplate.Success);
-		Assert.Empty(parsedTemplate.AttributeUsingClauses);
-		Assert.Empty(parsedTemplate.AttributeOptionalProperties);
-		Assert.Empty(parsedTemplate.AttributeRequiredProperties);
-		Assert.Empty(parsedTemplate.ClassUsingClauses);
-		Assert.Equal(parsedTemplate.TemplateSource, expected);
+		Assert.True(result.Success);
+		Assert.Empty(result.Value.AttributeUsingClauses);
+		Assert.Empty(result.Value.AttributeOptionalProperties);
+		Assert.Empty(result.Value.AttributeRequiredProperties);
+		Assert.Empty(result.Value.ClassUsingClauses);
+		Assert.Equal(result.Value.TemplateSource, expected);
 	}
 
 	/// <summary>
@@ -238,14 +238,14 @@ public class ParseTests
 	{
 		string expected = "hello\r\n@moxy\r\n@attribute using System\r\nHello";
 
-		ParsedTemplate parsedTemplate = TemplateParser.Parse("", "", expected);
+		ValidatedResult<ParsedTemplate> result = TemplateParser.Parse("", "", expected);
 
-		Assert.True(parsedTemplate.Success);
-		Assert.Empty(parsedTemplate.AttributeUsingClauses);
-		Assert.Empty(parsedTemplate.AttributeOptionalProperties);
-		Assert.Empty(parsedTemplate.AttributeRequiredProperties);
-		Assert.Empty(parsedTemplate.ClassUsingClauses);
-		Assert.Equal(parsedTemplate.TemplateSource, expected);
+		Assert.True(result.Success);
+		Assert.Empty(result.Value.AttributeUsingClauses);
+		Assert.Empty(result.Value.AttributeOptionalProperties);
+		Assert.Empty(result.Value.AttributeRequiredProperties);
+		Assert.Empty(result.Value.ClassUsingClauses);
+		Assert.Equal(result.Value.TemplateSource, expected);
 	}
 
 	[Theory]
@@ -266,13 +266,13 @@ public class ParseTests
 			$"@moxy\r\n" +
 			$"Hello!";
 
-		ParsedTemplate parsedTemplate = TemplateParser.Parse("", "", source);
+		ValidatedResult<ParsedTemplate> result = TemplateParser.Parse("", "", source);
 
-		Assert.True(parsedTemplate.Success);
-		Assert.Equal(2, parsedTemplate.AttributeUsingClauses.Length);
-		Assert.Equal(4, parsedTemplate.AttributeOptionalProperties.Length);
-		Assert.Equal(4, parsedTemplate.AttributeRequiredProperties.Length);
-		Assert.Equal(2, parsedTemplate.ClassUsingClauses.Length);
-		Assert.Equal("Hello!", parsedTemplate.TemplateSource);
+		Assert.True(result.Success);
+		Assert.Equal(2, result.Value.AttributeUsingClauses.Length);
+		Assert.Equal(4, result.Value.AttributeOptionalProperties.Length);
+		Assert.Equal(4, result.Value.AttributeRequiredProperties.Length);
+		Assert.Equal(2, result.Value.ClassUsingClauses.Length);
+		Assert.Equal("Hello!", result.Value.TemplateSource);
 	}
 }
