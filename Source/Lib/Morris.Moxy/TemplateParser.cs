@@ -19,7 +19,7 @@ namespace Morris.Moxy
 				@"|((class)\s+(using)\s+(.*))\s*$",
 			options: RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
 
-		public static bool TryParse(string input, out ParsedTemplate parsedTemplate)
+		public static ParsedTemplate Parse(string input)
 		{
 			if (input is null)
 				throw new ArgumentNullException(nameof(input));
@@ -30,8 +30,7 @@ namespace Morris.Moxy
 				out string body,
 				out CompilationError? compilationError))
 			{
-				parsedTemplate = new ParsedTemplate(Enumerable.Repeat(compilationError!.Value, 1).ToImmutableArray());
-				return false;
+				return new ParsedTemplate(Enumerable.Repeat(compilationError!.Value, 1).ToImmutableArray());
 			}
 
 			var attributeUsingClausesBuilder = ImmutableArray.CreateBuilder<string>();
@@ -50,7 +49,7 @@ namespace Morris.Moxy
 				else
 				{
 					Match match = matches[0];
-					
+
 					if (match.Groups[2].Success) // attribute, using
 						attributeUsingClausesBuilder.Add(match.Groups[4].Value);
 					else if (match.Groups[6].Success) // attribute required/optional
@@ -71,18 +70,14 @@ namespace Morris.Moxy
 			}
 
 			if (compilationErrorsBuilder.Count != 0)
-			{
-				parsedTemplate = new ParsedTemplate(compilationErrors: compilationErrorsBuilder.ToImmutable());
-				return false;
-			}
+				return new ParsedTemplate(compilationErrors: compilationErrorsBuilder.ToImmutable());
 
-			parsedTemplate = new ParsedTemplate(
+			return new ParsedTemplate(
 				attributeUsingClauses: attributeUsingClausesBuilder.ToImmutable(),
 				classUsingClauses: classUsingClausesBuilder.ToImmutable(),
 				attributeRequiredProperties: attributeRequiredPropertiesBuilder.ToImmutable(),
 				attributeOptionalProperties: attributeOptionalPropertiesBuilder.ToImmutable(),
 				templateSource: body);
-			return true;
 		}
 
 		public static bool TrySeparateTemplateHeaderAndBody(

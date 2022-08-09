@@ -5,12 +5,13 @@ namespace Morris.Moxy.DataStructures;
 
 public readonly struct ParsedTemplate
 {
+	public readonly bool Success;
+	public readonly string? TemplateSource;
 	public readonly ImmutableArray<string> AttributeUsingClauses;
 	public readonly ImmutableArray<string> ClassUsingClauses;
 	public readonly ImmutableArray<TemplateAttributeProperty> AttributeRequiredProperties;
 	public readonly ImmutableArray<TemplateAttributeProperty> AttributeOptionalProperties;
 	public readonly ImmutableArray<CompilationError> CompilationErrors;
-	public readonly string? TemplateSource;
 
 	public static readonly ParsedTemplate Empty = new();
 
@@ -21,6 +22,7 @@ public readonly struct ParsedTemplate
 		ImmutableArray<TemplateAttributeProperty> attributeOptionalProperties,
 		string templateSource)
 	{
+		Success = true;
 		AttributeUsingClauses = attributeUsingClauses;
 		ClassUsingClauses = classUsingClauses;
 		AttributeRequiredProperties = attributeRequiredProperties;
@@ -34,6 +36,7 @@ public readonly struct ParsedTemplate
 		if (compilationErrors.Length == 0)
 			throw new ArgumentException(paramName: nameof(compilationErrors), message: "Cannot be empty");
 
+		Success = false;
 		AttributeUsingClauses = ImmutableArray<string>.Empty;
 		ClassUsingClauses = ImmutableArray<string>.Empty;
 		AttributeRequiredProperties = ImmutableArray<TemplateAttributeProperty>.Empty;

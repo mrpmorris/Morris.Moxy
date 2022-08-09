@@ -1,12 +1,9 @@
 ﻿using Microsoft.CodeAnalysis;
 using Morris.Moxy.DataStructures;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Morris.Moxy.TemplateHandlers
 {
-  public static class TemplateSelectors
+	public static class TemplateSelectors
   {
 	public static IncrementalValuesProvider<TemplateNameAndSource> SelectTemplateNamesAndSources(
 	  IncrementalValuesProvider<AdditionalText> additionalTexts)
