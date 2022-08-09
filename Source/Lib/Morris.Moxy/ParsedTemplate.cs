@@ -1,7 +1,7 @@
 ﻿using Morris.Moxy.TemplatePreprocessing;
 using System.Collections.Immutable;
 
-namespace Morris.Moxy.DataStructures;
+namespace Morris.Moxy;
 
 public readonly struct ParsedTemplate
 {
@@ -9,6 +9,7 @@ public readonly struct ParsedTemplate
 	public readonly string Name;
 	public readonly string FilePath;
 	public readonly string? TemplateSource;
+	public readonly int TemplateBodyLineNumber;
 	public readonly ImmutableArray<string> AttributeUsingClauses;
 	public readonly ImmutableArray<string> ClassUsingClauses;
 	public readonly ImmutableArray<TemplateAttributeProperty> AttributeRequiredProperties;
@@ -19,6 +20,7 @@ public readonly struct ParsedTemplate
 	public ParsedTemplate(
 		string name,
 		string filePath,
+		int templateBodyLineNumber,
 		ImmutableArray<string> attributeUsingClauses,
 		ImmutableArray<string> classUsingClauses,
 		ImmutableArray<TemplateAttributeProperty> attributeRequiredProperties,
@@ -28,6 +30,7 @@ public readonly struct ParsedTemplate
 		Success = true;
 		Name = name ?? throw new ArgumentNullException(nameof(name));
 		FilePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
+		TemplateBodyLineNumber = templateBodyLineNumber;
 		AttributeUsingClauses = attributeUsingClauses;
 		ClassUsingClauses = classUsingClauses;
 		AttributeRequiredProperties = attributeRequiredProperties;
@@ -37,11 +40,13 @@ public readonly struct ParsedTemplate
 
 	public ParsedTemplate(
 		string name,
-		string filePath)
+		string filePath,
+		int templateBodyLineNumber)
 	{
 		Success = false;
 		Name = name ?? throw new ArgumentNullException(nameof(name));
 		FilePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
+		TemplateBodyLineNumber = templateBodyLineNumber;
 		AttributeUsingClauses = ImmutableArray<string>.Empty;
 		ClassUsingClauses = ImmutableArray<string>.Empty;
 		AttributeRequiredProperties = ImmutableArray<TemplateAttributeProperty>.Empty;

@@ -1,4 +1,9 @@
-﻿public void SayHello()
+﻿@moxy
+@attribute using System
+@attribute using System.Text
+@moxy
+
+public void SayHello()
 {
-  Console.WriteLine("Hello!");
+  Console.WriteLine("Hello");
 }

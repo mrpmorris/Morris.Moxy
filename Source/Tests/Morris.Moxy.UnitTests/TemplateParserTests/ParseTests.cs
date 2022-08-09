@@ -1,5 +1,4 @@
-﻿using Morris.Moxy.DataStructures;
-using Morris.Moxy.TemplatePreprocessing;
+﻿using Morris.Moxy.TemplatePreprocessing;
 
 namespace Morris.Moxy.UnitTests.TemplateParserTests;
 

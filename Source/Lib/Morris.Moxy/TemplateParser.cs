@@ -1,7 +1,5 @@
-﻿using Morris.Moxy.DataStructures;
-using Morris.Moxy.TemplatePreprocessing;
+﻿using Morris.Moxy.TemplatePreprocessing;
 using System.Collections.Immutable;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Morris.Moxy
@@ -28,10 +26,11 @@ namespace Morris.Moxy
 				input: input,
 				out ImmutableArray<(int, string)> headerLines,
 				out string body,
+				out int templateBodyLineNumber,
 				out CompilationError? compilationError))
 			{
 				return new ValidatedResult<ParsedTemplate>(
-					value: new ParsedTemplate(name: name, filePath: filePath),
+					value: new ParsedTemplate(name: name, filePath: filePath, templateBodyLineNumber),
 					compilationError: compilationError!.Value);
 			}
 
@@ -73,12 +72,13 @@ namespace Morris.Moxy
 
 			if (compilationErrorsBuilder.Count != 0)
 				return new ValidatedResult<ParsedTemplate>(
-					value: new ParsedTemplate(name: name, filePath: filePath),
+					value: new ParsedTemplate(name: name, filePath: filePath, templateBodyLineNumber),
 					compilationErrors: compilationErrorsBuilder.ToImmutable());
 
 			var parsedTemplate = new ParsedTemplate(
 				name: name,
 				filePath: filePath,
+				templateBodyLineNumber: templateBodyLineNumber,
 				attributeUsingClauses: attributeUsingClausesBuilder.ToImmutable(),
 				classUsingClauses: classUsingClausesBuilder.ToImmutable(),
 				attributeRequiredProperties: attributeRequiredPropertiesBuilder.ToImmutable(),
@@ -91,6 +91,7 @@ namespace Morris.Moxy
 			string input,
 			out ImmutableArray<(int, string)> headerLines,
 			out string body,
+			out int templateBodyLineNumber,
 			out CompilationError? compilationError)
 		{
 			if (input is null)
@@ -101,9 +102,13 @@ namespace Morris.Moxy
 
 			ParsingState parsingState = ParsingState.Unknown;
 			using var reader = new StringReader(input);
-			int lineNumber = 0;
+			int lineNumber = -1;
+			templateBodyLineNumber = 0;
 			while (true)
 			{
+				// Next line
+				lineNumber++;
+
 				string? line = reader.ReadLine();
 				// End of input
 				if (line is null)
@@ -119,8 +124,6 @@ namespace Morris.Moxy
 					return true;
 				}
 
-				// Next line
-				lineNumber++;
 				switch (parsingState)
 				{
 					case ParsingState.Unknown:
@@ -134,6 +137,7 @@ namespace Morris.Moxy
 							if (!string.IsNullOrWhiteSpace(line))
 							{
 								body = input;
+								templateBodyLineNumber = 0;
 								reader.ReadToEnd(); // Go to end of input
 								parsingState = ParsingState.Finished;
 							}
@@ -145,6 +149,7 @@ namespace Morris.Moxy
 						{
 							// If we are in the header and find a closing @moxy then the rest of the input
 							// is the body
+							templateBodyLineNumber = lineNumber;
 							body = reader.ReadToEnd();
 							parsingState = ParsingState.Finished;
 						}
