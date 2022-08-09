@@ -36,7 +36,7 @@ internal static class TemplateAttributeSourceGenerator
 					if (property.DefaultValue is null)
 						writer.WriteLine("");
 					else
-						writer.WriteLine($" = {property.DefaultValue}");
+						writer.WriteLine($" = {property.DefaultValue};");
 				}
 
 				if (directives.AttributeRequiredProperties.Length > 0)
@@ -45,13 +45,19 @@ internal static class TemplateAttributeSourceGenerator
 					writer.WriteLine($"public {compiledTemplate.Name}Attribute(");
 					using (writer.Indent())
 					{
+						string comma = ",";
+						int propertyIndex = 0;
+						int lastPropertyIndex = directives.AttributeRequiredProperties.Length - 1;
 						foreach (TemplateAttributeProperty property in directives.AttributeRequiredProperties)
 						{
+							if (propertyIndex == lastPropertyIndex)
+								comma = "";
+							propertyIndex++;
+
 							writer.Write($"{property.TypeName} {property.Name}");
-							if (property.DefaultValue is null)
-								writer.WriteLine("");
-							else
-								writer.WriteLine($" = {property.DefaultValue}");
+							if (property.DefaultValue is not null)
+								writer.Write($" = {property.DefaultValue}");
+							writer.WriteLine(comma);
 						}
 					}
 					writer.WriteLine(")");
