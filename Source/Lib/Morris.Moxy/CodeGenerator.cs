@@ -11,7 +11,7 @@ namespace Morris.Moxy
 		public void Initialize(IncrementalGeneratorInitializationContext context)
 		{
 			IncrementalValuesProvider<ValidatedResult<CompiledTemplate>> parsedTemplates =
-				TemplateSelectors.Select(context.AdditionalTextsProvider);
+				TemplatesSelector.Select(context.AdditionalTextsProvider);
 
 			var combined = context.CompilationProvider.Combine(parsedTemplates.Collect());
 

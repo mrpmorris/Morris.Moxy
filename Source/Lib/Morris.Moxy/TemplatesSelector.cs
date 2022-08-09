@@ -2,7 +2,7 @@
 
 namespace Morris.Moxy.TemplateHandlers
 {
-	public static class TemplateSelectors
+	public static class TemplatesSelector
 	{
 		public static IncrementalValuesProvider<ValidatedResult<CompiledTemplate>> Select(
 			IncrementalValuesProvider<AdditionalText> additionalTexts)
