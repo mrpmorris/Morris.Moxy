@@ -10,10 +10,10 @@ namespace Morris.Moxy
 	{
 		public void Initialize(IncrementalGeneratorInitializationContext context)
 		{
-			IncrementalValuesProvider<TemplateNameAndSource> templateNamesAndSources =
+			IncrementalValuesProvider<ParsedTemplate> parsedTemplates =
 				TemplateSelectors.SelectTemplateNamesAndSources(context.AdditionalTextsProvider);
 
-			var combined = context.CompilationProvider.Combine(templateNamesAndSources.Collect());
+			var combined = context.CompilationProvider.Combine(parsedTemplates.Collect());
 
 			context.RegisterSourceOutput(
 				combined,
@@ -22,7 +22,7 @@ namespace Morris.Moxy
 					var sb = new StringBuilder();
 					sb.AppendLine("public class Testercles {");
 					foreach (var item in x.Right)
-						sb.AppendLine(item.Source);
+						sb.AppendLine(item.TemplateSource);
 					sb.AppendLine("}");
 					string sourceText = sb.ToString();
 					productionContext.AddSource("hahaha.g.cs", sourceText!);

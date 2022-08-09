@@ -6,6 +6,8 @@ namespace Morris.Moxy.DataStructures;
 public readonly struct ParsedTemplate
 {
 	public readonly bool Success;
+	public readonly string Name;
+	public readonly string FilePath;
 	public readonly string? TemplateSource;
 	public readonly ImmutableArray<string> AttributeUsingClauses;
 	public readonly ImmutableArray<string> ClassUsingClauses;
@@ -16,6 +18,8 @@ public readonly struct ParsedTemplate
 	public static readonly ParsedTemplate Empty = new();
 
 	public ParsedTemplate(
+		string name,
+		string filePath,
 		ImmutableArray<string> attributeUsingClauses,
 		ImmutableArray<string> classUsingClauses,
 		ImmutableArray<TemplateAttributeProperty> attributeRequiredProperties,
@@ -23,6 +27,8 @@ public readonly struct ParsedTemplate
 		string templateSource)
 	{
 		Success = true;
+		Name = name ?? throw new ArgumentNullException(nameof(name));
+		FilePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
 		AttributeUsingClauses = attributeUsingClauses;
 		ClassUsingClauses = classUsingClauses;
 		AttributeRequiredProperties = attributeRequiredProperties;
@@ -31,12 +37,17 @@ public readonly struct ParsedTemplate
 		CompilationErrors = ImmutableArray<CompilationError>.Empty;
 	}
 
-	public ParsedTemplate(ImmutableArray<CompilationError> compilationErrors)
+	public ParsedTemplate(
+		string name,
+		string filePath,
+		ImmutableArray<CompilationError> compilationErrors)
 	{
 		if (compilationErrors.Length == 0)
 			throw new ArgumentException(paramName: nameof(compilationErrors), message: "Cannot be empty");
 
 		Success = false;
+		Name = name ?? throw new ArgumentNullException(nameof(name));
+		FilePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
 		AttributeUsingClauses = ImmutableArray<string>.Empty;
 		ClassUsingClauses = ImmutableArray<string>.Empty;
 		AttributeRequiredProperties = ImmutableArray<TemplateAttributeProperty>.Empty;

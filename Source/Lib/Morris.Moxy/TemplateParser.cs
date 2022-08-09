@@ -19,7 +19,7 @@ namespace Morris.Moxy
 				@"|((class)\s+(using)\s+(.*))\s*$",
 			options: RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
 
-		public static ParsedTemplate Parse(string input)
+		public static ParsedTemplate Parse(string name, string filePath, string input)
 		{
 			if (input is null)
 				throw new ArgumentNullException(nameof(input));
@@ -30,7 +30,10 @@ namespace Morris.Moxy
 				out string body,
 				out CompilationError? compilationError))
 			{
-				return new ParsedTemplate(Enumerable.Repeat(compilationError!.Value, 1).ToImmutableArray());
+				return new ParsedTemplate(
+					name: name,
+					filePath: filePath,
+					compilationErrors: Enumerable.Repeat(compilationError!.Value, 1).ToImmutableArray());
 			}
 
 			var attributeUsingClausesBuilder = ImmutableArray.CreateBuilder<string>();
@@ -70,9 +73,14 @@ namespace Morris.Moxy
 			}
 
 			if (compilationErrorsBuilder.Count != 0)
-				return new ParsedTemplate(compilationErrors: compilationErrorsBuilder.ToImmutable());
+				return new ParsedTemplate(
+					name: name,
+					filePath: filePath,
+					compilationErrors: compilationErrorsBuilder.ToImmutable());
 
 			return new ParsedTemplate(
+				name: name,
+				filePath: filePath,
 				attributeUsingClauses: attributeUsingClausesBuilder.ToImmutable(),
 				classUsingClauses: classUsingClausesBuilder.ToImmutable(),
 				attributeRequiredProperties: attributeRequiredPropertiesBuilder.ToImmutable(),
