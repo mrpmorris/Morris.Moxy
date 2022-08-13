@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Text;
 using Morris.Moxy.Extensions;
+using Scriban;
 
 namespace Morris.Moxy.Classes;
 
@@ -19,7 +20,6 @@ public static class ClassesSourceGenerator
 		IEnumerable<ClassInfo> classInfos,
 		ImmutableDictionary<string, CompiledTemplate> nameToCompiledTemplateLookup)
 	{
-
 		foreach (var classInfo in classInfos)
 		{
 			using var stringWriter = new StringWriter();
@@ -46,7 +46,13 @@ public static class ClassesSourceGenerator
 					writer.Indent++;
 				}
 
-				writer.WriteLine($"public void {compiledTemplate.Name}() {{}}");
+				var scribanTemplateContext = new TemplateContext();
+				scribanTemplateContext.MemberRenamer = m => m.Name;
+				scribanTemplateContext.AutoIndent = true;
+				scribanTemplateContext.CurrentIndent = "        ";
+
+				string generatedSource = compiledTemplate.Template!.Render(scribanTemplateContext);
+				writer.WriteLine(generatedSource);
 				writer.WriteLine();
 			}
 			if (hasWrittenNamespace)
