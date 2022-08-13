@@ -3,6 +3,5 @@ using MixInAMethod;
 
 Console.WriteLine("Hello, World!");
 
-// TODO
-//var person = new Person();
-//person.SayHello();
+var person = new Person();
+person.SayHello();

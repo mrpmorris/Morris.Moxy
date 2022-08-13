@@ -63,6 +63,16 @@ namespace Morris.Moxy
 					{
 						return;
 					}
+
+					if (!ClassesSourceGenerator.TryGenerateSource(
+						productionContext,
+						assemblyName: assemblyName,
+						projectPath: x.ProjectPath,
+						x.Classes,
+						nameToCompiledTemplateLookup))
+					{
+						return;
+					}
 				});
 		}
 	}

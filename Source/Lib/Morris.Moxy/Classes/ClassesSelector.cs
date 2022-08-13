@@ -13,34 +13,40 @@ public static class ClassesSelector
 			.CreateSyntaxProvider(
 				predicate: static (typeDeclaration, _) => typeDeclaration is TypeDeclarationSyntax,
 				transform: static (syntaxContext, _) => syntaxContext)
-		.Select(static (syntaxContext, cancellationToken) =>
-		{
-			var typeDeclarationSyntax = (TypeDeclarationSyntax)syntaxContext.Node;
-			var typeSymbol = (INamedTypeSymbol?)syntaxContext.SemanticModel.GetDeclaredSymbol(typeDeclarationSyntax, cancellationToken);
-			if (typeSymbol is null)
-				return ClassInfo.Empty;
+			.Select(static (syntaxContext, cancellationToken) =>
+			{
+				var typeDeclarationSyntax = (TypeDeclarationSyntax)syntaxContext.Node;
+				var typeSymbol = (INamedTypeSymbol?)syntaxContext.SemanticModel.GetDeclaredSymbol(typeDeclarationSyntax, cancellationToken);
+				if (typeSymbol is null)
+					return ClassInfo.Empty;
 
-			string className = typeDeclarationSyntax.Identifier.Text;
-			string @namespace = typeSymbol.ContainingNamespace.IsGlobalNamespace
-				? string.Empty
-				: typeSymbol.ContainingNamespace.ToString();
+				string className = typeDeclarationSyntax.Identifier.Text;
+				string @namespace = typeSymbol.ContainingNamespace.IsGlobalNamespace
+					? string.Empty
+					: typeSymbol.ContainingNamespace.ToString();
 
-			var possibleTemplateNames =
-				typeDeclarationSyntax
-					.AttributeLists
-					.SelectMany(x => x.Attributes)
-					.OfType<AttributeSyntax>()
-					.Where(x => syntaxContext.SemanticModel.GetSymbolInfo(x).Symbol is null)
-					.Select(x => x.ToFullString())
-					.ToImmutableArray();
+#if DEBUG
+				if (!System.Diagnostics.Debugger.IsAttached)
+				{
+					System.Diagnostics.Debugger.Launch();
+				}
+#endif
+				var possibleTemplateNames =
+					typeDeclarationSyntax
+						.AttributeLists
+						.SelectMany(x => x.Attributes)
+						.OfType<AttributeSyntax>()
+						.Where(x => syntaxContext.SemanticModel.GetSymbolInfo(x).Symbol is null)
+						.Select(x => x.Name.ToFullString())
+						.ToImmutableArray();
 
-			if (possibleTemplateNames.Length == 0)
-				return ClassInfo.Empty;
+				if (possibleTemplateNames.Length == 0)
+					return ClassInfo.Empty;
 
-			return new ClassInfo(
-				name: className,
-				@namespace: @namespace,
-				possibleTemplateNames: possibleTemplateNames);
-		})
-		.Where(x => !x.Equals(ClassInfo.Empty));
+				return new ClassInfo(
+					name: className,
+					@namespace: @namespace,
+					possibleTemplateNames: possibleTemplateNames);
+			})
+			.Where(x => !x.Equals(ClassInfo.Empty));
 }

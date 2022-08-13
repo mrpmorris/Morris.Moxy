@@ -34,7 +34,9 @@ public static class TemplatesSourceGenerator
 			}
 
 			CompiledTemplate compiledTemplate = templateResult.Value;
-			if (nameToCompiledTemplateBuilder.ContainsKey(compiledTemplate.Name))
+			if (!nameToCompiledTemplateBuilder.ContainsKey(compiledTemplate.Name))
+				nameToCompiledTemplateBuilder.Add(compiledTemplate.Name, compiledTemplate);
+			else
 			{
 				hasErrors = true;
 				productionContext.AddCompilationError(
