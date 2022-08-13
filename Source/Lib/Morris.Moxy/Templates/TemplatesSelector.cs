@@ -1,6 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 
-namespace Morris.Moxy.TemplateHandlers
+namespace Morris.Moxy.Templates
 {
 	public static class TemplatesSelector
 	{

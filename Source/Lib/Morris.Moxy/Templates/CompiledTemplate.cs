@@ -1,6 +1,6 @@
 ﻿using Scriban;
 
-namespace Morris.Moxy;
+namespace Morris.Moxy.Templates;
 
 public readonly struct CompiledTemplate
 {

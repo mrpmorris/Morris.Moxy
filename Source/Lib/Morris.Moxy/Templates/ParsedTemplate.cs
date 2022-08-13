@@ -1,7 +1,6 @@
-﻿using Morris.Moxy.TemplatePreprocessing;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 
-namespace Morris.Moxy;
+namespace Morris.Moxy.Templates;
 
 public readonly struct ParsedTemplate
 {

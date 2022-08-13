@@ -2,7 +2,7 @@
 using Scriban.Parsing;
 using System.Collections.Immutable;
 
-namespace Morris.Moxy;
+namespace Morris.Moxy.Templates;
 
 internal static class TemplateCompiler
 {
@@ -16,7 +16,7 @@ internal static class TemplateCompiler
 				compilationErrors: parsedTemplateResult.CompilationErrors);
 
 		Console.Beep();
-		Template? scribanTemplate = Template.Parse(
+		var scribanTemplate = Template.Parse(
 			text: parsedTemplate.TemplateSource,
 			sourceFilePath: parsedTemplate.FilePath);
 
@@ -30,7 +30,7 @@ internal static class TemplateCompiler
 				);
 
 		var errorBuilder = ImmutableArray.CreateBuilder<CompilationError>();
-		foreach(LogMessage scribanError in scribanTemplate.Messages)
+		foreach (LogMessage scribanError in scribanTemplate.Messages)
 		{
 			var compilationError = CompilationErrors.ScriptCompilationError with {
 				Line = scribanError.Span.Start.Line + parsedTemplate.TemplateBodyLineNumber + 1,

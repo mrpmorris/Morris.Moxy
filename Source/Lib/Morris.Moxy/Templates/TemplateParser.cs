@@ -1,8 +1,7 @@
-﻿using Morris.Moxy.TemplatePreprocessing;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.Text.RegularExpressions;
 
-namespace Morris.Moxy
+namespace Morris.Moxy.Templates
 {
 	public static class TemplateParser
 	{

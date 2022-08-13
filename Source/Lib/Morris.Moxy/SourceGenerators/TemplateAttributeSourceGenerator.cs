@@ -1,6 +1,6 @@
 ﻿using System.CodeDom.Compiler;
 using Morris.Moxy.Extensions;
-using Morris.Moxy.TemplatePreprocessing;
+using Morris.Moxy.Templates;
 
 namespace Morris.Moxy.SourceGenerators;
 

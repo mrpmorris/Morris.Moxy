@@ -1,4 +1,4 @@
-﻿using Morris.Moxy.TemplatePreprocessing;
+﻿using Morris.Moxy.Templates;
 
 namespace Morris.Moxy.UnitTests.TemplateParserTests;
 
