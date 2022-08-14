@@ -61,6 +61,7 @@ person.SayHello();
 4. Click on the `SayHello` in `person.SayHello`
 5. Either right-click and select "Go to definition", or press F12
 
+`MixInAMethod.Person.SayHello.Moxy.g.cs`
 ```c#
 // Generated from Mixins\SayHello.mixin at 2022-08-14 12:35:31 UTC
 
