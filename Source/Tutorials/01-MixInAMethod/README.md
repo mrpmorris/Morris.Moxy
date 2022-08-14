@@ -18,9 +18,14 @@
 4. Enter the following text into the mixin file
 
 ```c#
-public string SayHello()
+namespace {{ moxy.Class.Namespace }};
+
+partial class {{ moxy.Class.Name }}
 {
-  Console.WriteLine("Hello");
+  public void SayHello()
+  {
+    Console.WriteLine("Hello");
+  }
 }
 ```
 
@@ -55,3 +60,17 @@ person.SayHello();
 3. Go to `Program.cs`
 4. Click on the `SayHello` in `person.SayHello`
 5. Either right-click and select "Go to definition", or press F12
+
+```c#
+// Generated from Mixins\SayHello.mixin at 2022-08-14 12:35:31 UTC
+
+namespace MixInAMethod;
+
+partial class Person
+{
+  public void SayHello()
+  {
+    Console.WriteLine("Hellos");
+  }
+}
+```
