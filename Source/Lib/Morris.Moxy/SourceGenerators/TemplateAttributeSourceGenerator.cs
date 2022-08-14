@@ -16,7 +16,7 @@ internal static class TemplateAttributeSourceGenerator
 		if (templateFilePath.StartsWith(projectPath))
 			templateFilePath = templateFilePath.Substring(projectPath.Length);
 
-		writer.WriteLine($"// Generated from {templateFilePath}");
+		writer.WriteLine($"// Generated from {templateFilePath} at {DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")} UTC");
 
 		ParsedTemplate directives = compiledTemplate.Directives!.Value;
 		writer.WriteLine($"namespace {assemblyName}");

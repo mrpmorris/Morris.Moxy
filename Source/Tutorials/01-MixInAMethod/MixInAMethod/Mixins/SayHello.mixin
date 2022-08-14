@@ -5,7 +5,12 @@
 @attribute optional int Age = 49
 @moxy
 
-public void SayHello()
+namespace {{ moxy.Class.Namespace }};
+
+partial class {{ moxy.Class.Name }}
 {
-  Console.WriteLine("Hellos");
+  public void SayHello()
+  {
+    Console.WriteLine("Hellos");
+  }
 }

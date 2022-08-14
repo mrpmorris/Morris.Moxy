@@ -21,7 +21,6 @@ public static class TemplatesSourceGenerator
 		Dictionary<string, CompiledTemplate> nameToCompiledTemplateBuilder = new(StringComparer.OrdinalIgnoreCase);
 
 		bool hasErrors = false;
-		writer.WriteLine($"// Generated {DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")} UTC");
 		foreach (var templateResult in templateResults)
 		{
 			if (!templateResult.Success)

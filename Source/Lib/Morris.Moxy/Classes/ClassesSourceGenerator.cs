@@ -1,12 +1,9 @@
 ﻿using Microsoft.CodeAnalysis;
 using Morris.Moxy.Templates;
-using System;
 using System.CodeDom.Compiler;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Text;
-using Morris.Moxy.Extensions;
 using Scriban;
+using Morris.Moxy.DataStructures;
 
 namespace Morris.Moxy.Classes;
 
@@ -24,43 +21,35 @@ public static class ClassesSourceGenerator
 		{
 			using var stringWriter = new StringWriter();
 			using var writer = new IndentedTextWriter(stringWriter);
-			writer.WriteLine($"// Generated {DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")} UTC");
-			bool hasWrittenNamespace = false;
 
 			foreach (string possibleTemplateName in classInfo.PossibleTemplateNames)
 			{
 				if (!nameToCompiledTemplateLookup.TryGetValue(possibleTemplateName, out CompiledTemplate compiledTemplate))
 					continue;
-				if (!hasWrittenNamespace)
-				{
-					hasWrittenNamespace = true;
-					writer.WriteLine($"namespace {classInfo.Namespace}");
-					writer.WriteLine("{");
-					writer.Indent++;
-					foreach (string classUsing in compiledTemplate.Directives!.Value.ClassUsingClauses)
-						writer.WriteLine($"using {classUsing};");
-					
-					writer.WriteLine();
-					writer.WriteLine($"partial class {classInfo.Name}");
-					writer.WriteLine("{");
-					writer.Indent++;
-				}
 
-				var scribanTemplateContext = new TemplateContext();
+				string templateFilePath = compiledTemplate.FilePath;
+				if (templateFilePath.StartsWith(projectPath))
+					templateFilePath = templateFilePath.Substring(projectPath.Length);
+
+				writer.WriteLine($"// Generated from {templateFilePath} at {DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")} UTC");
+
+				var classMeta = new ClassMeta(
+					@namespace: classInfo.Namespace,
+					name: classInfo.Name,
+					usings: compiledTemplate.Directives!.Value.ClassUsingClauses);
+
+				var moxyMeta = new MoxyMeta {
+					Class = classMeta
+				};
+
+				var scribanScriptObject = new Scriban.Runtime.ScriptObject();
+				scribanScriptObject.Add("moxy", moxyMeta);
+				
+				var scribanTemplateContext = new TemplateContext(scribanScriptObject);
 				scribanTemplateContext.MemberRenamer = m => m.Name;
-				scribanTemplateContext.AutoIndent = true;
-				scribanTemplateContext.CurrentIndent = "        ";
 
 				string generatedSource = compiledTemplate.Template!.Render(scribanTemplateContext);
 				writer.WriteLine(generatedSource);
-				writer.WriteLine();
-			}
-			if (hasWrittenNamespace)
-			{
-				writer.Indent--;
-				writer.WriteLine($"}} // {classInfo.Name}");
-				writer.Indent--;
-				writer.WriteLine("}");
 
 				string source = stringWriter.ToString();
 				string fullGeneratedClassName = classInfo.Namespace == ""
