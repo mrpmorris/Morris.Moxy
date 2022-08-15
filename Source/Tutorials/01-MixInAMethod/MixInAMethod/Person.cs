@@ -1,6 +1,6 @@
 ﻿namespace MixInAMethod
 {
-	[SayHello("Petex", Age = 49)]
+	[SayHello]
 	internal partial class Person
 	{
 	}
