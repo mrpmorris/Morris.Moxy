@@ -1,11 +1,4 @@
-﻿@moxy
-@attribute using System
-@attribute using System.Text.Json
-@attribute required string Name
-@attribute optional int Age = 49
-@moxy
-
-namespace {{ moxy.Class.Namespace }};
+﻿namespace {{ moxy.Class.Namespace }};
 
 partial class {{ moxy.Class.Name }}
 {
@@ -14,4 +7,3 @@ partial class {{ moxy.Class.Name }}
     Console.WriteLine("Hello");
   }
 }
-
