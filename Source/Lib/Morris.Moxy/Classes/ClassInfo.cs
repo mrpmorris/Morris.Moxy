@@ -7,17 +7,20 @@ public readonly struct ClassInfo : IEquatable<ClassInfo>
 	public static readonly ClassInfo Empty = new();
 	public readonly string Name;
 	public readonly string Namespace;
-	public readonly ImmutableArray<string> PossibleTemplateNames;
+	public readonly ImmutableArray<AttributeNameAndSyntaxTree> PossibleTemplates;
 
-	public ClassInfo(string name, string @namespace, ImmutableArray<string> possibleTemplateNames)
+	public ClassInfo(
+		string name,
+		string @namespace,
+		ImmutableArray<AttributeNameAndSyntaxTree> possibleTemplates)
 	{
 		Name = name ?? throw new ArgumentNullException(nameof(name));
 		Namespace = @namespace ?? throw new ArgumentNullException(nameof(@namespace));
-		PossibleTemplateNames = possibleTemplateNames;
+		PossibleTemplates = possibleTemplates;
 	}
 
 	public bool Equals(ClassInfo other) =>
 		other.Name == Name
 		&& other.Namespace == Namespace
-	   && Enumerable.SequenceEqual(other.PossibleTemplateNames, PossibleTemplateNames);
+	   && Enumerable.SequenceEqual(other.PossibleTemplates, PossibleTemplates);
 }

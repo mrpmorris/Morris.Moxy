@@ -32,9 +32,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01-MixInAMethod", "01-MixIn
 		Tutorials\01-MixInAMethod\README.md = Tutorials\01-MixInAMethod\README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Morris.Moxy.UnitTests", "Tests\Morris.Moxy.UnitTests\Morris.Moxy.UnitTests.csproj", "{4ACC71EA-0C53-45A6-B3B9-C430D25B81FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Morris.Moxy.UnitTests", "Tests\Morris.Moxy.UnitTests\Morris.Moxy.UnitTests.csproj", "{4ACC71EA-0C53-45A6-B3B9-C430D25B81FC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{32D90BDA-099B-4AB7-8847-06DC7058BCF0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02-MixInParameters", "02-MixInParameters", "{D9261295-451B-47D8-9F9D-3D0438462802}"
+	ProjectSection(SolutionItems) = preProject
+		Tutorials\02-MixInParameters\README.md = Tutorials\02-MixInParameters\README.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MixInParameters", "Tutorials\MixInParameters\MixInParameters.csproj", "{D471EAE9-71BB-4DBA-9E11-8D169CE6DD3C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,6 +61,10 @@ Global
 		{4ACC71EA-0C53-45A6-B3B9-C430D25B81FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4ACC71EA-0C53-45A6-B3B9-C430D25B81FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4ACC71EA-0C53-45A6-B3B9-C430D25B81FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D471EAE9-71BB-4DBA-9E11-8D169CE6DD3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D471EAE9-71BB-4DBA-9E11-8D169CE6DD3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D471EAE9-71BB-4DBA-9E11-8D169CE6DD3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D471EAE9-71BB-4DBA-9E11-8D169CE6DD3C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -63,6 +74,8 @@ Global
 		{B490FA72-FF05-42C4-ACB0-1775DD7CFFF4} = {FD693BC1-4449-4351-8BA5-8C3E6BD1EB9B}
 		{FD693BC1-4449-4351-8BA5-8C3E6BD1EB9B} = {4A54C153-F70F-4FB9-83F0-F0B276F297EE}
 		{4ACC71EA-0C53-45A6-B3B9-C430D25B81FC} = {32D90BDA-099B-4AB7-8847-06DC7058BCF0}
+		{D9261295-451B-47D8-9F9D-3D0438462802} = {4A54C153-F70F-4FB9-83F0-F0B276F297EE}
+		{D471EAE9-71BB-4DBA-9E11-8D169CE6DD3C} = {D9261295-451B-47D8-9F9D-3D0438462802}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {25345ee2-ce37-45d9-9170-3eeaf00f45ea}

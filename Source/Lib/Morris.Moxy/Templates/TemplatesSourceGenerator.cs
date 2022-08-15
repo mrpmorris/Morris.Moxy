@@ -1,6 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
 using Morris.Moxy.SourceGenerators;
-using System.CodeDom.Compiler;
 using System.Collections.Immutable;
 using Morris.Moxy.Extensions;
 
@@ -13,12 +12,10 @@ public static class TemplatesSourceGenerator
 		string assemblyName,
 		string projectPath,
 		IEnumerable<ValidatedResult<CompiledTemplate>> templateResults,
-		out ImmutableDictionary<string, CompiledTemplate> nameToCompiledTemplateLookup)
+		out ImmutableDictionary<string, CompiledTemplateAndAttributeSource> nameToCompiledTemplateLookup)
 	{
-		using var stringWriter = new StringWriter();
-		using var writer = new IndentedTextWriter(stringWriter);
-
-		Dictionary<string, CompiledTemplate> nameToCompiledTemplateBuilder = new(StringComparer.OrdinalIgnoreCase);
+		Dictionary<string, CompiledTemplateAndAttributeSource> nameToCompiledTemplateBuilder =
+			new (StringComparer.OrdinalIgnoreCase);
 
 		bool hasErrors = false;
 		foreach (var templateResult in templateResults)
@@ -33,9 +30,7 @@ public static class TemplatesSourceGenerator
 			}
 
 			CompiledTemplate compiledTemplate = templateResult.Value;
-			if (!nameToCompiledTemplateBuilder.ContainsKey(compiledTemplate.Name))
-				nameToCompiledTemplateBuilder.Add(compiledTemplate.Name, compiledTemplate);
-			else
+			if (nameToCompiledTemplateBuilder.ContainsKey(compiledTemplate.Name))
 			{
 				hasErrors = true;
 				productionContext.AddCompilationError(
@@ -44,22 +39,23 @@ public static class TemplatesSourceGenerator
 				continue;
 			}
 
-			TemplateAttributeSourceGenerator.Generate(
-				writer: writer,
-				assemblyName: assemblyName,
-				projectPath: projectPath,
-				compiledTemplate: templateResult.Value);
-		}
-		if (hasErrors)
-		{
-			nameToCompiledTemplateLookup = ImmutableDictionary<string, CompiledTemplate>.Empty;
-			return false;
+			CompiledTemplateAndAttributeSource generated =
+				TemplateAttributeSourceGenerator.Generate(
+					assemblyName: assemblyName,
+					projectPath: projectPath,
+					compiledTemplate: templateResult.Value);
+			nameToCompiledTemplateBuilder.Add(compiledTemplate.Name, generated);
+
+			productionContext.AddSource(
+				hintName: $"Moxy.{templateResult.Value!.Name}.TemplateAttribute.g.cs",
+				source: generated.AttributeSource);
 		}
 
-		string source = stringWriter.ToString();
-		productionContext.AddSource(
-			hintName: $"{assemblyName}.Moxy.TemplateAttributes.g.cs",
-			source: source);
+		if (hasErrors)
+		{
+			nameToCompiledTemplateLookup = ImmutableDictionary<string, CompiledTemplateAndAttributeSource>.Empty;
+			return false;
+		}
 
 		nameToCompiledTemplateLookup = nameToCompiledTemplateBuilder.ToImmutableDictionary();
 		return true;

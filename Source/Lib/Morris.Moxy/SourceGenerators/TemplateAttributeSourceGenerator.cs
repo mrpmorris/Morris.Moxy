@@ -1,17 +1,23 @@
 ﻿using System.CodeDom.Compiler;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis;
 using Morris.Moxy.Extensions;
 using Morris.Moxy.Templates;
+using System.Collections.Immutable;
 
 namespace Morris.Moxy.SourceGenerators;
 
 internal static class TemplateAttributeSourceGenerator
 {
-	public static void Generate(
-		IndentedTextWriter writer,
+	public static CompiledTemplateAndAttributeSource Generate(
 		string assemblyName,
 		string projectPath,
 		CompiledTemplate compiledTemplate)
 	{
+		using var sourceCode = new StringWriter();
+		using var writer = new IndentedTextWriter(sourceCode);
+
 		string templateFilePath = compiledTemplate.FilePath;
 		if (templateFilePath.StartsWith(projectPath))
 			templateFilePath = templateFilePath.Substring(projectPath.Length);
@@ -72,5 +78,39 @@ internal static class TemplateAttributeSourceGenerator
 			} //class
 		} // namespace
 		writer.WriteLine();
+
+		return CreateResult(sourceCode.ToString(), compiledTemplate);
+	}
+
+	private static CompiledTemplateAndAttributeSource CreateResult(
+		string sourceCode,
+		CompiledTemplate compiledTemplate)
+	{
+		var options = new CSharpParseOptions(LanguageVersion.Preview, kind: SourceCodeKind.Regular);
+		CompilationUnitSyntax syntaxTree = SyntaxFactory.ParseCompilationUnit(sourceCode, options: options);
+
+		var namespaceDeclarationSyntax = syntaxTree.Members.OfType<NamespaceDeclarationSyntax>().Single();
+		var classDeclarationSyntax = namespaceDeclarationSyntax.Members.OfType<ClassDeclarationSyntax>().First();
+
+		var constructorDeclarationSyntax = classDeclarationSyntax
+			.Members
+			.OfType<ConstructorDeclarationSyntax>()
+			.FirstOrDefault();
+
+		ImmutableArray<string> attributeConstructorParameterNames =
+			constructorDeclarationSyntax is null
+			? ImmutableArray<string>.Empty
+			: constructorDeclarationSyntax
+				.ParameterList
+				.Parameters
+				.Select(x => x.Identifier.ValueText)
+				.ToImmutableArray();
+
+		var result = new CompiledTemplateAndAttributeSource(
+			compiledTemplate: compiledTemplate,
+			attributeSource: sourceCode,
+			attributeConstructorParameterNames: attributeConstructorParameterNames);
+
+		return result;
 	}
 }

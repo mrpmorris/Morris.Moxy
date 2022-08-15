@@ -25,28 +25,24 @@ public static class ClassesSelector
 					? string.Empty
 					: typeSymbol.ContainingNamespace.ToString();
 
-#if DEBUG
-				if (!System.Diagnostics.Debugger.IsAttached)
-				{
-					//System.Diagnostics.Debugger.Launch();
-				}
-#endif
-				var possibleTemplateNames =
+				var possibleTemplates =
 					typeDeclarationSyntax
 						.AttributeLists
 						.SelectMany(x => x.Attributes)
 						.OfType<AttributeSyntax>()
 						.Where(x => syntaxContext.SemanticModel.GetSymbolInfo(x).Symbol is null)
-						.Select(x => x.Name.ToFullString())
+						.Select(x => new AttributeNameAndSyntaxTree(
+							name: x.Name.ToFullString(),
+							attributeSyntaxTree: x))
 						.ToImmutableArray();
 
-				if (possibleTemplateNames.Length == 0)
+				if (possibleTemplates.Length == 0)
 					return ClassInfo.Empty;
 
 				return new ClassInfo(
 					name: className,
 					@namespace: @namespace,
-					possibleTemplateNames: possibleTemplateNames);
+					possibleTemplates: possibleTemplates);
 			})
 			.Where(x => !x.Equals(ClassInfo.Empty));
 }

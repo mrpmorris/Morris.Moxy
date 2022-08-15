@@ -59,14 +59,13 @@ namespace Morris.Moxy
 						assemblyName: assemblyName,
 						projectPath: x.ProjectPath,
 						templateResults,
-						out ImmutableDictionary<string, CompiledTemplate> nameToCompiledTemplateLookup))
+						out ImmutableDictionary<string, CompiledTemplateAndAttributeSource> nameToCompiledTemplateLookup))
 					{
 						return;
 					}
 
 					if (!ClassesSourceGenerator.TryGenerateSource(
 						productionContext,
-						assemblyName: assemblyName,
 						projectPath: x.ProjectPath,
 						x.Classes,
 						nameToCompiledTemplateLookup))
