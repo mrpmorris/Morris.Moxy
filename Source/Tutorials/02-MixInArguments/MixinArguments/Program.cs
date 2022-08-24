@@ -1,5 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-using MixInParameters;
+﻿using MixInArguments;
 
 Console.WriteLine("Press enter to quit");
 var missionControl = new MissionControl();

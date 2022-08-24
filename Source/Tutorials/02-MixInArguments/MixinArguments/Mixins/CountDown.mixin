@@ -1,6 +1,5 @@
 ﻿@moxy
 @attribute required int From
-@attribute required bool IncludeZero = true
 @moxy
 
 namespace {{ moxy.Class.Namespace }};
@@ -9,14 +8,7 @@ partial class {{ moxy.Class.Name }}
 {
   public async Task StartCountDown(CancellationToken cancellationToken = default)
   {
-  {{
-    if IncludeZero == "true"
-      $lowerBound = 0;
-    else
-      $lowerBound = 1;
-    end
-  }}
-    for(int i = {{ From }}; i >= {{ $lowerBound }}; i--)
+    for(int i = {{ From }}; i >= 0; i--)
     {
         Console.WriteLine(string.Format("T minus {0}", i));
         await Task.Delay(1000, cancellationToken);

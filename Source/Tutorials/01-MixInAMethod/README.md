@@ -1,5 +1,4 @@
 # Moxy - Basic concepts
-**NOTE**: This doesn't work yet :)
 
 ## Mix in a method
 
@@ -58,7 +57,7 @@ person.SayHello();
 ```
 
 3. Go to `Program.cs`
-4. Click on the `SayHello` in `person.SayHello`
+4. Click on the `SayHello()` in `person.SayHello`
 5. Either right-click and select "Go to definition", or press F12
 
 `MixInAMethod.Person.SayHello.Moxy.g.cs`

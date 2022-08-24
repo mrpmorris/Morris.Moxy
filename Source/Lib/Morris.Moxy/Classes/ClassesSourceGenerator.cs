@@ -67,7 +67,7 @@ public static class ClassesSourceGenerator
 					: $"{classInfo.Namespace}.{classInfo.Name}";
 
 				productionContext.AddSource(
-					hintName: $"Moxy.{fullGeneratedClassName}.{compiledTemplateAndAttributeSource.CompiledTemplate.Name}.g.cs",
+					hintName: $"{fullGeneratedClassName}.{compiledTemplateAndAttributeSource.CompiledTemplate.Name}.Moxy.g.cs",
 					source: source);
 			}
 		}

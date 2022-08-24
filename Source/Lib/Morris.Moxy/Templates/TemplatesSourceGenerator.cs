@@ -47,7 +47,7 @@ public static class TemplatesSourceGenerator
 			nameToCompiledTemplateBuilder.Add(compiledTemplate.Name, generated);
 
 			productionContext.AddSource(
-				hintName: $"Moxy.{templateResult.Value!.Name}.TemplateAttribute.g.cs",
+				hintName: $"{templateResult.Value!.Name}.TemplateAttribute.Moxy.g.cs",
 				source: generated.AttributeSource);
 		}
 
