@@ -85,6 +85,12 @@ public static class ClassesSourceGenerator
 		if (arguments is null)
 			return;
 
+#if DEBUG
+		if (!System.Diagnostics.Debugger.IsAttached)
+		{
+			//System.Diagnostics.Debugger.Launch();
+		}
+#endif
 		for(int argumentIndex = 0; argumentIndex < arguments.Value.Count; argumentIndex++)
 		{
 			AttributeArgumentSyntax argument = arguments.Value[argumentIndex];
@@ -93,7 +99,7 @@ public static class ClassesSourceGenerator
 				argumentValue = argumentValue.Substring(1, argumentValue.Length - 2);
 			string argumentName =
 				argument.NameEquals is not null
-				? argument.NameEquals.Name.ToFullString()
+				? argument.NameEquals.Name.Identifier.ValueText
 				: compiledTemplateAndAttributeSource.AttributeConstructorParameterNames[argumentIndex];
 			scribanScriptObject.Add(argumentName, argumentValue);
 		}

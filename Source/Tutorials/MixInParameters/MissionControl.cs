@@ -1,7 +1,7 @@
 ﻿namespace MixInParameters;
 
 
-[CountDown(10)]
+[CountDown(From: 30, IncludeZero = false)]
 internal partial class MissionControl
 {
 }
