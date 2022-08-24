@@ -100,6 +100,8 @@ public static class ClassesSourceGenerator
 			string argumentName =
 				argument.NameEquals is not null
 				? argument.NameEquals.Name.Identifier.ValueText
+				: argument.NameColon is not null
+				? argument.NameColon.Name.Identifier.ValueText
 				: compiledTemplateAndAttributeSource.AttributeConstructorParameterNames[argumentIndex];
 			scribanScriptObject.Add(argumentName, argumentValue);
 		}
