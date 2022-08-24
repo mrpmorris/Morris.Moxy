@@ -1,6 +1,7 @@
 ﻿namespace MixInParameters;
 
-[CountDown(32, Format = "Launch time = T -{0} seconds")]
+
+[CountDown(10)]
 internal partial class MissionControl
 {
 }
