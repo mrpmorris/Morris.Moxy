@@ -85,12 +85,6 @@ public static class ClassesSourceGenerator
 		if (arguments is null)
 			return;
 
-#if DEBUG
-		if (!System.Diagnostics.Debugger.IsAttached)
-		{
-			//System.Diagnostics.Debugger.Launch();
-		}
-#endif
 		for(int argumentIndex = 0; argumentIndex < arguments.Value.Count; argumentIndex++)
 		{
 			AttributeArgumentSyntax argument = arguments.Value[argumentIndex];
