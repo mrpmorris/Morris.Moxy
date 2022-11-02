@@ -99,7 +99,7 @@ internal static class TemplateAttributeSourceGenerator
 
 		ImmutableArray<string> attributeConstructorParameterNames =
 			constructorDeclarationSyntax is null
-			? ImmutableArray<string>.Empty
+			? ImmutableArray.Create<string>()
 			: constructorDeclarationSyntax
 				.ParameterList
 				.Parameters

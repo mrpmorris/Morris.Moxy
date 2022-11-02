@@ -5,6 +5,7 @@
 		<PackageId>Morris.Moxy</PackageId>
 		<Description>A C# mix-in code generator</Description>
 		<IncludeBuildOutput>false</IncludeBuildOutput>
+        <IsRoslynComponent>true</IsRoslynComponent>
 	</PropertyGroup>
 	<ItemGroup>
 		<None Remove="bin" />

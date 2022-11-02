@@ -9,7 +9,7 @@ public readonly struct ValidatedResult<T>
 	public readonly T Value;
 
 	public ValidatedResult(T value)
-		: this(value, ImmutableArray<CompilationError>.Empty)
+		: this(value, ImmutableArray.Create<CompilationError>())
 	{
 	}
 

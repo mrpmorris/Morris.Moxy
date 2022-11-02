@@ -9,6 +9,13 @@ public readonly struct ClassInfo : IEquatable<ClassInfo>
 	public readonly string Namespace;
 	public readonly ImmutableArray<AttributeNameAndSyntaxTree> PossibleTemplates;
 
+	public ClassInfo()
+	{
+		Name = "";
+		Namespace = "";
+		PossibleTemplates = ImmutableArray.Create<AttributeNameAndSyntaxTree>();
+	}
+
 	public ClassInfo(
 		string name,
 		string @namespace,
@@ -22,5 +29,5 @@ public readonly struct ClassInfo : IEquatable<ClassInfo>
 	public bool Equals(ClassInfo other) =>
 		other.Name == Name
 		&& other.Namespace == Namespace
-	   && Enumerable.SequenceEqual(other.PossibleTemplates, PossibleTemplates);
+		&& Enumerable.SequenceEqual(other.PossibleTemplates, PossibleTemplates);
 }

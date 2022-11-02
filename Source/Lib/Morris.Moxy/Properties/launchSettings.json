@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Roslyn": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\..\\Tutorials\\02-MixInArguments\\MixinArguments\\MixInArguments.csproj"
+    }
+  }
+}

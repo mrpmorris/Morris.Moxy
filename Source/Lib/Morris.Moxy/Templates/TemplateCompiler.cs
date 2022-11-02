@@ -15,7 +15,7 @@ internal static class TemplateCompiler
 				value: new CompiledTemplate(name: parsedTemplate.Name, filePath: parsedTemplate.FilePath),
 				compilationErrors: parsedTemplateResult.CompilationErrors);
 
-		Console.Beep();
+		//Console.Beep();
 		var scribanTemplate = Template.Parse(
 			text: parsedTemplate.TemplateSource,
 			sourceFilePath: parsedTemplate.FilePath);
