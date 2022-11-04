@@ -116,7 +116,7 @@ public static class ClassesSourceGenerator
 			}
 			else
 			{
-				Type argumentValue = GetArgumentValueAsClassInfo(argument, compilation, reflection);
+				Type argumentValue = GetArgumentValueAsType(argument, compilation, reflection);
 				scribanScriptObject.Add(argumentName, argumentValue);
 			}
 		}
@@ -131,7 +131,7 @@ public static class ClassesSourceGenerator
 		return argumentValue;
 	}
 
-	private static Type GetArgumentValueAsClassInfo(
+	private static Type GetArgumentValueAsType(
 		AttributeArgumentSyntax argument,
 		Compilation compilation,
 		MetadataLoadContext reflection)
