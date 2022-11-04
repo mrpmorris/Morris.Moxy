@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Morris.Moxy.Classes;
 using Morris.Moxy.Templates;
+using Roslyn.Reflection;
 using System.Collections.Immutable;
 
 namespace Morris.Moxy
@@ -51,6 +52,7 @@ namespace Morris.Moxy
 				static (productionContext, x) =>
 				{
 					Compilation compilation = x.Compilation;
+					var reflection = new MetadataLoadContext(compilation);
 					string assemblyName = compilation.AssemblyName!;
 					ImmutableArray<ValidatedResult<CompiledTemplate>> templateResults = x.ParsedTemplateResults;
 
@@ -66,6 +68,8 @@ namespace Morris.Moxy
 
 					if (!ClassesSourceGenerator.TryGenerateSource(
 						productionContext,
+						compilation,
+						reflection,
 						projectPath: x.ProjectPath,
 						x.Classes,
 						nameToCompiledTemplateLookup))
