@@ -1,1 +1,1 @@
-dotnet build Source\PackageName.sln -c Release
+dotnet build Source\Morris.Moxy.sln -c Release
