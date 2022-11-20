@@ -8,11 +8,12 @@
 		<IncludeBuildOutput>false</IncludeBuildOutput>
 		<IsRoslynComponent>true</IsRoslynComponent>
 		<TargetFramework>netstandard2.0</TargetFramework>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<PackageOutputPath>./bin/Packages</PackageOutputPath>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
 		<SignAssembly>True</SignAssembly>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<AssemblyOriginatorKeyFile>..\..\..\..\..\MrPMorris.snk</AssemblyOriginatorKeyFile>
 	</PropertyGroup>
 
