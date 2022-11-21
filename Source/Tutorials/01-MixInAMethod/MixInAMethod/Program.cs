@@ -1,6 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using MyMoxy;
+using MixInAMethod;
 
 Console.WriteLine("Hello, World!");
 
