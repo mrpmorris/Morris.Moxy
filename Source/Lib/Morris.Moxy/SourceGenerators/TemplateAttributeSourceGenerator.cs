@@ -11,7 +11,7 @@ namespace Morris.Moxy.SourceGenerators;
 internal static class TemplateAttributeSourceGenerator
 {
 	public static CompiledTemplateAndAttributeSource Generate(
-		string assemblyName,
+		string rootNameSpace,
 		string projectPath,
 		CompiledTemplate compiledTemplate)
 	{
@@ -25,7 +25,7 @@ internal static class TemplateAttributeSourceGenerator
 		writer.WriteLine($"// Generated from {templateFilePath} at {DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")} UTC");
 
 		ParsedTemplate directives = compiledTemplate.Directives!.Value;
-		writer.WriteLine($"namespace {assemblyName}");
+		writer.WriteLine($"namespace {rootNameSpace}");
 		using (writer.CodeBlock())
 		{
 			foreach (string attributeUsingClause in compiledTemplate.Directives!.Value.AttributeUsingClauses)

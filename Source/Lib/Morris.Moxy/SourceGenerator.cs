@@ -23,6 +23,13 @@ namespace Morris.Moxy
 				return "";
 			});
 
+			var rootNameSpace = context.AnalyzerConfigOptionsProvider.Select((x, _) =>
+			{
+				if (x.GlobalOptions.TryGetValue("build_property.RootNamespace", out string? value))
+					return value!;
+				return "";
+			});
+
 			var generatorInput = context.CompilationProvider
 				.Combine(parsedTemplates.Collect())
 				.Select(static (x, _) => new
@@ -44,6 +51,15 @@ namespace Morris.Moxy
 					x.Left.ParsedTemplateResults,
 					x.Left.ProjectPath,
 					Classes = x.Right
+				})
+				.Combine(rootNameSpace)
+				.Select(static (x, _) => new
+				{
+					x.Left.Compilation,
+					x.Left.ParsedTemplateResults,
+					x.Left.ProjectPath,
+					x.Left.Classes,
+					RootNameSpace = x.Right
 				});
 
 
@@ -58,7 +74,7 @@ namespace Morris.Moxy
 
 					if (!TemplatesSourceGenerator.TryGenerateSource(
 						productionContext,
-						assemblyName: assemblyName,
+						rootNameSpace: x.RootNameSpace,
 						projectPath: x.ProjectPath,
 						templateResults,
 						out ImmutableDictionary<string, CompiledTemplateAndAttributeSource> nameToCompiledTemplateLookup))

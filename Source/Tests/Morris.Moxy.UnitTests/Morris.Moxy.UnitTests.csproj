@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-
+	  <NoWarn>MSB3243</NoWarn>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
