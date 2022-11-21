@@ -3,7 +3,8 @@
   <PropertyGroup>
 	<OutputType>Exe</OutputType>
 	<TargetFramework>net6.0</TargetFramework>
-	<ImplicitUsings>enable</ImplicitUsings>
+  <ImplicitUsings>enable</ImplicitUsings>
+  <RootNamespace>MyMoxy</RootNamespace>
 	<Nullable>enable</Nullable>
 	<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
   </PropertyGroup>
@@ -15,9 +16,9 @@
   <ItemGroup>
     <AdditionalFiles Include="Mixins\SayHello.mixin" />
   </ItemGroup>
-
+ 
   <ItemGroup>
     <PackageReference Include="Morris.Moxy" Version="1.0.0-alpha.*" />
   </ItemGroup>
-
+  
 </Project>
