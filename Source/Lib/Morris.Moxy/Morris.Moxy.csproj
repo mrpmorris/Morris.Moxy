@@ -8,7 +8,6 @@
 		<IncludeBuildOutput>false</IncludeBuildOutput>
 		<IsRoslynComponent>true</IsRoslynComponent>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<PackageOutputPath>./bin/Packages</PackageOutputPath>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
