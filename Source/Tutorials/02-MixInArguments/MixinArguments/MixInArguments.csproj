@@ -16,7 +16,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Morris.Moxy" Version="1.0.0-alpha.*" />
+    <ProjectReference Include="..\..\..\Lib\Morris.Moxy\Morris.Moxy.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
 </Project>
