@@ -14,7 +14,7 @@
   <ItemGroup>
     <AdditionalFiles Include="Mixins\CountDown.mixin" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\..\..\Lib\Morris.Moxy\Morris.Moxy.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>

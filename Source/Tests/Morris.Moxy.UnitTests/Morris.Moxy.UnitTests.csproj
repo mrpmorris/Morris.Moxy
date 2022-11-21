@@ -23,7 +23,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Lib\Morris.Moxy\Morris.Moxy.csproj" />
-    
   </ItemGroup>
 
 </Project>
