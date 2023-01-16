@@ -9,7 +9,7 @@ public static class TemplatesSourceGenerator
 {
 	public static bool TryGenerateSource(
 		SourceProductionContext productionContext,
-		string rootNameSpace,
+		string rootNamespace,
 		string projectPath,
 		IEnumerable<ValidatedResult<CompiledTemplate>> templateResults,
 		out ImmutableDictionary<string, CompiledTemplateAndAttributeSource> nameToCompiledTemplateLookup)
@@ -41,7 +41,7 @@ public static class TemplatesSourceGenerator
 
 			CompiledTemplateAndAttributeSource generated =
 				TemplateAttributeSourceGenerator.Generate(
-					rootNameSpace: rootNameSpace,
+					rootNamespace: rootNamespace,
 					projectPath: projectPath,
 					compiledTemplate: templateResult.Value);
 			nameToCompiledTemplateBuilder.Add(compiledTemplate.Name, generated);

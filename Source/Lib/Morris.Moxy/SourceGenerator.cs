@@ -23,7 +23,7 @@ namespace Morris.Moxy
 				return "";
 			});
 
-			var rootNameSpace = context.AnalyzerConfigOptionsProvider.Select((x, _) =>
+			var rootNamespace = context.AnalyzerConfigOptionsProvider.Select((x, _) =>
 			{
 				if (x.GlobalOptions.TryGetValue("build_property.RootNamespace", out string? value))
 					return value!;
@@ -31,37 +31,32 @@ namespace Morris.Moxy
 			});
 
 			var generatorInput = context.CompilationProvider
+				.Combine(rootNamespace)
+				.Select(static (x, _) => (
+					Compilation: x.Left,
+					RootNamespace: x.Right
+				))
 				.Combine(parsedTemplates.Collect())
-				.Select(static (x, _) => new
-				{
-					Compilation = x.Left,
-					ParsedTemplateResults = x.Right
-				})
+				.Select(static (x, _) => (
+					x.Left.Compilation,
+					x.Left.RootNamespace,
+					ParsedTemplateResults: x.Right
+				))
 				.Combine(config)
-				.Select(static (x, _) => new
-				{
+				.Select(static (x, _) => (
 					x.Left.Compilation,
+					x.Left.RootNamespace,
 					x.Left.ParsedTemplateResults,
-					ProjectPath = x.Right
-				})
+					ProjectPath: x.Right
+				))
 				.Combine(classInfos.Collect())
-				.Select(static (x, _) => new
-				{
+				.Select(static (x, _) => (
 					x.Left.Compilation,
+					x.Left.RootNamespace,
 					x.Left.ParsedTemplateResults,
 					x.Left.ProjectPath,
-					Classes = x.Right
-				})
-				.Combine(rootNameSpace)
-				.Select(static (x, _) => new
-				{
-					x.Left.Compilation,
-					x.Left.ParsedTemplateResults,
-					x.Left.ProjectPath,
-					x.Left.Classes,
-					RootNameSpace = x.Right
-				});
-
+					Classes: x.Right
+				));
 
 			context.RegisterSourceOutput(
 				generatorInput,
@@ -74,7 +69,7 @@ namespace Morris.Moxy
 
 					if (!TemplatesSourceGenerator.TryGenerateSource(
 						productionContext,
-						rootNameSpace: x.RootNameSpace,
+						rootNamespace: x.RootNamespace,
 						projectPath: x.ProjectPath,
 						templateResults,
 						out ImmutableDictionary<string, CompiledTemplateAndAttributeSource> nameToCompiledTemplateLookup))
