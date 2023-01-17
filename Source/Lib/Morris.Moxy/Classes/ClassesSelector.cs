@@ -20,11 +20,6 @@ public static class ClassesSelector
 				if (typeSymbol is null)
 					return ClassInfo.Empty;
 
-				string className = typeDeclarationSyntax.Identifier.Text;
-				string @namespace = typeSymbol.ContainingNamespace.IsGlobalNamespace
-					? string.Empty
-					: typeSymbol.ContainingNamespace.ToString();
-
 				var possibleTemplates =
 					typeDeclarationSyntax
 						.AttributeLists
@@ -35,13 +30,22 @@ public static class ClassesSelector
 							name: x.Name.ToFullString(),
 							attributeSyntaxTree: x))
 						.ToImmutableArray();
-
 				if (possibleTemplates.Length == 0)
 					return ClassInfo.Empty;
 
+				string className = typeDeclarationSyntax.Identifier.Text;
+				string @namespace = typeSymbol.ContainingNamespace.IsGlobalNamespace
+					? string.Empty
+					: typeSymbol.ContainingNamespace.ToString();
+				var genericParameterNames =
+					typeDeclarationSyntax.TypeParameterList?.Parameters.Count > 0
+					? typeDeclarationSyntax.TypeParameterList.Parameters.Select(x => x.Identifier.Text).ToImmutableArray()
+					: ImmutableArray<string>.Empty;
+
 				return new ClassInfo(
-					name: className,
+					className: className,
 					@namespace: @namespace,
+					genericParameterNames: genericParameterNames,
 					possibleTemplates: possibleTemplates);
 			})
 			.Where(x => !x.Equals(ClassInfo.Empty));

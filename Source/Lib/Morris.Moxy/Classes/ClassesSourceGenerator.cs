@@ -7,6 +7,8 @@ using Morris.Moxy.DataStructures;
 using Scriban.Runtime;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslyn.Reflection;
+using Morris.Moxy.Extensions;
+
 namespace Morris.Moxy.Classes;
 
 public static class ClassesSourceGenerator
@@ -27,8 +29,8 @@ public static class ClassesSourceGenerator
 
 			Type classType =
 				string.IsNullOrWhiteSpace(classInfo.Namespace)
-				? reflection.ResolveType(classInfo.Name)
-				: reflection.ResolveType($"{classInfo.Namespace}.{classInfo.Name}");
+				? reflection.ResolveType(classInfo.ClassTypeId)
+				: reflection.ResolveType($"{classInfo.Namespace}.{classInfo.ClassTypeId}");
 
 			foreach (AttributeNameAndSyntaxTree possibleTemplate in classInfo.PossibleTemplates)
 			{
@@ -48,7 +50,7 @@ public static class ClassesSourceGenerator
 				var classMeta = new ClassMeta(
 					classType,
 					@namespace: classInfo.Namespace,
-					name: classInfo.Name,
+					name: classInfo.ClassName,
 					usings: compiledTemplateAndAttributeSource.CompiledTemplate.Directives!.Value.ClassUsingClauses);
 
 				var moxyMeta = new MoxyMeta {
@@ -76,12 +78,16 @@ public static class ClassesSourceGenerator
 			} // Template
 
 			string source = stringWriter.ToString();
-			string fullGeneratedClassName = classInfo.Namespace == ""
-				? $"{classInfo.Name}"
-				: $"{classInfo.Namespace}.{classInfo.Name}";
+			string fullGeneratedClassName =
+				classInfo.Namespace == ""
+				? $"{classInfo.ClassName}"
+				: $"{classInfo.Namespace}.{classInfo.ClassName}";
 
+			string filename = $"{fullGeneratedClassName}.Moxy.g.cs"
+				.Replace('<', '{')
+				.Replace('>', '}');
 			productionContext.AddSource(
-				hintName: $"{fullGeneratedClassName}.Moxy.g.cs",
+				hintName: filename,
 				source: source);
 		} // class
 		return true;
