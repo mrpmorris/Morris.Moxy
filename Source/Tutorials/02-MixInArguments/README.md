@@ -21,20 +21,21 @@
 @attribute required int From
 @moxy
 
-namespace {{ moxy.Class.Namespace }};
-
-partial class {{ moxy.Class.Name }}
+namespace {{ moxy.Class.Namespace }}
 {
-  public async Task StartCountDown(CancellationToken cancellationToken = default)
-  {
-    for(int i = {{ From }}; i >= 0; i--)
+    partial class {{ moxy.Class.Name }}
     {
-        Console.WriteLine(string.Format("T minus {0}", i));
-        await Task.Delay(1000, cancellationToken);
-        if (cancellationToken.IsCancellationRequested)
-          return;
+      public async Task StartCountDown(CancellationToken cancellationToken = default)
+      {
+        for(int i = {{ From }}; i >= 0; i--)
+        {
+            Console.WriteLine(string.Format("T minus {0}", i));
+            await Task.Delay(1000, cancellationToken);
+            if (cancellationToken.IsCancellationRequested)
+              return;
+        }
+      }
     }
-  }
 }
 ```
 
@@ -72,23 +73,24 @@ Console.ReadLine();
 4. Click on the `StartCountDown` in `missionControl.StartCountDown()`
 5. Either right-click and select "Go to definition", or press F12
 
-`MixInAMethod.Person.SayHello.Moxy.g.cs`
+`MixInAMethod.Person.Moxy.g.cs`
 ```c#
-// Generated from Mixins\CountDown.mixin at 2022-08-24 21:03:08 UTC
+// Generated from mixin: Mixins\CountDown.mixin
 
-namespace MixInArguments;
-
-partial class MissionControl
+namespace MixInArguments
 {
-  public async Task StartCountDown(CancellationToken cancellationToken = default)
-  {
-    for(int i = 3; i >= 0; i--)
+    partial class MissionControl
     {
-        Console.WriteLine(string.Format("T minus {0}", i));
-        await Task.Delay(1000, cancellationToken);
-        if (cancellationToken.IsCancellationRequested)
-          return;
+      public async Task StartCountDown(CancellationToken cancellationToken = default)
+      {
+        for(int i = 3; i >= 0; i--)
+        {
+            Console.WriteLine(string.Format("T minus {0}", i));
+            await Task.Delay(1000, cancellationToken);
+            if (cancellationToken.IsCancellationRequested)
+              return;
+        }
+      }
     }
-  }
 }
 ```

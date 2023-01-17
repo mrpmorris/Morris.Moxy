@@ -17,14 +17,15 @@
 4. Enter the following text into the mixin file
 
 ```c#
-namespace {{ moxy.Class.Namespace }};
-
-partial class {{ moxy.Class.Name }}
+namespace {{ moxy.Class.Namespace }}
 {
-  public void SayHello()
-  {
-    Console.WriteLine("Hello");
-  }
+    partial class {{ moxy.Class.Name }}
+    {
+      public void SayHello()
+      {
+        Console.WriteLine("Hello");
+      }
+    }
 }
 ```
 
@@ -60,17 +61,17 @@ person.SayHello();
 4. Click on the `SayHello()` in `person.SayHello`
 5. Either right-click and select "Go to definition", or press F12
 
-`MixInAMethod.Person.SayHello.Moxy.g.cs`
+`MixInAMethod.Person.Moxy.g.cs`
 ```c#
-// Generated from Mixins\SayHello.mixin at 2022-08-14 12:35:31 UTC
-
-namespace MixInAMethod;
-
-partial class Person
+// Generated from mixin: Mixins\SayHello.mixin
+namespace MixInAMethod
 {
-  public void SayHello()
-  {
-    Console.WriteLine("Hellos");
-  }
+    partial class Person
+    {
+      public void SayHello()
+      {
+        Console.WriteLine("Hello");
+      }
+    }
 }
 ```

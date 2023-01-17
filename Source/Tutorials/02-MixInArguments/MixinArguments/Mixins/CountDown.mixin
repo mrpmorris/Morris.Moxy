@@ -2,18 +2,19 @@
 @attribute required int From
 @moxy
 
-namespace {{ moxy.Class.Namespace }};
-
-partial class {{ moxy.Class.Name }}
+namespace {{ moxy.Class.Namespace }}
 {
-  public async Task StartCountDown(CancellationToken cancellationToken = default)
-  {
-    for(int i = {{ From }}; i >= 0; i--)
+    partial class {{ moxy.Class.Name }}
     {
-        Console.WriteLine(string.Format("T minus {0}", i));
-        await Task.Delay(1000, cancellationToken);
-        if (cancellationToken.IsCancellationRequested)
-          return;
+      public async Task StartCountDown(CancellationToken cancellationToken = default)
+      {
+        for(int i = {{ From }}; i >= 0; i--)
+        {
+            Console.WriteLine(string.Format("T minus {0}", i));
+            await Task.Delay(1000, cancellationToken);
+            if (cancellationToken.IsCancellationRequested)
+              return;
+        }
+      }
     }
-  }
 }

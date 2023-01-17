@@ -21,6 +21,9 @@ public static class ClassesSourceGenerator
 	{
 		foreach (var classInfo in classInfos)
 		{
+			using var stringWriter = new StringWriter();
+			using var writer = new IndentedTextWriter(stringWriter);
+			writer.WriteLine($"// Generated at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC");
 
 			Type classType =
 				string.IsNullOrWhiteSpace(classInfo.Namespace)
@@ -36,14 +39,11 @@ public static class ClassesSourceGenerator
 					continue;
 				}
 
-				using var stringWriter = new StringWriter();
-				using var writer = new IndentedTextWriter(stringWriter);
-
 				string templateFilePath = compiledTemplateAndAttributeSource.CompiledTemplate.FilePath;
 				if (templateFilePath.StartsWith(projectPath))
 					templateFilePath = templateFilePath.Substring(projectPath.Length);
 
-				writer.WriteLine($"// Generated from {templateFilePath} at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC");
+				writer.WriteLine($"\r\n// Generated from mixin: {templateFilePath}");
 
 				var classMeta = new ClassMeta(
 					classType,
@@ -73,16 +73,17 @@ public static class ClassesSourceGenerator
 					compiledTemplateAndAttributeSource.CompiledTemplate.Template!.Render(scribanTemplateContext);
 				writer.WriteLine(generatedSource);
 
-				string source = stringWriter.ToString();
-				string fullGeneratedClassName = classInfo.Namespace == ""
-					? $"{classInfo.Name}"
-					: $"{classInfo.Namespace}.{classInfo.Name}";
+			} // Template
 
-				productionContext.AddSource(
-					hintName: $"{fullGeneratedClassName}.{compiledTemplateAndAttributeSource.CompiledTemplate.Name}.Moxy.g.cs",
-					source: source);
-			}
-		}
+			string source = stringWriter.ToString();
+			string fullGeneratedClassName = classInfo.Namespace == ""
+				? $"{classInfo.Name}"
+				: $"{classInfo.Namespace}.{classInfo.Name}";
+
+			productionContext.AddSource(
+				hintName: $"{fullGeneratedClassName}.Moxy.g.cs",
+				source: source);
+		} // class
 		return true;
 	}
 
