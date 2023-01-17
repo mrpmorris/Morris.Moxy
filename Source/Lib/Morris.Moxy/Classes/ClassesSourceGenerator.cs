@@ -21,8 +21,6 @@ public static class ClassesSourceGenerator
 	{
 		foreach (var classInfo in classInfos)
 		{
-			using var stringWriter = new StringWriter();
-			using var writer = new IndentedTextWriter(stringWriter);
 
 			Type classType =
 				string.IsNullOrWhiteSpace(classInfo.Namespace)
@@ -37,6 +35,9 @@ public static class ClassesSourceGenerator
 				{
 					continue;
 				}
+
+				using var stringWriter = new StringWriter();
+				using var writer = new IndentedTextWriter(stringWriter);
 
 				string templateFilePath = compiledTemplateAndAttributeSource.CompiledTemplate.FilePath;
 				if (templateFilePath.StartsWith(projectPath))
