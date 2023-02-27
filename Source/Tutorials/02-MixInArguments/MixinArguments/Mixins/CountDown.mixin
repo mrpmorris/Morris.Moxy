@@ -18,3 +18,5 @@ namespace {{ moxy.Class.Namespace }}
       }
     }
 }
+
+{{ "a,b,c" | regex.split("/") }}
