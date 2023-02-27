@@ -42,7 +42,6 @@
 
 	<ItemGroup>
 		<!-- Generator package dependencies -->
-		<PackageReference Include="Morris.Temp.Roslyn.Reflection" Version="0.1.37-alpha.g9bf88f8d2d" />
 		<PackageReference Include="Scriban.Signed" Version="5.5.0" PrivateAssets="all" GeneratePathProperty="true" />
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" PrivateAssets="all" GeneratePathProperty="true" />
 	</ItemGroup>
