@@ -67,9 +67,11 @@ public static class ClassesSourceGenerator
 					Class = classMeta
 				};
 
-				var scribanScriptObject = new ScriptObject {
-					{ "moxy", moxyMeta }
-				};
+
+				var scribanScriptObject = TemplateContext.GetDefaultBuiltinObject();
+				scribanScriptObject.Add(
+					key: "moxy",
+					value: moxyMeta);
 
 				AddScriptVariablesFromAttribute(
 					scribanScriptObject,
