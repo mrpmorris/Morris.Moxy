@@ -1,17 +1,57 @@
 # PackageName
-![](./Images/small-logo.png)
+![](./Images/Moxy-logo.png)
 
 ***Morris.Moxy*** is a code mix-in code generator for [Microsoft .NET](https://dotnet.microsoft.com/)
 
 [![NuGet version (PackageName)](https://img.shields.io/nuget/v/Morris.Moxy.svg?style=flat-square)](https://www.nuget.org/packages/Reducible/)
 
 ## Overview
-
-Things
+Moxy allows you to write code templates at development time, which are then processed
+as Roslyn code-generators in real-time, and the results mixed-in to target classes.
 
 ## Goal
-Stuff
+1. Write your code patterns once.
 
+```
+namespace {{ moxy.Class.Namespace }}
+{
+  partial class {{ moxy.Class.Name}}
+  {
+    public string FullName => $"{Salutation} {GivenName} {FamilyName}"
+    public string Salutation { get; set; }
+    public string GivenName { get; set; }
+    public string FamilyName { get; set; }
+  }
+}
+```
+
+2. Moxy automatically creates a .Net attribute for each pattern, which you can
+   then apply to targets in your source code.
+
+```c#
+[PersonName]
+public partial class Contact
+{
+}
+```
+
+
+4. The Moxy Roslyn code-generator executes the code pattern to generate additional C# code
+
+```c#
+namespace MyApp
+{
+    partial class Contact
+    {
+        public string FullName => $"{Salutation} {GivenName} {FamilyName}"
+        public string Salutation { get; set; }
+        public string GivenName { get; set; }
+        public string FamilyName { get; set; }
+    }
+}
+```
+
+5. Moxy should be **FAST**. Changes to the template should reflect in the code in real-time.
 
 ## Getting started
 
@@ -21,7 +61,7 @@ Which includes tutorials that are numbered in an order recommended for learning
 
 ## Installation
 You can download the latest release / pre-release NuGet packages from the official
-***PackageName*** [Nuget page](https://www.nuget.org/packages/Morris.Moxy/)
+***Morris.Moxy*** [Nuget page](https://www.nuget.org/packages/Morris.Moxy/)
 
 ## Release notes
 See the [Releases page](./Docs/releases.md) for release history.
