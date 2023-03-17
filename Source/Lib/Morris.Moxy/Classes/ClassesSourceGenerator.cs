@@ -8,6 +8,7 @@ using Scriban.Runtime;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslyn.Reflection;
 using Morris.Moxy.Extensions;
+using Scriban.Syntax;
 
 namespace Morris.Moxy.Classes;
 
@@ -23,6 +24,15 @@ public static class ClassesSourceGenerator
 	{
 		foreach (var classInfo in classInfos)
 		{
+			string fullGeneratedClassName =
+				classInfo.Namespace == ""
+				? $"{classInfo.ClassName}"
+				: $"{classInfo.Namespace}.{classInfo.ClassName}";
+
+			string filename = $"{fullGeneratedClassName}.Moxy.g.cs"
+				.Replace('<', '{')
+				.Replace('>', '}');
+
 			using var stringWriter = new StringWriter();
 			using var writer = new IndentedTextWriter(stringWriter);
 			writer.WriteLine($"// Generated at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC");
@@ -57,9 +67,12 @@ public static class ClassesSourceGenerator
 					Class = classMeta
 				};
 
-				var scribanScriptObject = new ScriptObject {
-					{ "moxy", moxyMeta }
-				};
+
+				var scribanScriptObject = TemplateContext.GetDefaultBuiltinObject();
+				scribanScriptObject.Add(
+					key: "moxy",
+					value: moxyMeta);
+
 				AddScriptVariablesFromAttribute(
 					scribanScriptObject,
 					compilation,
@@ -71,21 +84,26 @@ public static class ClassesSourceGenerator
 					MemberRenamer = m => m.Name
 				};
 
-				string generatedSource =
-					compiledTemplateAndAttributeSource.CompiledTemplate.Template!.Render(scribanTemplateContext);
-				writer.WriteLine(generatedSource);
-
+				try
+				{
+					string generatedSource =
+						compiledTemplateAndAttributeSource.CompiledTemplate.Template!.Render(scribanTemplateContext);
+					writer.WriteLine(generatedSource);
+				}
+				catch (ScriptRuntimeException ex)
+				{
+					productionContext.AddCompilationError(
+						filePath: filename,
+						error: new CompilationError(
+							Line: 1,
+							Column: 1,
+							Id: CompilationErrors.ScriptCompilationError.Id,
+							ex.Message));
+				}
 			} // Template
 
 			string source = stringWriter.ToString();
-			string fullGeneratedClassName =
-				classInfo.Namespace == ""
-				? $"{classInfo.ClassName}"
-				: $"{classInfo.Namespace}.{classInfo.ClassName}";
 
-			string filename = $"{fullGeneratedClassName}.Moxy.g.cs"
-				.Replace('<', '{')
-				.Replace('>', '}');
 			productionContext.AddSource(
 				hintName: filename,
 				source: source);
