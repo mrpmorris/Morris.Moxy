@@ -1,9 +1,9 @@
-# PackageName
+# Morris.Moxy
 ![](./Images/Moxy-logo.png)
 
 ***Morris.Moxy*** is a code mix-in code generator for [Microsoft .NET](https://dotnet.microsoft.com/)
 
-[![NuGet version (PackageName)](https://img.shields.io/nuget/v/Morris.Moxy.svg?style=flat-square)](https://www.nuget.org/packages/Reducible/)
+[![NuGet version (PackageName)](https://img.shields.io/nuget/v/Morris.Moxy.svg?style=flat-square)](https://www.nuget.org/packages/Morris.Moxy/)
 
 ## Overview
 Moxy allows you to write code templates at development time, which are then processed
@@ -26,7 +26,7 @@ namespace {{ moxy.Class.Namespace }}
 ```
 
 2. Moxy automatically creates a .Net attribute for each pattern, which you can
-   then apply to targets in your source code.
+   then apply to multiple targets in your source code.
 
 ```c#
 [PersonName]
