@@ -19,7 +19,7 @@ public static class ClassesSourceGenerator
 		Compilation compilation,
 		MetadataLoadContext reflection,
 		string projectPath,
-		IEnumerable<ClassInfo> classInfos,
+		ImmutableArray<ClassInfo> classInfos,
 		ImmutableDictionary<string, CompiledTemplateAndAttributeSource> nameToCompiledTemplateLookup)
 	{
 		foreach (var classInfo in classInfos)
