@@ -51,7 +51,8 @@ namespace MyApp
 }
 ```
 
-5. Moxy should be **FAST**. Changes to the template should reflect in the code in real-time.
+5. Moxy is **FAST**. Changes to the template should reflect in the code in real-time. No need to
+  recompile C# source code between changes.
 
 ## Getting started
 
