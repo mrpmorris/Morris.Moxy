@@ -48,5 +48,5 @@ public readonly struct ClassInfo : IEquatable<ClassInfo>
 	public bool Equals(ClassInfo other) =>
 		other.ClassName == ClassName
 		&& other.Namespace == Namespace
-		&& Enumerable.SequenceEqual(other.PossibleTemplates, PossibleTemplates);
+		&& ImmutableArrayExtensions.SequenceEqual(other.PossibleTemplates, PossibleTemplates);
 }
