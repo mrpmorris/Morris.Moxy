@@ -60,8 +60,7 @@ public static class ClassesSourceGenerator
 				var classMeta = new ClassMeta(
 					classType,
 					@namespace: classInfo.Namespace,
-					name: classInfo.ClassName,
-					usings: compiledTemplateAndAttributeSource.CompiledTemplate.Directives!.Value.ClassUsingClauses);
+					name: classInfo.ClassName);
 
 				var moxyMeta = new MoxyMeta {
 					Class = classMeta

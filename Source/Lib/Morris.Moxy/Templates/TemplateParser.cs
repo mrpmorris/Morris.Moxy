@@ -12,8 +12,7 @@ namespace Morris.Moxy.Templates
 		private readonly static Regex Regex = new Regex(
 			pattern:
 				@"^\s*@((attribute)\s+(using)\s+(.*))$" +
-				@"|((attribute)\s+(optional|required)\s+(\w+[\w\.]*)\s+(\w+)(?:\s*\=\s*(.*))?)$" +
-				@"|((class)\s+(using)\s+(.*))\s*$",
+				@"|((attribute)\s+(optional|required)\s+(\w+[\w\.]*)\s+(\w+)(?:\s*\=\s*(.*))?)$",
 			options: RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
 
 		public static ValidatedResult<ParsedTemplate> Parse(string name, string filePath, string input)
@@ -36,7 +35,6 @@ namespace Morris.Moxy.Templates
 			var attributeUsingClausesBuilder = ImmutableArray.CreateBuilder<string>();
 			var attributeRequiredPropertiesBuilder = ImmutableArray.CreateBuilder<TemplateAttributeProperty>();
 			var attributeOptionalPropertiesBuilder = ImmutableArray.CreateBuilder<TemplateAttributeProperty>();
-			var classUsingClausesBuilder = ImmutableArray.CreateBuilder<string>();
 			var compilationErrorsBuilder = ImmutableArray.CreateBuilder<CompilationError>();
 
 			foreach ((int Number, string Value) headerLine in headerLines)
@@ -64,8 +62,6 @@ namespace Morris.Moxy.Templates
 						else
 							attributeOptionalPropertiesBuilder.Add(property);
 					}
-					else if (match.Groups[13].Success) //class
-						classUsingClausesBuilder.Add(match.Groups[14].Value);
 				}
 			}
 
@@ -79,7 +75,6 @@ namespace Morris.Moxy.Templates
 				filePath: filePath,
 				templateBodyLineNumber: templateBodyLineNumber,
 				attributeUsingClauses: attributeUsingClausesBuilder.ToImmutable(),
-				classUsingClauses: classUsingClausesBuilder.ToImmutable(),
 				attributeRequiredProperties: attributeRequiredPropertiesBuilder.ToImmutable(),
 				attributeOptionalProperties: attributeOptionalPropertiesBuilder.ToImmutable(),
 				templateSource: body);

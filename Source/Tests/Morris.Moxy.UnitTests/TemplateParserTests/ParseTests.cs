@@ -24,11 +24,6 @@ public class ParseTests
 		"@attribute optional int OptionalIntWithDefault = 42\r\n" +
 		"@attribute optional string OptionalStringWithDefault = \"Eggs are nice\"\r\n";
 
-	const string ClassUsingClauses =
-		"@class using Newtonsoft.Json\r\n" +
-		"@class using System.Text.Json\r\n";
-
-
 	[Theory]
 	[InlineData("")]
 	[InlineData("\r\n")]
@@ -42,7 +37,6 @@ public class ParseTests
 		Assert.True(parsedTemplate.Success);
 		Assert.Empty(parsedTemplate.Value.AttributeOptionalProperties);
 		Assert.Empty(parsedTemplate.Value.AttributeRequiredProperties);
-		Assert.Empty(parsedTemplate.Value.ClassUsingClauses);
 		Assert.Equal("", parsedTemplate.Value.TemplateSource);
 		Assert.True(
 			Enumerable.SequenceEqual(
@@ -63,7 +57,6 @@ public class ParseTests
 		Assert.True(result.Success);
 		Assert.Empty(result.Value.AttributeUsingClauses);
 		Assert.Empty(result.Value.AttributeOptionalProperties);
-		Assert.Empty(result.Value.ClassUsingClauses);
 		Assert.Equal("", result.Value.TemplateSource);
 
 		Assert.Equal(
@@ -94,7 +87,6 @@ public class ParseTests
 		Assert.True(result.Success);
 		Assert.Empty(result.Value.AttributeUsingClauses);
 		Assert.Empty(result.Value.AttributeOptionalProperties);
-		Assert.Empty(result.Value.ClassUsingClauses);
 		Assert.Equal("", result.Value.TemplateSource);
 
 		Assert.Equal(
@@ -125,7 +117,6 @@ public class ParseTests
 		Assert.True(result.Success);
 		Assert.Empty(result.Value.AttributeUsingClauses);
 		Assert.Empty(result.Value.AttributeRequiredProperties);
-		Assert.Empty(result.Value.ClassUsingClauses);
 		Assert.Equal("", result.Value.TemplateSource);
 
 		Assert.Equal(
@@ -156,7 +147,6 @@ public class ParseTests
 		Assert.True(result.Success);
 		Assert.Empty(result.Value.AttributeUsingClauses);
 		Assert.Empty(result.Value.AttributeRequiredProperties);
-		Assert.Empty(result.Value.ClassUsingClauses);
 		Assert.Equal("", result.Value.TemplateSource);
 
 		Assert.Equal(
@@ -177,6 +167,7 @@ public class ParseTests
 	[Theory]
 	[InlineData("")]
 	[InlineData("\r\n")]
+<<<<<<< Updated upstream
 	[InlineData("  \r\n")]
 	[InlineData("  \r\n  \r\n")]
 	public void WhenSourceContainsClassUsingClauses_ThenResultShouldContainsClassUsingClauses(string inputPadding)
@@ -198,6 +189,8 @@ public class ParseTests
 	[Theory]
 	[InlineData("")]
 	[InlineData("\r\n")]
+=======
+>>>>>>> Stashed changes
 	[InlineData("\r")]
 	[InlineData("\n")]
 	public void WhenSourceHasNoHeaderMarker_ThenResultTemplateSourceShouldEqualTheInputString(string inputTerminator)
@@ -209,7 +202,6 @@ public class ParseTests
 		Assert.Empty(result.Value.AttributeUsingClauses);
 		Assert.Empty(result.Value.AttributeOptionalProperties);
 		Assert.Empty(result.Value.AttributeRequiredProperties);
-		Assert.Empty(result.Value.ClassUsingClauses);
 		Assert.Equal(result.Value.TemplateSource, expected);
 	}
 
@@ -224,7 +216,6 @@ public class ParseTests
 		Assert.Empty(result.Value.AttributeUsingClauses);
 		Assert.Empty(result.Value.AttributeOptionalProperties);
 		Assert.Empty(result.Value.AttributeRequiredProperties);
-		Assert.Empty(result.Value.ClassUsingClauses);
 		Assert.Equal(result.Value.TemplateSource, expected);
 	}
 
@@ -243,7 +234,6 @@ public class ParseTests
 		Assert.Empty(result.Value.AttributeUsingClauses);
 		Assert.Empty(result.Value.AttributeOptionalProperties);
 		Assert.Empty(result.Value.AttributeRequiredProperties);
-		Assert.Empty(result.Value.ClassUsingClauses);
 		Assert.Equal(result.Value.TemplateSource, expected);
 	}
 
@@ -261,7 +251,6 @@ public class ParseTests
 			$"{AttributeRequiredPropertiesWithDefaultValues}" +
 			$"{AttributeOptionalPropertiesWithoutDefaultValues}" +
 			$"{AttributeOptionalPropertiesWithDefaultValues}" +
-			$"{ClassUsingClauses}" +
 			$"@moxy\r\n" +
 			$"Hello!";
 
@@ -271,7 +260,6 @@ public class ParseTests
 		Assert.Equal(2, result.Value.AttributeUsingClauses.Length);
 		Assert.Equal(4, result.Value.AttributeOptionalProperties.Length);
 		Assert.Equal(4, result.Value.AttributeRequiredProperties.Length);
-		Assert.Equal(2, result.Value.ClassUsingClauses.Length);
 		Assert.Equal("Hello!", result.Value.TemplateSource);
 	}
 }
