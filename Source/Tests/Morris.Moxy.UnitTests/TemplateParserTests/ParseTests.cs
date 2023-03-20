@@ -167,30 +167,6 @@ public class ParseTests
 	[Theory]
 	[InlineData("")]
 	[InlineData("\r\n")]
-<<<<<<< Updated upstream
-	[InlineData("  \r\n")]
-	[InlineData("  \r\n  \r\n")]
-	public void WhenSourceContainsClassUsingClauses_ThenResultShouldContainsClassUsingClauses(string inputPadding)
-	{
-		string source = $"{inputPadding}@moxy\r\n{ClassUsingClauses}@moxy\r\n";
-		ValidatedResult<ParsedTemplate> result = TemplateParser.Parse("", "", source);
-
-		Assert.True(result.Success);
-		Assert.Empty(result.Value.AttributeUsingClauses);
-		Assert.Empty(result.Value.AttributeOptionalProperties);
-		Assert.Empty(result.Value.AttributeRequiredProperties);
-		Assert.Equal("", result.Value.TemplateSource);
-		Assert.True(
-			ImmutableArrayExtensions.SequenceEqual(
-				result.Value.ClassUsingClauses,
-				new string[] { "Newtonsoft.Json", "System.Text.Json" }));
-	}
-
-	[Theory]
-	[InlineData("")]
-	[InlineData("\r\n")]
-=======
->>>>>>> Stashed changes
 	[InlineData("\r")]
 	[InlineData("\n")]
 	public void WhenSourceHasNoHeaderMarker_ThenResultTemplateSourceShouldEqualTheInputString(string inputTerminator)
