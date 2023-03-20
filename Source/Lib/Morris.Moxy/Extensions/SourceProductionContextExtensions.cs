@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis.Text;
 using Microsoft.CodeAnalysis;
+using System.Collections.Immutable;
 
 namespace Morris.Moxy.Extensions
 {
@@ -10,13 +11,13 @@ namespace Morris.Moxy.Extensions
 			string filePath,
 			CompilationError error)
 		{
-			productionContext.AddCompilationErrors(filePath, Enumerable.Repeat(error, 1));
+			productionContext.AddCompilationErrors(filePath, ImmutableArray.Create(error));
 		}
 
 		public static void AddCompilationErrors(
 			this SourceProductionContext productionContext,
 			string filePath,
-			IEnumerable<CompilationError> errors)
+			ImmutableArray<CompilationError> errors)
 		{
 			foreach (var error in errors)
 			{

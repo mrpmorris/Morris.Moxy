@@ -39,7 +39,7 @@ public class ParseTests
 		Assert.Empty(parsedTemplate.Value.AttributeRequiredProperties);
 		Assert.Equal("", parsedTemplate.Value.TemplateSource);
 		Assert.True(
-			Enumerable.SequenceEqual(
+			ImmutableArrayExtensions.SequenceEqual(
 				parsedTemplate.Value.AttributeUsingClauses,
 				new string[] { "System", "System.Text" }));
 	}
@@ -181,7 +181,7 @@ public class ParseTests
 		Assert.Empty(result.Value.AttributeRequiredProperties);
 		Assert.Equal("", result.Value.TemplateSource);
 		Assert.True(
-			Enumerable.SequenceEqual(
+			ImmutableArrayExtensions.SequenceEqual(
 				result.Value.ClassUsingClauses,
 				new string[] { "Newtonsoft.Json", "System.Text.Json" }));
 	}

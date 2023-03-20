@@ -11,7 +11,7 @@ public static class TemplatesSourceGenerator
 		SourceProductionContext productionContext,
 		string rootNamespace,
 		string projectPath,
-		IEnumerable<ValidatedResult<CompiledTemplate>> templateResults,
+		ImmutableArray<ValidatedResult<CompiledTemplate>> templateResults,
 		out ImmutableDictionary<string, CompiledTemplateAndAttributeSource> nameToCompiledTemplateLookup)
 	{
 		Dictionary<string, CompiledTemplateAndAttributeSource> nameToCompiledTemplateBuilder =
