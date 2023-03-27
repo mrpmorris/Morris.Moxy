@@ -2,5 +2,5 @@
 
 public readonly struct MoxyMeta
 {
-	public ClassMeta? Class { get; init; }
+	public Type Class { get; init; }
 }

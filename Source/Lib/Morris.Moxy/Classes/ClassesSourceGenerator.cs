@@ -57,17 +57,11 @@ public static class ClassesSourceGenerator
 
 				writer.WriteLine($"\r\n// Generated from mixin: {templateFilePath}");
 
-				var classMeta = new ClassMeta(
-					classType,
-					@namespace: classInfo.Namespace,
-					name: classInfo.ClassName);
-
-				var moxyMeta = new MoxyMeta {
-					Class = classMeta
-				};
-
-
 				var scribanScriptObject = TemplateContext.GetDefaultBuiltinObject();
+				
+				var moxyMeta = new MoxyMeta {
+					Class = classType
+				};
 				scribanScriptObject.Add(
 					key: "moxy",
 					value: moxyMeta);
@@ -80,7 +74,11 @@ public static class ClassesSourceGenerator
 					possibleTemplate);
 
 				var scribanTemplateContext = new TemplateContext(scribanScriptObject) {
-					MemberRenamer = m => m.Name
+					MemberRenamer = m =>
+					{
+						System.Diagnostics.Trace.WriteLine($"{m.DeclaringType.Name}.{m.Name}");
+						return m.Name;
+					}
 				};
 
 				try
