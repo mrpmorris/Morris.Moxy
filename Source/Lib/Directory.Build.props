@@ -2,7 +2,7 @@
   <PropertyGroup>
 	<TargetFramework>netstandard2.0</TargetFramework>
 	<LangVersion>10</LangVersion>
-	<Version>1.1.0</Version>
+	<Version>1.2.0</Version>
 
 	<Authors>Peter Morris</Authors>
 	<Company />
@@ -18,7 +18,7 @@
 
   <PropertyGroup>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
-	<PackageIcon>small-logo.png</PackageIcon>
+	<PackageIcon>moxy-logo-small.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
