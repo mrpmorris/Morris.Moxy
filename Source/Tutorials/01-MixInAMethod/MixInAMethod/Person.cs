@@ -1,6 +1,6 @@
 ﻿namespace MixInAMethod;
 
-[SayHello]
+[SayHello, SayGoodbye]
 internal partial class Person
 {
 }

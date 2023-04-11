@@ -5,7 +5,7 @@ using Morris.Moxy.Extensions;
 
 namespace Morris.Moxy.Templates;
 
-public static class TemplatesSourceGenerator
+public static class TemplateAttributesSourceGenerator
 {
 	public static bool TryGenerateSource(
 		SourceProductionContext productionContext,

@@ -9,10 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Mixins\SayGoodbye.mixin" />
     <None Remove="Mixins\SayHello.mixin" />
   </ItemGroup>
 
   <ItemGroup>
+    <AdditionalFiles Include="Mixins\SayGoodbye.mixin" />
     <AdditionalFiles Include="Mixins\SayHello.mixin" />
   </ItemGroup>
  

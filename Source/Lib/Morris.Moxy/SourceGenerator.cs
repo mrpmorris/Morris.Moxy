@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Morris.Moxy.Classes;
+using Morris.Moxy.Helpers;
 using Morris.Moxy.Templates;
 using Roslyn.Reflection;
 using System.Collections.Immutable;
@@ -12,7 +13,7 @@ namespace Morris.Moxy
 		public void Initialize(IncrementalGeneratorInitializationContext context)
 		{
 			IncrementalValuesProvider<ValidatedResult<CompiledTemplate>> parsedTemplates =
-				TemplatesSelector.Select(context.AdditionalTextsProvider);
+				TemplateAttributesSelector.Select(context.AdditionalTextsProvider);
 			IncrementalValuesProvider<ClassInfo> classInfos =
 				ClassesSelector.Select(context.SyntaxProvider);
 
@@ -67,7 +68,7 @@ namespace Morris.Moxy
 					string assemblyName = compilation.AssemblyName!;
 					ImmutableArray<ValidatedResult<CompiledTemplate>> templateResults = x.ParsedTemplateResults;
 
-					if (!TemplatesSourceGenerator.TryGenerateSource(
+					if (!TemplateAttributesSourceGenerator.TryGenerateSource(
 						productionContext,
 						rootNamespace: x.RootNamespace,
 						projectPath: x.ProjectPath,

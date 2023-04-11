@@ -1,0 +1,10 @@
+namespace {{ moxy.Class.Namespace }}
+{
+    partial class {{ moxy.Class.Name }}
+    {
+      public void SayGoodbye()
+      {
+        Console.WriteLine("Goodbye");
+      }
+    }
+}
