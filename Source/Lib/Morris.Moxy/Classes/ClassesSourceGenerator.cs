@@ -29,14 +29,6 @@ public static class ClassesSourceGenerator
 				? $"{classInfo.ClassName}"
 				: $"{classInfo.Namespace}.{classInfo.ClassName}";
 
-			string filename = $"{fullGeneratedClassName}.Moxy.g.cs"
-				.Replace('<', '{')
-				.Replace('>', '}');
-
-			using var stringWriter = new StringWriter();
-			using var writer = new IndentedTextWriter(stringWriter);
-			writer.WriteLine($"// Generated at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC");
-
 			Type classType =
 				string.IsNullOrWhiteSpace(classInfo.Namespace)
 				? reflection.ResolveType(classInfo.ClassTypeId)
@@ -50,6 +42,14 @@ public static class ClassesSourceGenerator
 				{
 					continue;
 				}
+
+				using var stringWriter = new StringWriter();
+				using var writer = new IndentedTextWriter(stringWriter);
+				writer.WriteLine($"// Generated at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC");
+
+				string filename = $"{fullGeneratedClassName}.{possibleTemplate.Name}.Moxy.g.cs"
+					.Replace('<', '{')
+					.Replace('>', '}');
 
 				string templateFilePath = compiledTemplateAndAttributeSource.CompiledTemplate.FilePath;
 				if (templateFilePath.StartsWith(projectPath))
@@ -99,13 +99,13 @@ public static class ClassesSourceGenerator
 							Id: CompilationErrors.ScriptCompilationError.Id,
 							ex.Message));
 				}
+				string source = stringWriter.ToString();
+
+				productionContext.AddSource(
+					hintName: filename,
+					source: source);
 			} // Template
 
-			string source = stringWriter.ToString();
-
-			productionContext.AddSource(
-				hintName: filename,
-				source: source);
 		} // class
 		return true;
 	}
