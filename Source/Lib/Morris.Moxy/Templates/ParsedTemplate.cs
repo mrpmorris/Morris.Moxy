@@ -2,7 +2,7 @@
 
 namespace Morris.Moxy.Templates;
 
-public readonly struct ParsedTemplate
+public readonly struct ParsedTemplate : IEquatable<ParsedTemplate>
 {
 	public readonly bool Success;
 	public readonly string Name;
@@ -48,4 +48,35 @@ public readonly struct ParsedTemplate
 		AttributeOptionalProperties = ImmutableArray<TemplateAttributeProperty>.Empty;
 		TemplateSource = null;
 	}
+
+	public override bool Equals(object? obj) => obj is ParsedTemplate other && Equals(other);
+
+	public bool Equals(ParsedTemplate other) =>
+		Success == other.Success
+		&& Name == other.Name
+		&& FilePath == other.FilePath
+		&& TemplateSource == other.TemplateSource
+		&& TemplateBodyLineNumber == other.TemplateBodyLineNumber
+		&& AttributeUsingClauses.SequenceEqual(other.AttributeUsingClauses)
+		&& AttributeRequiredProperties.SequenceEqual(other.AttributeRequiredProperties)
+		&& AttributeOptionalProperties.SequenceEqual(other.AttributeOptionalProperties);
+
+	public override int GetHashCode()
+	{
+		unchecked
+		{
+			int hashCode = Success.GetHashCode();
+			hashCode = (hashCode * 397) ^ Name.GetHashCode();
+			hashCode = (hashCode * 397) ^ FilePath.GetHashCode();
+			hashCode = (hashCode * 397) ^ (TemplateSource?.GetHashCode() ?? 0);
+			hashCode = (hashCode * 397) ^ TemplateBodyLineNumber;
+			hashCode = (hashCode * 397) ^ AttributeUsingClauses.GetHashCode();
+			hashCode = (hashCode * 397) ^ AttributeRequiredProperties.GetHashCode();
+			hashCode = (hashCode * 397) ^ AttributeOptionalProperties.GetHashCode();
+			return hashCode;
+		}
+	}
+
+	public static bool operator ==(ParsedTemplate left, ParsedTemplate right) => left.Equals(right);
+	public static bool operator !=(ParsedTemplate left, ParsedTemplate right) => !(left == right);
 }

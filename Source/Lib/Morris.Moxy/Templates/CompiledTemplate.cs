@@ -2,7 +2,7 @@
 
 namespace Morris.Moxy.Templates;
 
-public readonly struct CompiledTemplate
+public readonly struct CompiledTemplate : IEquatable<CompiledTemplate>
 {
 	public readonly string Name;
 	public readonly string FilePath;
@@ -30,4 +30,25 @@ public readonly struct CompiledTemplate
 		Directives = directives;
 		Template = template;
 	}
+
+	public override bool Equals(object? obj) => obj is CompiledTemplate other && Equals(other);
+
+	public bool Equals(CompiledTemplate other) =>
+		Name == other.Name
+		&& FilePath == other.FilePath
+		&& EqualityComparer<ParsedTemplate?>.Default.Equals(Directives, other.Directives);
+
+	public override int GetHashCode()
+	{
+		unchecked
+		{
+			int hashCode = Name.GetHashCode();
+			hashCode = (hashCode * 397) ^ FilePath.GetHashCode();
+			hashCode = (hashCode * 397) ^ (Directives?.GetHashCode() ?? 0);
+			return hashCode;
+		}
+	}
+
+	public static bool operator ==(CompiledTemplate left, CompiledTemplate right) => left.Equals(right);
+	public static bool operator !=(CompiledTemplate left, CompiledTemplate right) => !(left == right);
 }

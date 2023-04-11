@@ -1,6 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
 using Morris.Moxy.Classes;
-using Morris.Moxy.Helpers;
 using Morris.Moxy.Templates;
 using Roslyn.Reflection;
 using System.Collections.Immutable;
