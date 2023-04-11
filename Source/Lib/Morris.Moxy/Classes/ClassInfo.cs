@@ -17,9 +17,9 @@ public readonly struct ClassInfo : IEquatable<ClassInfo>
 		ClassTypeId = "";
 		ClassName = "";
 		Namespace = "";
-		GenericParameterNames = ImmutableArray.Create<string>();
+		GenericParameterNames = ImmutableArray<string>.Empty;
 		GenericParametersSignature = "";
-		PossibleTemplates = ImmutableArray.Create<AttributeNameAndSyntaxTree>();
+		PossibleTemplates = ImmutableArray<AttributeNameAndSyntaxTree>.Empty;
 	}
 
 	public ClassInfo(

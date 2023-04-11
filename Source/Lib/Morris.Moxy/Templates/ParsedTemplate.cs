@@ -43,9 +43,9 @@ public readonly struct ParsedTemplate
 		Name = name ?? throw new ArgumentNullException(nameof(name));
 		FilePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
 		TemplateBodyLineNumber = templateBodyLineNumber;
-		AttributeUsingClauses = ImmutableArray.Create<string>();
-		AttributeRequiredProperties = ImmutableArray.Create<TemplateAttributeProperty>();
-		AttributeOptionalProperties = ImmutableArray.Create<TemplateAttributeProperty>();
+		AttributeUsingClauses = ImmutableArray<string>.Empty;
+		AttributeRequiredProperties = ImmutableArray<TemplateAttributeProperty>.Empty;
+		AttributeOptionalProperties = ImmutableArray<TemplateAttributeProperty>.Empty;
 		TemplateSource = null;
 	}
 }

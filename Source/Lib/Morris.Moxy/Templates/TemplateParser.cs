@@ -109,7 +109,7 @@ namespace Morris.Moxy.Templates
 				{
 					if (parsingState == ParsingState.InHeader)
 					{
-						headerLines = ImmutableArray.Create<(int, string)>();
+						headerLines = ImmutableArray<(int, string)>.Empty;
 						compilationError = CompilationErrors.NoClosingHeaderMarkerFound with { Line = lineNumber };
 						return false;
 					}
