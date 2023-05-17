@@ -1,6 +1,6 @@
 ﻿using Morris.Moxy.Helpers;
 
-namespace Morris.Moxy.DataStructures;
+namespace Morris.Moxy.ProjectPaths;
 
 internal readonly struct ProjectPathAndRootNamespace : IEquatable<ProjectPathAndRootNamespace>
 {

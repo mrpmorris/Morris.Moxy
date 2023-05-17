@@ -1,6 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Morris.Moxy.Classes;
-using Morris.Moxy.DataStructures;
+using Morris.Moxy.ProjectPaths;
 using Morris.Moxy.Templates;
 using System.Collections.Immutable;
 
@@ -17,23 +17,7 @@ namespace Morris.Moxy
 			IncrementalValuesProvider<ClassInfo> classInfosProvider =
 				ClassesSelector.Select(context.SyntaxProvider);
 
-			var projectPathProvider = context.AnalyzerConfigOptionsProvider.Select((x, _) =>
-			{
-				if (x.GlobalOptions.TryGetValue("build_property.projectdir", out string? value))
-					return value!;
-				return "";
-			});
-
-			var rootNamespaceProvider = context.AnalyzerConfigOptionsProvider.Select((x, _) =>
-			{
-				if (x.GlobalOptions.TryGetValue("build_property.RootNamespace", out string? value))
-					return value!;
-				return "";
-			});
-
-			var pathsProvider = projectPathProvider
-				.Combine(rootNamespaceProvider)
-				.Select(static (x, _) => new ProjectPathAndRootNamespace(projectPath: x.Left, rootNamespace: x.Right));
+			IncrementalValueProvider<ProjectPathAndRootNamespace> pathsProvider = context.CreateProjectPathAndRootNamespaceProvider();
 
 			var templatesInput =
 				parsedTemplatesProvider
