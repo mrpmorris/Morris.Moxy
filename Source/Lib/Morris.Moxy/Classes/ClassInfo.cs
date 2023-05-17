@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using Morris.Moxy.DataStructures;
+using System.Collections.Immutable;
 
 namespace Morris.Moxy.Classes;
 

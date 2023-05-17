@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Morris.Moxy.DataStructures;
 using System.Collections.Immutable;
 
 namespace Morris.Moxy.Classes;

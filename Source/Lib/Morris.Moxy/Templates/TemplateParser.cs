@@ -28,7 +28,7 @@ namespace Morris.Moxy.Templates
 				out CompilationError? compilationError))
 			{
 				return new ValidatedResult<ParsedTemplate>(
-					value: new ParsedTemplate(name: name, filePath: filePath, templateBodyLineNumber),
+					value: new ParsedTemplate(name: name, filePath: filePath, templateBodyLineNumber, templateSource: input),
 					compilationError: compilationError!.Value);
 			}
 
@@ -67,7 +67,7 @@ namespace Morris.Moxy.Templates
 
 			if (compilationErrorsBuilder.Count != 0)
 				return new ValidatedResult<ParsedTemplate>(
-					value: new ParsedTemplate(name: name, filePath: filePath, templateBodyLineNumber),
+					value: new ParsedTemplate(name: name, filePath: filePath, templateBodyLineNumber, templateSource: input),
 					compilationErrors: compilationErrorsBuilder.ToImmutable());
 
 			var parsedTemplate = new ParsedTemplate(

@@ -25,6 +25,7 @@ internal static class TemplateCompiler
 				value: new CompiledTemplate(
 					name: parsedTemplate.Name,
 					filePath: parsedTemplate.FilePath,
+					templateSource: parsedTemplateResult.Value.TemplateSource,
 					directives: parsedTemplate,
 					template: scribanTemplate)
 				);
