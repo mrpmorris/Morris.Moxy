@@ -3,10 +3,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis;
 using Morris.Moxy.Extensions;
-using Morris.Moxy.Templates;
 using System.Collections.Immutable;
 
-namespace Morris.Moxy.SourceGenerators;
+namespace Morris.Moxy.Templates;
 
 internal static class TemplateAttributeSourceGenerator
 {
@@ -69,7 +68,7 @@ internal static class TemplateAttributeSourceGenerator
 					writer.WriteLine(")");
 					using (writer.CodeBlock())
 					{
-						foreach(TemplateAttributeProperty property in directives.AttributeRequiredProperties)
+						foreach (TemplateAttributeProperty property in directives.AttributeRequiredProperties)
 						{
 							writer.WriteLine($"this.{property.Name} = {property.Name};");
 						}
