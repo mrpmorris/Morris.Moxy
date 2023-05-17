@@ -11,9 +11,9 @@ namespace Morris.Moxy.Templates
 				.Where(x => x.Path.ToLower().EndsWith(".mixin"))
 				.Select(static (file, cancellationToken) =>
 					new TemplateNameAndSource(
-					  Name: Path.GetFileNameWithoutExtension(file.Path),
-					  FilePath: file.Path,
-					  Source: file.GetText(cancellationToken)!.ToString()))
+					  name: Path.GetFileNameWithoutExtension(file.Path),
+					  filePath: file.Path,
+					  source: file.GetText(cancellationToken)!.ToString()))
 				.Select(static (templateNameAndSource, cancellationToken) =>
 					TemplateParser.Parse(
 						name: templateNameAndSource.Name,

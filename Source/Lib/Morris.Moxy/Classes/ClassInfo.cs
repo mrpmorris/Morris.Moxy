@@ -1,4 +1,6 @@
 ﻿using Morris.Moxy.DataStructures;
+using Morris.Moxy.Extensions;
+using Morris.Moxy.Helpers;
 using System.Collections.Immutable;
 
 namespace Morris.Moxy.Classes;
@@ -12,6 +14,7 @@ public readonly struct ClassInfo : IEquatable<ClassInfo>
 	public readonly ImmutableArray<string> GenericParameterNames;
 	public readonly ImmutableArray<AttributeNameAndSyntaxTree> PossibleTemplates;
 	public readonly string GenericParametersSignature;
+	private readonly Lazy<int> CachedHashCode;
 
 	public ClassInfo()
 	{
@@ -21,6 +24,7 @@ public readonly struct ClassInfo : IEquatable<ClassInfo>
 		GenericParameterNames = ImmutableArray.Create<string>();
 		GenericParametersSignature = "";
 		PossibleTemplates = ImmutableArray.Create<AttributeNameAndSyntaxTree>();
+		CachedHashCode = new Lazy<int>(() => typeof(ClassInfo).GetHashCode());
 	}
 
 	public ClassInfo(
@@ -44,10 +48,29 @@ public readonly struct ClassInfo : IEquatable<ClassInfo>
 			genericParameterNames.IsDefault || genericParameterNames.Length == 0
 			? className
 			: $"{className}`{genericParameterNames.Length}";
+
+		CachedHashCode = new Lazy<int>(() => 
+			HashCode.Combine(
+				className, 
+				@namespace, 
+				genericParameterNames.GetContentHashCode(),
+				possibleTemplates.GetContentHashCode()));
 	}
 
 	public bool Equals(ClassInfo other) =>
 		other.ClassName == ClassName
 		&& other.Namespace == Namespace
-		&& ImmutableArrayExtensions.SequenceEqual(other.PossibleTemplates, PossibleTemplates);
+		&& other.ClassTypeId == ClassTypeId
+		&& other.PossibleTemplates.SequenceEqual(PossibleTemplates)
+		&& other.GenericParameterNames.SequenceEqual(GenericParameterNames)
+		&& other.GenericParametersSignature == GenericParametersSignature;
+
+	public override bool Equals(object obj) =>
+		obj is ClassInfo other && Equals(other);
+
+	public override int GetHashCode() => CachedHashCode.Value;
+
+	public static bool operator ==(ClassInfo left, ClassInfo right) => left.Equals(right);
+
+	public static bool operator !=(ClassInfo left, ClassInfo right) => !(left == right);
 }

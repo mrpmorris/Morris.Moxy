@@ -29,9 +29,9 @@ namespace Morris.Moxy
 			});
 
 			var pathsProvider = projectPathProvider
-				.Select(static(x, _) => new GeneratorInput { ProjectPath = x })
+				.Select(static (x, _) => new GeneratorInput(projectPath: x))
 				.Combine(rootNamespaceProvider)
-				.Select(static(x, _) => new GeneratorInput(x.Left) { RootNamespace = x.Right });
+				.Select(static (x, _) => x.Left.WithRootNamespace(x.Right));
 
 			context.RegisterSourceOutput(
 				source: parsedTemplatesProvider,

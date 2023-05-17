@@ -10,6 +10,7 @@ public readonly struct CompiledTemplate : IEquatable<CompiledTemplate>
 	public readonly string? TemplateSource;
 	public readonly ParsedTemplate? Directives;
 	public readonly Template? Template;
+	private readonly Lazy<int> CachedHashCode;
 
 	public CompiledTemplate(
 		string name,
@@ -21,6 +22,7 @@ public readonly struct CompiledTemplate : IEquatable<CompiledTemplate>
 			directives: null,
 			template: null)
 	{
+		CachedHashCode = new Lazy<int>(() => typeof(CompiledTemplate).GetHashCode());
 	}
 
 	public CompiledTemplate(
@@ -35,7 +37,7 @@ public readonly struct CompiledTemplate : IEquatable<CompiledTemplate>
 		TemplateSource = templateSource;
 		Directives = directives;
 		Template = template;
-		CachedHashCode = HashCode.Combine(Name, FilePath, TemplateSource);
+		CachedHashCode = new Lazy<int>(() => HashCode.Combine(name, filePath, templateSource));
 	}
 
 	public override bool Equals(object obj) =>
@@ -46,11 +48,11 @@ public readonly struct CompiledTemplate : IEquatable<CompiledTemplate>
 		&& FilePath == other.FilePath
 		&& TemplateSource == other.TemplateSource;
 
-	private readonly int CachedHashCode;
-	public override int GetHashCode() => CachedHashCode;
+	public override int GetHashCode() => CachedHashCode.Value;
 
 	public static bool operator ==(CompiledTemplate left, CompiledTemplate right) => left.Equals(right);
 
 	public static bool operator !=(CompiledTemplate left, CompiledTemplate right) => !(left == right);
 }
+
 

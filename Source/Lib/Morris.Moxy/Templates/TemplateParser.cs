@@ -53,9 +53,9 @@ namespace Morris.Moxy.Templates
 					else if (match.Groups[6].Success) // attribute required/optional
 					{
 						var property = new TemplateAttributeProperty(
-							Name: match.Groups[9].Value,
-							TypeName: match.Groups[8].Value,
-							DefaultValue: match.Groups[10].Success ? match.Groups[10].Value : null);
+							name: match.Groups[9].Value,
+							typeName: match.Groups[8].Value,
+							defaultValue: match.Groups[10].Success ? match.Groups[10].Value : null);
 
 						if (string.Equals("required", match.Groups[7].Value, StringComparison.OrdinalIgnoreCase))
 							attributeRequiredPropertiesBuilder.Add(property);

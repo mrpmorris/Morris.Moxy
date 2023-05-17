@@ -1,4 +1,5 @@
-﻿using Morris.Moxy.Helpers;
+﻿using Morris.Moxy.Extensions;
+using Morris.Moxy.Helpers;
 using System.Collections.Immutable;
 
 namespace Morris.Moxy.Templates;
@@ -8,6 +9,7 @@ public readonly struct CompiledTemplateAndAttributeSource : IEquatable<CompiledT
 	public readonly CompiledTemplate CompiledTemplate;
 	public readonly string AttributeSource;
 	public readonly ImmutableArray<string> AttributeConstructorParameterNames;
+	private readonly Lazy<int> CachedHashCode;
 
 	public CompiledTemplateAndAttributeSource(
 		CompiledTemplate compiledTemplate,
@@ -17,12 +19,14 @@ public readonly struct CompiledTemplateAndAttributeSource : IEquatable<CompiledT
 		CompiledTemplate = compiledTemplate;
 		AttributeSource = attributeSource ?? "";
 		AttributeConstructorParameterNames = attributeConstructorParameterNames;
-		CachedHashCode = HashCode.Combine(CompiledTemplate, AttributeSource, AttributeConstructorParameterNames);
+		CachedHashCode = new Lazy<int>(() => 
+			HashCode.Combine(
+				compiledTemplate,
+				attributeSource,
+				attributeConstructorParameterNames.GetContentHashCode()));
 	}
 
-	private readonly int CachedHashCode;
-
-	public override int GetHashCode() => CachedHashCode;
+	public override int GetHashCode() => CachedHashCode.Value;
 
 	public override bool Equals(object obj) =>
 		obj is CompiledTemplateAndAttributeSource other && Equals(other);
@@ -36,4 +40,5 @@ public readonly struct CompiledTemplateAndAttributeSource : IEquatable<CompiledT
 
 	public static bool operator !=(CompiledTemplateAndAttributeSource left, CompiledTemplateAndAttributeSource right) => !(left == right);
 }
+
 
