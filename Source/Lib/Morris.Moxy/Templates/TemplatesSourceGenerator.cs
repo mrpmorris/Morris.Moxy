@@ -11,53 +11,26 @@ public static class TemplatesSourceGenerator
 		SourceProductionContext productionContext,
 		string rootNamespace,
 		string projectPath,
-		ImmutableArray<ValidatedResult<CompiledTemplate>> templateResults,
-		out ImmutableDictionary<string, CompiledTemplateAndAttributeSource> nameToCompiledTemplateLookup)
+		ValidatedResult<CompiledTemplate> validatedTemplate)
 	{
-		Dictionary<string, CompiledTemplateAndAttributeSource> nameToCompiledTemplateBuilder =
-			new (StringComparer.OrdinalIgnoreCase);
-
-		bool hasErrors = false;
-		foreach (var templateResult in templateResults)
+		if (!validatedTemplate.Success)
 		{
-			if (!templateResult.Success)
-			{
-				hasErrors = true;
-				productionContext.AddCompilationErrors(
-					templateResult.Value.FilePath,
-					templateResult.CompilationErrors);
-				continue;
-			}
-
-			CompiledTemplate compiledTemplate = templateResult.Value;
-			if (nameToCompiledTemplateBuilder.ContainsKey(compiledTemplate.Name))
-			{
-				hasErrors = true;
-				productionContext.AddCompilationError(
-					compiledTemplate.FilePath,
-					CompilationErrors.TemplateNamesMustBeUnique);
-				continue;
-			}
-
-			CompiledTemplateAndAttributeSource generated =
-				TemplateAttributeSourceGenerator.Generate(
-					rootNamespace: rootNamespace,
-					projectPath: projectPath,
-					compiledTemplate: templateResult.Value);
-			nameToCompiledTemplateBuilder.Add(compiledTemplate.Name, generated);
-
-			productionContext.AddSource(
-				hintName: $"{templateResult.Value!.Name}.TemplateAttribute.Moxy.g.cs",
-				source: generated.AttributeSource);
-		}
-
-		if (hasErrors)
-		{
-			nameToCompiledTemplateLookup = ImmutableDictionary<string, CompiledTemplateAndAttributeSource>.Empty;
+			productionContext.AddCompilationErrors(
+				validatedTemplate.Value.FilePath,
+				validatedTemplate.CompilationErrors);
 			return false;
 		}
 
-		nameToCompiledTemplateLookup = nameToCompiledTemplateBuilder.ToImmutableDictionary();
+		CompiledTemplate compiledTemplate = validatedTemplate.Value;
+		CompiledTemplateAndAttributeSource generated =
+			TemplateAttributeSourceGenerator.Generate(
+				rootNamespace: rootNamespace,
+				projectPath: projectPath,
+				compiledTemplate: validatedTemplate.Value);
+
+		productionContext.AddSource(
+			hintName: $"{validatedTemplate.Value!.Name}.TemplateAttribute.Moxy.g.cs",
+			source: generated.AttributeSource);
 		return true;
 	}
 }

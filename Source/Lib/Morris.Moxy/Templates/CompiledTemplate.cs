@@ -37,7 +37,7 @@ public readonly struct CompiledTemplate : IEquatable<CompiledTemplate>
 		TemplateSource = templateSource;
 		Directives = directives;
 		Template = template;
-		CachedHashCode = new Lazy<int>(() => HashCode.Combine(name, filePath, templateSource));
+		CachedHashCode = new Lazy<int>(() => HashCode.Combine(name, filePath, templateSource, directives));
 	}
 
 	public override bool Equals(object obj) =>
@@ -46,7 +46,8 @@ public readonly struct CompiledTemplate : IEquatable<CompiledTemplate>
 	public bool Equals(CompiledTemplate other) =>
 		Name == other.Name
 		&& FilePath == other.FilePath
-		&& TemplateSource == other.TemplateSource;
+		&& TemplateSource == other.TemplateSource
+		&& Comparer<ParsedTemplate?>.Equals(Template, other.Template);
 
 	public override int GetHashCode() => CachedHashCode.Value;
 

@@ -1,6 +1,8 @@
 ﻿using Microsoft.CodeAnalysis;
 using Morris.Moxy.Classes;
+using Morris.Moxy.DataStructures;
 using Morris.Moxy.Templates;
+using System.Collections.Immutable;
 
 namespace Morris.Moxy
 {
@@ -11,6 +13,7 @@ namespace Morris.Moxy
 		{
 			IncrementalValuesProvider<ValidatedResult<CompiledTemplate>> parsedTemplatesProvider =
 				TemplatesSelector.Select(context.AdditionalTextsProvider);
+
 			IncrementalValuesProvider<ClassInfo> classInfosProvider =
 				ClassesSelector.Select(context.SyntaxProvider);
 
@@ -29,26 +32,27 @@ namespace Morris.Moxy
 			});
 
 			var pathsProvider = projectPathProvider
-				.Select(static (x, _) => new GeneratorInput(projectPath: x))
 				.Combine(rootNamespaceProvider)
-				.Select(static (x, _) => x.Left.WithRootNamespace(x.Right));
+				.Select(static (x, _) => new ProjectPathAndRootNamespace(projectPath: x.Left, rootNamespace: x.Right));
+
+			var templatesInput =
+				parsedTemplatesProvider
+				.Combine(pathsProvider)
+				.Select(static (x, _) => (ValidatedTemplate: x.Left, Paths: x.Right));
 
 			context.RegisterSourceOutput(
-				source: parsedTemplatesProvider,
-				action: static (productionContext, x) =>
+				templatesInput,
+				static (productionContext, x) =>
 				{
-
-				}
-			);
-
-			var attributesInput = pathsProvider;
-			context.RegisterSourceOutput(
-				source: attributesInput,
-				action: static (productionContext, x) =>
-				{
-
+					Console.Beep(3000, 200);
+					ValidatedResult<CompiledTemplate> validatedTemplate = x.ValidatedTemplate;
+					ProjectPathAndRootNamespace paths = x.Paths;
+					TemplatesSourceGenerator.TryGenerateSource(
+						productionContext,
+						rootNamespace: paths.RootNamespace,
+						projectPath: paths.ProjectPath,
+						validatedTemplate);
 				});
-
 
 			//var generatorInputOld = context.CompilationProvider
 			//	.Combine(rootNamespace)
