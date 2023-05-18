@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using Morris.Moxy.Extensions;
+using System.Collections.Immutable;
 
 namespace Morris.Moxy.Metas.Classes;
 
@@ -36,7 +37,7 @@ internal readonly struct ClassMeta : IEquatable<ClassMeta>
 		PossibleTemplates = possibleTemplates;
 		GenericParametersSignature = GetGenericParametersSignature(genericParameterNames);
 
-		CachedHashCode = new Lazy<int>(() => HashCode.Combine(className, @namespace, genericParameterNames, possibleTemplates));
+		CachedHashCode = new Lazy<int>(() => HashCode.Combine(className, @namespace, genericParameterNames.GetContentsHashCode(), possibleTemplates.GetContentsHashCode()));
 	}
 
 	public static bool operator ==(ClassMeta left, ClassMeta right) => left.Equals(right);
@@ -44,17 +45,13 @@ internal readonly struct ClassMeta : IEquatable<ClassMeta>
 	public override bool Equals(object obj) => obj is ClassMeta other && Equals(other);
 
 	public bool Equals(ClassMeta other) =>
-		ReferenceEquals(this, other)
-		||
-		(
-			CachedHashCode.IsValueCreated == other.CachedHashCode.IsValueCreated == true
-				? CachedHashCode.Value == other.CachedHashCode.Value
-				: true
-			&& ClassName == other.ClassName
-			&& Namespace == other.Namespace
-			&& GenericParameterNames.SequenceEqual(other.GenericParameterNames)
-			&& PossibleTemplates.SequenceEqual(other.PossibleTemplates)
-		);
+		CachedHashCode.IsValueCreated == other.CachedHashCode.IsValueCreated == true
+			? CachedHashCode.Value == other.CachedHashCode.Value
+			: true
+		&& ClassName == other.ClassName
+		&& Namespace == other.Namespace
+		&& GenericParameterNames.SequenceEqual(other.GenericParameterNames)
+		&& PossibleTemplates.SequenceEqual(other.PossibleTemplates);
 
 	public override int GetHashCode() => CachedHashCode.Value;
 

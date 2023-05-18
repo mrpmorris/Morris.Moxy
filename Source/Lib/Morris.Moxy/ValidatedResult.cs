@@ -14,13 +14,19 @@ internal readonly struct ValidatedResult<T>
 		Value = value;
 	}
 
-	private ValidatedResult(IEnumerable<CompilationError> compilationErrors)
+	private ValidatedResult(CompilationError compilationError)
+		: this(ImmutableArray.Create(compilationError))
+	{
+	}
+
+	private ValidatedResult(ImmutableArray<CompilationError> compilationErrors)
 	{
 		Success = false;
 		Value = default!;
-		CompilationErrors = compilationErrors.ToImmutableArray();
+		CompilationErrors = compilationErrors;
 	}
 
 	public static implicit operator ValidatedResult<T>(T value) => new ValidatedResult<T>(value);
+	public static implicit operator ValidatedResult<T>(CompilationError error) => new ValidatedResult<T>(error);
 	public static implicit operator ValidatedResult<T>(ImmutableArray<CompilationError> errors) => new ValidatedResult<T>(errors);
 }

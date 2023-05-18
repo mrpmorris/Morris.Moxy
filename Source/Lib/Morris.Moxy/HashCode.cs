@@ -5,7 +5,7 @@ namespace Morris.Moxy;
 internal static class HashCode
 {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static int Combine(params object[] values)
+	public static int Combine(params object?[] values)
 	{
 		if (values?.Length < 1)
 			return 0;

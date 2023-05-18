@@ -29,16 +29,12 @@ internal sealed class TemplateSource : IEquatable<TemplateSource>
 	public override bool Equals(object obj) => obj is TemplateSource other && Equals(other);
 
 	public bool Equals(TemplateSource other) =>
-		ReferenceEquals(this, other)
-		||
-		(
-			CachedHashCode.IsValueCreated == other.CachedHashCode.IsValueCreated == true
-				? CachedHashCode.Value == other.CachedHashCode.Value
-				: true
-			&& Name == other.Name
-			&& FilePath == other.FilePath
-			&& Source == other.Source
-		);
+		CachedHashCode.IsValueCreated == other.CachedHashCode.IsValueCreated == true
+			? CachedHashCode.Value == other.CachedHashCode.Value
+			: true
+		&& Name == other.Name
+		&& FilePath == other.FilePath
+		&& Source == other.Source;
 
 	public override int GetHashCode() => CachedHashCode.Value;
 }

@@ -26,15 +26,11 @@ internal readonly struct ProjectInformationMeta : IEquatable<ProjectInformationM
 	public override bool Equals(object obj) => obj is ProjectInformationMeta other && Equals(other);
 
 	public bool Equals(ProjectInformationMeta other) =>
-		ReferenceEquals(this, other)
-		||
-		(
-			CachedHashCode.IsValueCreated == other.CachedHashCode.IsValueCreated == true
-				? CachedHashCode.Value == other.CachedHashCode.Value
-				: true
-			&& Path == other.Path
-			&& Namespace == other.Namespace
-		);
+		CachedHashCode.IsValueCreated == other.CachedHashCode.IsValueCreated == true
+			? CachedHashCode.Value == other.CachedHashCode.Value
+			: true
+		&& Path == other.Path
+		&& Namespace == other.Namespace;
 
 	public override int GetHashCode() => CachedHashCode.Value;
 }

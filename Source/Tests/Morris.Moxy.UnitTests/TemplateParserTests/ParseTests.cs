@@ -35,8 +35,8 @@ public class ParseTests
 		ValidatedResult<ParsedTemplate> parsedTemplate = TemplateParser.Parse("", "", source);
 
 		Assert.True(parsedTemplate.Success);
-		Assert.Empty(parsedTemplate.Value.AttributeOptionalProperties);
-		Assert.Empty(parsedTemplate.Value.AttributeRequiredProperties);
+		Assert.Empty(parsedTemplate.Value.OptionalInputs);
+		Assert.Empty(parsedTemplate.Value.RequiredInputs);
 		Assert.Equal("", parsedTemplate.Value.TemplateSource);
 		Assert.True(
 			ImmutableArrayExtensions.SequenceEqual(
@@ -56,22 +56,22 @@ public class ParseTests
 
 		Assert.True(result.Success);
 		Assert.Empty(result.Value.AttributeUsingClauses);
-		Assert.Empty(result.Value.AttributeOptionalProperties);
+		Assert.Empty(result.Value.OptionalInputs);
 		Assert.Equal("", result.Value.TemplateSource);
 
 		Assert.Equal(
-			new TemplateAttributeProperty(
-				Name: "Age",
-				TypeName: "int",
-				DefaultValue: null),
-			result.Value.AttributeRequiredProperties[0]);
+			new TemplateInput(
+				name: "Age",
+				typeName: "int",
+				defaultValue: null),
+			result.Value.RequiredInputs[0]);
 
 		Assert.Equal(
-			new TemplateAttributeProperty(
-				Name: "Name",
-				TypeName: "string",
-				DefaultValue: null),
-			result.Value.AttributeRequiredProperties[1]);
+			new TemplateInput(
+				name: "Name",
+				typeName: "string",
+				defaultValue: null),
+			result.Value.RequiredInputs[1]);
 	}
 
 	[Theory]
@@ -86,22 +86,22 @@ public class ParseTests
 
 		Assert.True(result.Success);
 		Assert.Empty(result.Value.AttributeUsingClauses);
-		Assert.Empty(result.Value.AttributeOptionalProperties);
+		Assert.Empty(result.Value.OptionalInputs);
 		Assert.Equal("", result.Value.TemplateSource);
 
 		Assert.Equal(
-			new TemplateAttributeProperty(
-				Name: "GivenName",
-				TypeName: "string",
-				DefaultValue: "\"Peter\""),
-			result.Value.AttributeRequiredProperties[0]);
+			new TemplateInput(
+				name: "GivenName",
+				typeName: "string",
+				defaultValue: "\"Peter\""),
+			result.Value.RequiredInputs[0]);
 
 		Assert.Equal(
-			new TemplateAttributeProperty(
-				Name: "FamilyName",
-				TypeName: "string",
-				DefaultValue: "\"Morris\""),
-			result.Value.AttributeRequiredProperties[1]);
+			new TemplateInput(
+				name: "FamilyName",
+				typeName: "string",
+				defaultValue: "\"Morris\""),
+			result.Value.RequiredInputs[1]);
 	}
 
 	[Theory]
@@ -116,22 +116,22 @@ public class ParseTests
 
 		Assert.True(result.Success);
 		Assert.Empty(result.Value.AttributeUsingClauses);
-		Assert.Empty(result.Value.AttributeRequiredProperties);
+		Assert.Empty(result.Value.RequiredInputs);
 		Assert.Equal("", result.Value.TemplateSource);
 
 		Assert.Equal(
-			new TemplateAttributeProperty(
-				Name: "OptionalIntNoDefault",
-				TypeName: "int",
-				DefaultValue: null),
-			result.Value.AttributeOptionalProperties[0]);
+			new TemplateInput(
+				name: "OptionalIntNoDefault",
+				typeName: "int",
+				defaultValue: null),
+			result.Value.OptionalInputs[0]);
 
 		Assert.Equal(
-			new TemplateAttributeProperty(
-				Name: "OptionalStringNoDefault",
-				TypeName: "string",
-				DefaultValue: null),
-			result.Value.AttributeOptionalProperties[1]);
+			new TemplateInput(
+				name: "OptionalStringNoDefault",
+				typeName: "string",
+				defaultValue: null),
+			result.Value.OptionalInputs[1]);
 	}
 
 	[Theory]
@@ -146,22 +146,22 @@ public class ParseTests
 
 		Assert.True(result.Success);
 		Assert.Empty(result.Value.AttributeUsingClauses);
-		Assert.Empty(result.Value.AttributeRequiredProperties);
+		Assert.Empty(result.Value.RequiredInputs);
 		Assert.Equal("", result.Value.TemplateSource);
 
 		Assert.Equal(
-			new TemplateAttributeProperty(
-				Name: "OptionalIntWithDefault",
-				TypeName: "int",
-				DefaultValue: "42"),
-			result.Value.AttributeOptionalProperties[0]);
+			new TemplateInput(
+				name: "OptionalIntWithDefault",
+				typeName: "int",
+				defaultValue: "42"),
+			result.Value.OptionalInputs[0]);
 
 		Assert.Equal(
-			new TemplateAttributeProperty(
-				Name: "OptionalStringWithDefault",
-				TypeName: "string",
-				DefaultValue: "\"Eggs are nice\""),
-			result.Value.AttributeOptionalProperties[1]);
+			new TemplateInput(
+				name: "OptionalStringWithDefault",
+				typeName: "string",
+				defaultValue: "\"Eggs are nice\""),
+			result.Value.OptionalInputs[1]);
 	}
 
 	[Theory]
@@ -176,8 +176,8 @@ public class ParseTests
 
 		Assert.True(result.Success);
 		Assert.Empty(result.Value.AttributeUsingClauses);
-		Assert.Empty(result.Value.AttributeOptionalProperties);
-		Assert.Empty(result.Value.AttributeRequiredProperties);
+		Assert.Empty(result.Value.OptionalInputs);
+		Assert.Empty(result.Value.RequiredInputs);
 		Assert.Equal(result.Value.TemplateSource, expected);
 	}
 
@@ -190,8 +190,8 @@ public class ParseTests
 
 		Assert.True(result.Success);
 		Assert.Empty(result.Value.AttributeUsingClauses);
-		Assert.Empty(result.Value.AttributeOptionalProperties);
-		Assert.Empty(result.Value.AttributeRequiredProperties);
+		Assert.Empty(result.Value.OptionalInputs);
+		Assert.Empty(result.Value.RequiredInputs);
 		Assert.Equal(result.Value.TemplateSource, expected);
 	}
 
@@ -208,8 +208,8 @@ public class ParseTests
 
 		Assert.True(result.Success);
 		Assert.Empty(result.Value.AttributeUsingClauses);
-		Assert.Empty(result.Value.AttributeOptionalProperties);
-		Assert.Empty(result.Value.AttributeRequiredProperties);
+		Assert.Empty(result.Value.OptionalInputs);
+		Assert.Empty(result.Value.RequiredInputs);
 		Assert.Equal(result.Value.TemplateSource, expected);
 	}
 
@@ -234,8 +234,8 @@ public class ParseTests
 
 		Assert.True(result.Success);
 		Assert.Equal(2, result.Value.AttributeUsingClauses.Length);
-		Assert.Equal(4, result.Value.AttributeOptionalProperties.Length);
-		Assert.Equal(4, result.Value.AttributeRequiredProperties.Length);
+		Assert.Equal(4, result.Value.OptionalInputs.Length);
+		Assert.Equal(4, result.Value.RequiredInputs.Length);
 		Assert.Equal("Hello!", result.Value.TemplateSource);
 	}
 }
