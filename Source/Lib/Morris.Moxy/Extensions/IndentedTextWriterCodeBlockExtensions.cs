@@ -6,9 +6,14 @@ namespace Morris.Moxy.Extensions;
 internal static class IndentedTextWriterCodeBlockExtension
 {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static IDisposable Indent(this IndentedTextWriter writer)
+	public static IDisposable CodeBlock(this IndentedTextWriter writer)
 	{
+		writer.WriteLine("{");
 		writer.Indent++;
-		return new DisposableAction(() => writer.Indent--);
+		return new DisposableAction(() =>
+		{
+			writer.Indent--;
+			writer.WriteLine("}");
+		});
 	}
 }

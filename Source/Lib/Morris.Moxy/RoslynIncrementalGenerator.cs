@@ -6,7 +6,7 @@ using Morris.Moxy.Metas.Templates;
 namespace Morris.Moxy;
 
 [Generator]
-public class SourceGenerator : IIncrementalGenerator
+public class RoslynIncrementalGenerator : IIncrementalGenerator
 {
 	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{

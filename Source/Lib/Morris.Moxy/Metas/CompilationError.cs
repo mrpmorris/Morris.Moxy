@@ -1,4 +1,4 @@
-﻿namespace Morris.Moxy;
+﻿namespace Morris.Moxy.Metas;
 
 public readonly record struct CompilationError(int Line, int Column, string Id, string Message);
 
