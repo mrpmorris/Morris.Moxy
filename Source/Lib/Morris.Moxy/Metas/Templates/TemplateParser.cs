@@ -11,13 +11,10 @@ internal static class TemplateParser
 			@"|((attribute)\s+(optional|required)\s+(\w+[\w\.]*)\s+(\w+)(?:\s*\=\s*(.*))?)$",
 		options: RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
 
-	public static ValidatedResult<ParsedTemplate> Parse(string name, string filePath, string input)
+	public static ValidatedResult<ParsedTemplate> Parse(string name, string filePath, string source)
 	{
-		if (input is null)
-			throw new ArgumentNullException(nameof(input));
-
 		if (!TrySeparateTemplateHeaderAndBody(
-			input: input,
+			input: source,
 			out ImmutableArray<(int, string)> headerLines,
 			out string body,
 			out int templateBodyLineNumber,

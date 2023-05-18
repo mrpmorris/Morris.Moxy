@@ -6,9 +6,9 @@ using System.Collections.Immutable;
 
 namespace Morris.Moxy.Metas.Classes;
 
-internal static class ClassMetaProvider
+internal static class ClassMetasProvider
 {
-	public static IncrementalValuesProvider<ClassMeta> CreateClassMetaProvider
+	public static IncrementalValuesProvider<ClassMeta> CreateClassMetasProvider
 	(
 		this IncrementalGeneratorInitializationContext context,
 		IncrementalValueProvider<ProjectInformationMeta> projectInformationProvider

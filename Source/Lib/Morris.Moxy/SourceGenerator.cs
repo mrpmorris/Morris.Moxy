@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Morris.Moxy.Metas.Classes;
 using Morris.Moxy.Metas.ProjectInformation;
+using Morris.Moxy.Metas.Templates;
 
 namespace Morris.Moxy;
 
@@ -10,11 +11,12 @@ public class SourceGenerator : IIncrementalGenerator
 	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
 		IncrementalValueProvider<ProjectInformationMeta> projectInformationProvider = context.CreateProjectInformationProvider();
-		IncrementalValuesProvider<ClassMeta> classMetaProvider = context.CreateClassMetaProvider(projectInformationProvider);
+		IncrementalValuesProvider<ClassMeta> classMetaProvider = context.CreateClassMetasProvider(projectInformationProvider);
+		IncrementalValuesProvider<ValidatedResult<ParsedTemplate>> parsedTemplatesProvider = context.CreateParsedTemplatesProvider();
 
 		context.RegisterSourceOutput(
-			source: classMetaProvider,
-			static (production, classMeta) =>
+			source: parsedTemplatesProvider,
+			static (production, parsedTemplate) =>
 			{
 
 			});
