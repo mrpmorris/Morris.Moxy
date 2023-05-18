@@ -1,10 +1,10 @@
 ﻿using Microsoft.CodeAnalysis;
 
-namespace Morris.Moxy.Providers;
+namespace Morris.Moxy.Metas.ProjectInformation;
 
-internal static class ProjectInformationProvider
+internal static class ProjectInformationMetaProvider
 {
-	public static IncrementalValueProvider<ProjectInformation> CreateProjectInformationProvider(this IncrementalGeneratorInitializationContext context) =>
+	public static IncrementalValueProvider<ProjectInformationMeta> CreateProjectInformationProvider(this IncrementalGeneratorInitializationContext context) =>
 		context
 			.AnalyzerConfigOptionsProvider
 			.Select(static (x, _) =>
@@ -16,7 +16,7 @@ internal static class ProjectInformationProvider
 			.Select(static (x, _) =>
 			{
 				x.Right.GlobalOptions.TryGetValue("build_property.RootNamespace", out string? value);
-				return new ProjectInformation(
+				return new ProjectInformationMeta(
 					path: x.Left,
 					@namespace: value ?? "");
 			});

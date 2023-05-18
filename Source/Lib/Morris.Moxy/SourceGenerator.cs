@@ -1,5 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
-using Morris.Moxy.Providers;
+using Morris.Moxy.Metas.ProjectInformation;
 
 namespace Morris.Moxy;
 
@@ -8,6 +8,6 @@ public class SourceGenerator : IIncrementalGenerator
 {
 	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
-		IncrementalValueProvider<ProjectInformation> projectInformationProvider = context.CreateProjectInformationProvider();
+		IncrementalValueProvider<ProjectInformationMeta> projectInformationProvider = ProjectInformationMetaProvider.CreateProjectInformationProvider(context);
 	}
 }
