@@ -2,10 +2,17 @@
 
 internal readonly struct ProjectInformationMeta : IEquatable<ProjectInformationMeta>
 {
-	public readonly string Path = "";
-	public readonly string Namespace = "";
+	public readonly string Path;
+	public readonly string Namespace;
 
 	private readonly Lazy<int> CachedHashCode;
+
+	public ProjectInformationMeta()
+	{
+		Path = "";
+		Namespace = "";
+		CachedHashCode = new Lazy<int>(() => typeof(ProjectInformationMeta).GetHashCode());
+	}
 
 	public ProjectInformationMeta(string path, string @namespace)
 	{

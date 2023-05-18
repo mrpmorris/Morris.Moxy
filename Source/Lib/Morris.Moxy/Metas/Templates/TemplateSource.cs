@@ -8,6 +8,14 @@ internal sealed class TemplateSource : IEquatable<TemplateSource>
 
 	private readonly Lazy<int> CachedHashCode;
 
+	public TemplateSource()
+	{
+		Name = "";
+		FilePath = "";
+		Source = "";
+		CachedHashCode = new Lazy<int>(() => typeof(TemplateSource).GetHashCode());
+	}
+
 	public TemplateSource(string name, string filePath, string source)
 	{
 		Name = name;

@@ -5,7 +5,7 @@ namespace Morris.Moxy.Extensions;
 
 internal static class ImmutableArrayTGetContentsHashCodeExtension
 {
-	[MethodImpl]
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static int GetContentsHashCode<T>(this ImmutableArray<T> source)
 	{
 		if (source.IsDefaultOrEmpty) return 0;

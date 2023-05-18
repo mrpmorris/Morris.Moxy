@@ -4,15 +4,25 @@ namespace Morris.Moxy.Metas.Classes;
 
 internal readonly struct ClassMeta : IEquatable<ClassMeta>
 {
+	public readonly string ClassName;
+	public readonly string Namespace;
+	public readonly ImmutableArray<string> GenericParameterNames;
+	public readonly ImmutableArray<string> PossibleTemplates;
+	public readonly string GenericParametersSignature;
+
 	public static readonly ClassMeta Empty = new ClassMeta();
 
-	public readonly string ClassName = "";
-	public readonly string Namespace = "";
-	public readonly ImmutableArray<string> GenericParameterNames = ImmutableArray<string>.Empty;
-	public readonly ImmutableArray<string> PossibleTemplates = ImmutableArray<string>.Empty;
-	public readonly string GenericParametersSignature { get; } = "";
-
 	private readonly Lazy<int> CachedHashCode;
+
+	public ClassMeta()
+	{
+		ClassName = "";
+		Namespace = "";
+		GenericParameterNames = ImmutableArray<string>.Empty;
+		PossibleTemplates = ImmutableArray<string>.Empty;
+		GenericParametersSignature = "";
+		CachedHashCode = new Lazy<int>(() => typeof(ClassMeta).GetHashCode());
+	}
 
 	public ClassMeta(
 		string className,
@@ -24,6 +34,8 @@ internal readonly struct ClassMeta : IEquatable<ClassMeta>
 		Namespace = @namespace;
 		GenericParameterNames = genericParameterNames;
 		PossibleTemplates = possibleTemplates;
+		GenericParametersSignature = GetGenericParametersSignature(genericParameterNames);
+
 		CachedHashCode = new Lazy<int>(() => HashCode.Combine(className, @namespace, genericParameterNames, possibleTemplates));
 	}
 
@@ -52,5 +64,10 @@ internal readonly struct ClassMeta : IEquatable<ClassMeta>
 			@namespace: @namespace,
 			genericParameterNames: GenericParameterNames,
 			possibleTemplates: PossibleTemplates);
+
+	private static string GetGenericParametersSignature(ImmutableArray<string> genericParameterNames) =>
+		genericParameterNames.IsDefaultOrEmpty
+		? ""
+		: "<" + string.Join(", ", genericParameterNames) + ">";
 }
 

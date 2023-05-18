@@ -8,16 +8,19 @@ internal readonly struct ValidatedResult<T>
 	public readonly ImmutableArray<CompilationError> CompilationErrors = ImmutableArray<CompilationError>.Empty;
 	public readonly T Value;
 
-	public ValidatedResult(T value)
+	private ValidatedResult(T value)
 	{
 		Success = true;
 		Value = value;
 	}
 
-	public ValidatedResult(IEnumerable<CompilationError> compilationErrors)
+	private ValidatedResult(IEnumerable<CompilationError> compilationErrors)
 	{
 		Success = false;
 		Value = default!;
 		CompilationErrors = compilationErrors.ToImmutableArray();
 	}
+
+	public static implicit operator ValidatedResult<T>(T value) => new ValidatedResult<T>(value);
+	public static implicit operator ValidatedResult<T>(ImmutableArray<CompilationError> errors) => new ValidatedResult<T>(errors);
 }
