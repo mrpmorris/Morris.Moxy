@@ -6,11 +6,11 @@ internal readonly struct ClassMeta : IEquatable<ClassMeta>
 {
 	public static readonly ClassMeta Empty = new ClassMeta();
 
-	public string ClassName { get; } = "";
-	public string Namespace { get; } = "";
-	public ImmutableArray<string> GenericParameterNames { get; } = ImmutableArray<string>.Empty;
-	public ImmutableArray<string> PossibleTemplates { get; } = ImmutableArray<string>.Empty;
-	public string GenericParametersSignature { get; } = "";
+	public readonly string ClassName = "";
+	public readonly string Namespace = "";
+	public readonly ImmutableArray<string> GenericParameterNames = ImmutableArray<string>.Empty;
+	public readonly ImmutableArray<string> PossibleTemplates = ImmutableArray<string>.Empty;
+	public readonly string GenericParametersSignature { get; } = "";
 
 	private readonly Lazy<int> CachedHashCode;
 
@@ -35,7 +35,10 @@ internal readonly struct ClassMeta : IEquatable<ClassMeta>
 		ReferenceEquals(this, other)
 		||
 		(
-			ClassName == other.ClassName
+			CachedHashCode.IsValueCreated == other.CachedHashCode.IsValueCreated == true
+				? CachedHashCode.Value == other.CachedHashCode.Value
+				: true
+			&& ClassName == other.ClassName
 			&& Namespace == other.Namespace
 			&& GenericParameterNames.SequenceEqual(other.GenericParameterNames)
 			&& PossibleTemplates.SequenceEqual(other.PossibleTemplates)

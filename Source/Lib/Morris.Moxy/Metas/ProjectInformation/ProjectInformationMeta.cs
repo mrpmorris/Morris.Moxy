@@ -2,8 +2,8 @@
 
 internal readonly struct ProjectInformationMeta : IEquatable<ProjectInformationMeta>
 {
-	public string Path { get; }
-	public string Namespace { get; }
+	public readonly string Path = "";
+	public readonly string Namespace = "";
 
 	private readonly Lazy<int> CachedHashCode;
 
@@ -22,7 +22,10 @@ internal readonly struct ProjectInformationMeta : IEquatable<ProjectInformationM
 		ReferenceEquals(this, other)
 		||
 		(
-			Path == other.Path
+			CachedHashCode.IsValueCreated == other.CachedHashCode.IsValueCreated == true
+				? CachedHashCode.Value == other.CachedHashCode.Value
+				: true
+			&& Path == other.Path
 			&& Namespace == other.Namespace
 		);
 
