@@ -1,4 +1,6 @@
-﻿namespace Morris.Moxy.Models;
+﻿namespace Morris.Moxy.Providers;
+
+using Morris.Moxy;
 
 using System;
 

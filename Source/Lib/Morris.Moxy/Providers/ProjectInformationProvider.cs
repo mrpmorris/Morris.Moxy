@@ -1,5 +1,4 @@
 ﻿using Microsoft.CodeAnalysis;
-using Morris.Moxy.Models;
 
 namespace Morris.Moxy.Providers;
 
