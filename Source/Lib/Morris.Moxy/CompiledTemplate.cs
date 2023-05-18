@@ -1,6 +1,5 @@
-﻿namespace Morris.Moxy
+﻿namespace Morris.Moxy;
+
+internal class CompiledTemplate
 {
-	internal class CompiledTemplate
-	{
-	}
 }
