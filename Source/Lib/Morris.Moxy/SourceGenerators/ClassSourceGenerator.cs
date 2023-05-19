@@ -92,6 +92,7 @@ internal static class ClassSourceGenerator
 			stringWriter.WriteLine("*/");
 		}
 
+		stringWriter.Flush();
 		return stringWriter.ToString();
 	}
 }
