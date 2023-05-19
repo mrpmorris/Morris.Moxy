@@ -8,7 +8,7 @@ namespace Morris.Moxy.Extensions;
 
 internal static class SourceProductionContextAddCompilationErrorsExtensions
 {
-
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void AddCompilationErrors(
 		this SourceProductionContext productionContext,
 		string filePath,
@@ -23,22 +23,22 @@ internal static class SourceProductionContextAddCompilationErrorsExtensions
 
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private static void AddCompilationError(
-		SourceProductionContext productionContext,
+	public static void AddCompilationError(
+		this SourceProductionContext productionContext,
 		string filePath,
-		CompilationError error)
+		CompilationError compilationError)
 	{
 		var descriptor = new DiagnosticDescriptor(
-			id: error.Id,
-			title: error.Message,
-			messageFormat: error.Message,
+			id: compilationError.Id,
+			title: compilationError.Message,
+			messageFormat: compilationError.Message,
 			category: "Moxy",
 			defaultSeverity: DiagnosticSeverity.Error,
 			isEnabledByDefault: true);
 
 		var linePosition = new LinePosition(
-			line: error.Line,
-			character: error.Column);
+			line: compilationError.Line,
+			character: compilationError.Column);
 
 		var diagnostic = Diagnostic.Create(
 			descriptor: descriptor,
