@@ -38,7 +38,7 @@ internal static class CompiledTemplateProvider
 			true =>
 				(
 					parsedTemplate.FilePath,
-					compiledScriban.Messages.ToCompilationErrors(parsedTemplate.TemplateBodyLineNumber)
+					compiledScriban.Messages.ToCompilationErrors(parsedTemplate.TemplateBodyLineIndex)
 				)
 		};
 	}

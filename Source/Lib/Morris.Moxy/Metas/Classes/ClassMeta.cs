@@ -9,7 +9,7 @@ internal readonly struct ClassMeta : IEquatable<ClassMeta>
 	public readonly string ClassName;
 	public readonly string Namespace;
 	public readonly ImmutableArray<string> GenericParameterNames;
-	public readonly ImmutableArray<string> PossibleTemplates;
+	public readonly ImmutableArray<AttributeInstance> PossibleTemplates;
 	public readonly string GenericParametersSignature;
 
 	public string FullName => NamespaceHelper.Combine(Namespace, ClassName);
@@ -23,7 +23,7 @@ internal readonly struct ClassMeta : IEquatable<ClassMeta>
 		ClassName = "";
 		Namespace = "";
 		GenericParameterNames = ImmutableArray<string>.Empty;
-		PossibleTemplates = ImmutableArray<string>.Empty;
+		PossibleTemplates = ImmutableArray<AttributeInstance>.Empty;
 		GenericParametersSignature = "";
 		CachedHashCode = new Lazy<int>(() => typeof(ClassMeta).GetHashCode());
 	}
@@ -32,7 +32,7 @@ internal readonly struct ClassMeta : IEquatable<ClassMeta>
 		string className,
 		string @namespace,
 		ImmutableArray<string> genericParameterNames,
-		ImmutableArray<string> possibleTemplates)
+		ImmutableArray<AttributeInstance> possibleTemplates)
 	{
 		ClassName = className;
 		Namespace = @namespace;
@@ -40,7 +40,11 @@ internal readonly struct ClassMeta : IEquatable<ClassMeta>
 		PossibleTemplates = possibleTemplates;
 		GenericParametersSignature = GetGenericParametersSignature(genericParameterNames);
 
-		CachedHashCode = new Lazy<int>(() => HashCode.Combine(className, @namespace, genericParameterNames.GetContentsHashCode(), possibleTemplates.GetContentsHashCode()));
+		CachedHashCode = new Lazy<int>(() => HashCode.Combine(
+			className,
+			@namespace,
+			genericParameterNames.GetContentsHashCode(),
+			possibleTemplates.GetContentsHashCode()));
 	}
 
 	public static bool operator ==(ClassMeta left, ClassMeta right) => left.Equals(right);

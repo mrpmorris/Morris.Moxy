@@ -10,7 +10,7 @@ internal readonly struct ParsedTemplate : IEquatable<ParsedTemplate>
 	public readonly string Name;
 	public readonly string FilePath;
 	public readonly string TemplateSource;
-	public readonly int TemplateBodyLineNumber;
+	public readonly int TemplateBodyLineIndex;
 	public readonly ImmutableArray<string> AttributeUsingClauses;
 	public readonly ImmutableArray<TemplateInput> RequiredInputs;
 	public readonly ImmutableArray<TemplateInput> OptionalInputs;
@@ -22,7 +22,7 @@ internal readonly struct ParsedTemplate : IEquatable<ParsedTemplate>
 		Name = "";
 		FilePath = "";
 		TemplateSource = "";
-		TemplateBodyLineNumber = 0;
+		TemplateBodyLineIndex = 0;
 		AttributeUsingClauses = ImmutableArray<string>.Empty;
 		RequiredInputs = ImmutableArray<TemplateInput>.Empty;
 		OptionalInputs = ImmutableArray<TemplateInput>.Empty;
@@ -34,7 +34,7 @@ internal readonly struct ParsedTemplate : IEquatable<ParsedTemplate>
 		string name,
 		string filePath,
 		string templateSource,
-		int templateBodyLineNumber,
+		int templateBodyLineIndex,
 		ImmutableArray<string> attributeUsingClauses,
 		ImmutableArray<TemplateInput> requiredInputs,
 		ImmutableArray<TemplateInput> optionalInputs)
@@ -42,7 +42,7 @@ internal readonly struct ParsedTemplate : IEquatable<ParsedTemplate>
 		Name = name;
 		FilePath = filePath;
 		TemplateSource = templateSource;
-		TemplateBodyLineNumber = templateBodyLineNumber;
+		TemplateBodyLineIndex = templateBodyLineIndex;
 		AttributeUsingClauses = attributeUsingClauses;
 		RequiredInputs = requiredInputs;
 		OptionalInputs = optionalInputs;
@@ -51,7 +51,7 @@ internal readonly struct ParsedTemplate : IEquatable<ParsedTemplate>
 			name,
 			filePath,
 			templateSource,
-			templateBodyLineNumber,
+			templateBodyLineIndex,
 			attributeUsingClauses.GetContentsHashCode(),
 			requiredInputs.GetContentsHashCode(),
 			optionalInputs.GetContentsHashCode()));
@@ -65,7 +65,7 @@ internal readonly struct ParsedTemplate : IEquatable<ParsedTemplate>
 		CachedHashCode.IsValueCreated == other.CachedHashCode.IsValueCreated == true
 			? CachedHashCode.Value == other.CachedHashCode.Value
 			: true
-		&& TemplateBodyLineNumber == other.TemplateBodyLineNumber
+		&& TemplateBodyLineIndex == other.TemplateBodyLineIndex
 		&& Name == other.Name
 		&& FilePath == other.FilePath
 		&& TemplateSource == other.TemplateSource

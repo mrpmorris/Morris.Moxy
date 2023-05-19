@@ -5,6 +5,7 @@ using Morris.Moxy.Metas.Classes;
 using Morris.Moxy.Metas.ScriptVariables;
 using Morris.Moxy.Metas.Templates;
 using Scriban;
+using Scriban.Runtime;
 using Scriban.Syntax;
 using System.CodeDom.Compiler;
 using System.Collections.Immutable;
@@ -29,31 +30,38 @@ internal static class ClassSourceGenerator
 	{
 		for (int i = 0; i < classMeta.PossibleTemplates.Length; i++)
 		{
-			string templateName = classMeta.PossibleTemplates[i];
-			if (templateName == compiledTemplate.Name)
-				GenerateForTemplate(productionContext, compiledTemplate, classMeta);
+			AttributeInstance possibleTemplate = classMeta.PossibleTemplates[i];
+			if (possibleTemplate.Name == compiledTemplate.Name)
+				GenerateForTemplate(productionContext, compiledTemplate, classMeta, possibleTemplate);
 		}
 	}
 
+	// TODO: PeteM - Need to allow for duplicate attributes in filename
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private static void GenerateForTemplate(
 		SourceProductionContext productionContext,
 		CompiledTemplate compiledTemplate,
-		ClassMeta classMeta)
+		ClassMeta classMeta,
+		AttributeInstance attributeInstance)
 	{
 		string classFileName = $"{classMeta.FullName}.{compiledTemplate.Name}.MixinCode.Moxy.g.cs"
 			.Replace("<", "{")
 			.Replace(">", "}");
 
-		string generatedSource = GenerateSourceCode(productionContext, compiledTemplate, classMeta);
-		productionContext.AddSource(
-			hintName: classFileName,
-			source: generatedSource);
+		string? generatedSource = GenerateSourceCodeForAttributeInstance(productionContext, compiledTemplate, classMeta, attributeInstance);
+		if (generatedSource is not null)
+			productionContext.AddSource(
+				hintName: classFileName,
+				source: generatedSource);
 
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private static string GenerateSourceCode(SourceProductionContext productionContext, CompiledTemplate compiledTemplate, ClassMeta classMeta)
+	private static string? GenerateSourceCodeForAttributeInstance(
+		SourceProductionContext productionContext,
+		CompiledTemplate compiledTemplate,
+		ClassMeta classMeta,
+		AttributeInstance attributeInstance)
 	{
 		using var stringWriter = new StringWriter();
 		using var writer = new IndentedTextWriter(stringWriter);
@@ -64,10 +72,11 @@ internal static class ClassSourceGenerator
 			@namespace: classMeta.Namespace);
 		var moxyVariable = new MoxyVariable(@class: classVariable);
 
-		var scribanScriptObject = ScribanTemplateContext.GetDefaultBuiltinObject();
+		ScriptObject scribanScriptObject = ScribanTemplateContext.GetDefaultBuiltinObject();
 		scribanScriptObject.Add(
 			key: "moxy",
 			value: moxyVariable);
+		scribanScriptObject.AddVariablesForAttributeInstanceArguments(attributeInstance);
 
 		var scribanTemplateContext = new ScribanTemplateContext(scribanScriptObject) {
 			MemberRenamer = static m => m.Name
@@ -81,15 +90,17 @@ internal static class ClassSourceGenerator
 		catch (ScriptRuntimeException ex)
 		{
 			CompilationError compilationError = CompilationErrors.ScriptCompilationError with {
+				StartLine = ex.Span.Start.Line + compiledTemplate.ParsedTemplate.TemplateBodyLineIndex + 1,
+				StartColumn = ex.Span.Start.Column,
+				EndLine = ex.Span.End.Line + compiledTemplate.ParsedTemplate.TemplateBodyLineIndex + 1,
+				EndColumn = ex.Span.End.Column,
 				Message = ex.Message
 			};
 
 			productionContext.AddCompilationError(
 				filePath: compiledTemplate.FilePath,
 				compilationError: compilationError);
-			stringWriter.WriteLine("/* An error occurred executing your mixin script");
-			stringWriter.WriteLine(ex.ToString());
-			stringWriter.WriteLine("*/");
+			return null;
 		}
 
 		stringWriter.Flush();

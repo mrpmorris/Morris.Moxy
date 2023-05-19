@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 namespace Morris.Moxy.Extensions;
 
-internal static class SourceProductionContextAddCompilationErrorsExtensions
+internal static class SourceProductionContextAddCompilationErrorsExtension
 {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void AddCompilationErrors(
@@ -36,9 +36,13 @@ internal static class SourceProductionContextAddCompilationErrorsExtensions
 			defaultSeverity: DiagnosticSeverity.Error,
 			isEnabledByDefault: true);
 
-		var linePosition = new LinePosition(
-			line: compilationError.Line,
-			character: compilationError.Column);
+		var startPosition = new LinePosition(
+			line: compilationError.StartLine,
+			character: compilationError.StartColumn);
+
+		var endPosition = new LinePosition(
+			line: compilationError.EndLine,
+			character: compilationError.EndColumn);
 
 		var diagnostic = Diagnostic.Create(
 			descriptor: descriptor,
@@ -46,8 +50,8 @@ internal static class SourceProductionContextAddCompilationErrorsExtensions
 				filePath: filePath,
 				textSpan: new TextSpan(0, 0),
 				lineSpan: new LinePositionSpan(
-					start: linePosition,
-					end: linePosition)));
+					start: startPosition,
+					end: endPosition)));
 
 		productionContext.ReportDiagnostic(diagnostic);
 	}

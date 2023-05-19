@@ -30,11 +30,15 @@ internal static class TemplateParser
 
 		foreach ((int Number, string Value) headerLine in headerLines)
 		{
-			string trimmedHeaderLine = headerLine.Value.Trim();
-			var matches = Regex.Matches(trimmedHeaderLine);
+			var matches = Regex.Matches(headerLine.Value);
 
 			if (matches.Count == 0)
-				compilationErrorsBuilder.Add(CompilationErrors.UnknownOrMalformedHeader with { Line = headerLine.Number });
+				compilationErrorsBuilder.Add(CompilationErrors.UnknownOrMalformedHeader with { 
+					StartLine = headerLine.Number, 
+					StartColumn = 1,
+					EndLine = headerLine.Number,
+					EndColumn = headerLine.Value.Length
+				});
 			else
 			{
 				Match match = matches[0];
@@ -62,7 +66,7 @@ internal static class TemplateParser
 		var parsedTemplate = new ParsedTemplate(
 			name: name,
 			filePath: filePath,
-			templateBodyLineNumber: templateBodyLineNumber,
+			templateBodyLineIndex: templateBodyLineNumber,
 			attributeUsingClauses: attributeUsingClausesBuilder.ToImmutable(),
 			requiredInputs: attributeRequiredPropertiesBuilder.ToImmutable(),
 			optionalInputs: attributeOptionalPropertiesBuilder.ToImmutable(),
@@ -100,7 +104,7 @@ internal static class TemplateParser
 				if (parsingState == ParsingState.InHeader)
 				{
 					headerLines = ImmutableArray.Create<(int, string)>();
-					compilationError = CompilationErrors.NoClosingHeaderMarkerFound with { Line = lineNumber };
+					compilationError = CompilationErrors.NoClosingHeaderMarkerFound with { StartLine = lineNumber, EndLine = lineNumber };
 					return false;
 				}
 				headerLines = headerLinesBuilder.ToImmutable();

@@ -36,11 +36,14 @@ internal static class ClassMetasProvider
 		var typeSymbol = (INamedTypeSymbol?)context.SemanticModel.GetDeclaredSymbol(typeDeclarationSyntax, cancellationToken);
 		if (typeSymbol is null) return ClassMeta.Empty;
 
-		ImmutableArray<string> possibleTemplates = typeDeclarationSyntax
+		ImmutableArray<AttributeInstance> possibleTemplates = typeDeclarationSyntax
 			.AttributeLists
 			.SelectMany(x => x.Attributes)
 			.Where(x => context.SemanticModel.GetDeclaredSymbol(x, cancellationToken) is null)
-			.Select(x => x.Name.ToFullString())
+			.Select(x => 
+				new AttributeInstance(
+					name: x.Name.ToFullString(),
+					arguments: x.GetArgumentKeyValuePairs(context.SemanticModel)))
 			.ToImmutableArray();
 		if (possibleTemplates.Length == 0) return ClassMeta.Empty;
 

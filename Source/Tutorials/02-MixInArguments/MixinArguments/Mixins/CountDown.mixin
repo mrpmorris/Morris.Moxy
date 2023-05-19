@@ -1,7 +1,11 @@
 ﻿@moxy
 @attribute required int From
+@attribute optional Type Target
 @moxy
 
+{{
+    $match = $segment | regex.match `\{(\w+)\s*:?(\w+)\}?`;
+}}
 namespace {{ moxy.Class.Namespace }}
 {
     partial class {{ moxy.Class.Name }}
