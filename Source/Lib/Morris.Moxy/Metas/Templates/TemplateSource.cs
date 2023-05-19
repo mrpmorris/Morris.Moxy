@@ -1,10 +1,10 @@
 ﻿namespace Morris.Moxy.Metas.Templates;
 
-internal sealed class TemplateSource : IEquatable<TemplateSource>
+internal struct TemplateSource : IEquatable<TemplateSource>
 {
-	public readonly string Name = "";
-	public readonly string FilePath = "";
-	public readonly string Source = "";
+	public readonly string Name;
+	public readonly string FilePath;
+	public readonly string Source;
 
 	private readonly Lazy<int> CachedHashCode;
 
