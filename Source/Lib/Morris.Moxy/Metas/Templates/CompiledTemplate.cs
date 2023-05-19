@@ -4,10 +4,13 @@ namespace Morris.Moxy.Metas.Templates;
 
 internal readonly struct CompiledTemplate : IEquatable<CompiledTemplate>
 {
+	public static readonly CompiledTemplate Error = new CompiledTemplate();
+	private readonly static Template ErrorTemplate = Template.Parse("// The mixin template for this script has errors");
+
 	public readonly string Name;
 	public readonly string FilePath;
 	public readonly ParsedTemplate ParsedTemplate;
-	public readonly Template? CompiledScript;
+	public readonly Template CompiledScript;
 
 	private readonly Lazy<int> CachedHashCode;
 
@@ -16,7 +19,7 @@ internal readonly struct CompiledTemplate : IEquatable<CompiledTemplate>
 		Name = "";
 		FilePath = "";
 		ParsedTemplate = ParsedTemplate.Empty;
-		CompiledScript = null;
+		CompiledScript = ErrorTemplate;
 
 		CachedHashCode = new Lazy<int>(() => typeof(CompiledTemplate).GetHashCode());
 	}
@@ -25,7 +28,7 @@ internal readonly struct CompiledTemplate : IEquatable<CompiledTemplate>
 		string name,
 		string filePath,
 		ParsedTemplate parsedTemplate,
-		Template? compiledScript)
+		Template compiledScript)
 	{
 		Name = name;
 		FilePath = filePath;

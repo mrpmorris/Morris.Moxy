@@ -1,4 +1,5 @@
 ﻿using Morris.Moxy.Extensions;
+using Morris.Moxy.Helpers;
 using System.Collections.Immutable;
 
 namespace Morris.Moxy.Metas.Classes;
@@ -10,6 +11,8 @@ internal readonly struct ClassMeta : IEquatable<ClassMeta>
 	public readonly ImmutableArray<string> GenericParameterNames;
 	public readonly ImmutableArray<string> PossibleTemplates;
 	public readonly string GenericParametersSignature;
+
+	public string FullName => NamespaceHelper.Combine(Namespace, ClassName);
 
 	public static readonly ClassMeta Empty = new ClassMeta();
 

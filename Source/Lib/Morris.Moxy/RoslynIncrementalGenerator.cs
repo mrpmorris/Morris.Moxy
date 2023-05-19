@@ -4,6 +4,7 @@ using Morris.Moxy.Metas.ProjectInformation;
 using Morris.Moxy.Metas.Templates;
 using Morris.Moxy.SourceGenerators;
 using Morris.Moxy.Extensions;
+using System.Collections.Immutable;
 
 namespace Morris.Moxy;
 
@@ -15,14 +16,15 @@ public class RoslynIncrementalGenerator : IIncrementalGenerator
 		IncrementalValueProvider<ProjectInformationMeta> projectInformationProvider = context.CreateProjectInformationProvider();
 		IncrementalValuesProvider<ClassMeta> classMetaProvider = context.CreateClassMetasProvider(projectInformationProvider);
 		IncrementalValuesProvider<ValidatedResult<ParsedTemplate>> parsedTemplatesProvider = context.CreateParsedTemplatesProvider();
+		IncrementalValuesProvider<ValidatedResult<CompiledTemplate>> compiledTemplatesProvider = parsedTemplatesProvider.CreateCompiledTemplateProvider();
 
 		context.RegisterSourceOutput(
 			source: parsedTemplatesProvider.Combine(projectInformationProvider),
-			static (production, input) =>
+			static (productionContext, input) =>
 			{
 				ValidatedResult<ParsedTemplate> parsedTemplate = input.Left;
 				if (parsedTemplate.Failure)
-					production.AddCompilationErrors(parsedTemplate.FilePath, parsedTemplate.CompilationErrors);
+					productionContext.AddCompilationErrors(parsedTemplate.FilePath, parsedTemplate.CompilationErrors);
 				else
 				{
 					ProjectInformationMeta projectInfo = input.Right;
@@ -30,11 +32,26 @@ public class RoslynIncrementalGenerator : IIncrementalGenerator
 						rootNamespace: projectInfo.Namespace,
 						projectPath: projectInfo.Path,
 						parsedTemplate: parsedTemplate.Value);
-					production.AddSource(
+					productionContext.AddSource(
 						hintName: $"{parsedTemplate.Value.Name}.TemplateAttribute.Moxy.g.cs",
 						source: generatedSourceCode);
 				}
 			});
+
+		context.RegisterSourceOutput(
+			source: compiledTemplatesProvider.Combine(classMetaProvider.Collect()),
+			static (productionContext, input) =>
+			{
+				ValidatedResult<CompiledTemplate> compiledTemplateResult = input.Left;
+				ImmutableArray<ClassMeta> classMetas = input.Right;
+				if (compiledTemplateResult.Failure)
+					productionContext.AddCompilationErrors(compiledTemplateResult.FilePath, compiledTemplateResult.CompilationErrors);
+				else
+				{
+					ClassSourceGenerator.Generate(productionContext, compiledTemplateResult.Value, classMetas);
+				}
+			});
+
 	}
 
 }
