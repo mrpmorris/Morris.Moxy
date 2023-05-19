@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Morris.Moxy.Metas.Classes;
 using Morris.Moxy.Metas.Templates;
+using System.CodeDom.Compiler;
 using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
 
@@ -38,9 +39,21 @@ internal static class ClassSourceGenerator
 			.Replace("<", "{")
 			.Replace(">", "}");
 
+		string generatedSource = GenerateSourceCode(productionContext, compiledTemplate, classMeta);
+
 		productionContext.AddSource(
 			hintName: classFileName,
-			source: "// Hello");
+			source: generatedSource);
 
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	private static string GenerateSourceCode(SourceProductionContext productionContext, CompiledTemplate compiledTemplate, ClassMeta classMeta)
+	{
+		using var stringWriter = new StringWriter();
+		using var writer = new IndentedTextWriter(stringWriter);
+		writer.WriteLine($"// Generated at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC");
+
+		return stringWriter.ToString();
 	}
 }
