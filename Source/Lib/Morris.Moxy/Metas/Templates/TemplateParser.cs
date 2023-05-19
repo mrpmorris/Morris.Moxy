@@ -20,7 +20,7 @@ internal static class TemplateParser
 			out int templateBodyLineNumber,
 			out CompilationError? compilationError))
 		{
-			return compilationError!.Value;
+			return (filePath, compilationError!.Value);
 		}
 
 		var attributeUsingClausesBuilder = ImmutableArray.CreateBuilder<string>();
@@ -57,7 +57,7 @@ internal static class TemplateParser
 		}
 
 		if (compilationErrorsBuilder.Count != 0)
-			return compilationErrorsBuilder.ToImmutable();
+			return (filePath, compilationErrorsBuilder.ToImmutable());
 
 		var parsedTemplate = new ParsedTemplate(
 			name: name,
@@ -68,7 +68,7 @@ internal static class TemplateParser
 			optionalInputs: attributeOptionalPropertiesBuilder.ToImmutable(),
 			templateSource: body);
 
-		return parsedTemplate;
+		return (filePath, parsedTemplate);
 	}
 
 	public static bool TrySeparateTemplateHeaderAndBody(

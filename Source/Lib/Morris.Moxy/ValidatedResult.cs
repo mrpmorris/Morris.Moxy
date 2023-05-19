@@ -5,29 +5,39 @@ namespace Morris.Moxy;
 
 internal readonly struct ValidatedResult<T>
 {
+	public readonly string FilePath;
 	public readonly bool Success;
-	public readonly ImmutableArray<CompilationError> CompilationErrors = ImmutableArray<CompilationError>.Empty;
+	public readonly ImmutableArray<CompilationError> CompilationErrors;
 	public readonly T Value;
+	public bool Failure => !Success;
 
-	private ValidatedResult(T value)
+	private ValidatedResult(string filePath, T value)
 	{
 		Success = true;
 		Value = value;
+		FilePath = filePath;
+		CompilationErrors = ImmutableArray<CompilationError>.Empty;
 	}
 
-	private ValidatedResult(CompilationError compilationError)
-		: this(ImmutableArray.Create(compilationError))
+	private ValidatedResult(string filePath, CompilationError compilationError)
+		: this (filePath, ImmutableArray.Create(compilationError))
 	{
 	}
 
-	private ValidatedResult(ImmutableArray<CompilationError> compilationErrors)
+	private ValidatedResult(string filePath, ImmutableArray<CompilationError> compilationErrors)
 	{
+		FilePath = filePath;
 		Success = false;
 		Value = default!;
 		CompilationErrors = compilationErrors;
 	}
 
-	public static implicit operator ValidatedResult<T>(T value) => new ValidatedResult<T>(value);
-	public static implicit operator ValidatedResult<T>(CompilationError error) => new ValidatedResult<T>(error);
-	public static implicit operator ValidatedResult<T>(ImmutableArray<CompilationError> errors) => new ValidatedResult<T>(errors);
+	public static implicit operator ValidatedResult<T>((string filePath, T value) args) =>
+		new ValidatedResult<T>(args.filePath, args.value);
+
+	public static implicit operator ValidatedResult<T>((string filePath, CompilationError error) args) =>
+		new ValidatedResult<T>(args.filePath, args.error);
+
+	public static implicit operator ValidatedResult<T>((string filePath, ImmutableArray<CompilationError> errors) args) =>
+		new ValidatedResult<T>(args.filePath, args.errors);
 }

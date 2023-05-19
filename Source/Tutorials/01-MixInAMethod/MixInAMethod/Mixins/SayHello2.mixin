@@ -1,0 +1,10 @@
+﻿namespace {{ moxy.Class.Namespace }}
+{
+    partial class {{ moxy.Class.Name }}
+    {
+      public void SayHello()
+      {
+        Console.WriteLine("Hello
+      }
+    }
+}

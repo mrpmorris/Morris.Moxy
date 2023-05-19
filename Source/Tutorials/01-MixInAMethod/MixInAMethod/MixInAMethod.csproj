@@ -11,9 +11,11 @@
 
   <ItemGroup>
     <None Remove="Mixins\SayHello.mixin" />
+    <None Remove="Mixins\SayHello2.mixin" />
   </ItemGroup>
 
   <ItemGroup>
+    <AdditionalFiles Include="Mixins\SayHello2.mixin" />
     <AdditionalFiles Include="Mixins\SayHello.mixin" />
   </ItemGroup>
  
