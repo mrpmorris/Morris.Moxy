@@ -13,31 +13,34 @@ internal static class ClassSourceGenerator
 		for (int i = 0; i < classMetas.Length; i++)
 		{
 			ClassMeta classMeta = classMetas[i];
-			Generate(productionContext, compiledTemplate, classMeta);
+			GenerateForClassMeta(productionContext, compiledTemplate, classMeta);
 		}
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private static void Generate(SourceProductionContext productionContext, CompiledTemplate compiledTemplate, ClassMeta classMeta)
+	private static void GenerateForClassMeta(SourceProductionContext productionContext, CompiledTemplate compiledTemplate, ClassMeta classMeta)
 	{
-		string classFullName = $"{classMeta.FullName}.{compiledTemplate.Name}.Moxy.g.cs"
-			.Replace("<", "{")
-			.Replace(">", "}");
-
 		for (int i = 0; i < classMeta.PossibleTemplates.Length; i++)
 		{
 			string templateName = classMeta.PossibleTemplates[i];
 			if (templateName == compiledTemplate.Name)
-				Generate(productionContext, compiledTemplate, classMeta, templateName);
+				GenerateForTemplate(productionContext, compiledTemplate, classMeta);
 		}
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private static void Generate(
+	private static void GenerateForTemplate(
 		SourceProductionContext productionContext,
 		CompiledTemplate compiledTemplate,
-		ClassMeta classMeta,
-		string templateName)
+		ClassMeta classMeta)
 	{
+		string classFileName = $"{classMeta.FullName}.{compiledTemplate.Name}.MixinCode.Moxy.g.cs"
+			.Replace("<", "{")
+			.Replace(">", "}");
+
+		productionContext.AddSource(
+			hintName: classFileName,
+			source: "// Hello");
+
 	}
 }

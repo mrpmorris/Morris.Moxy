@@ -22,19 +22,13 @@ public class RoslynIncrementalGenerator : IIncrementalGenerator
 			source: parsedTemplatesProvider.Combine(projectInformationProvider),
 			static (productionContext, input) =>
 			{
-				ValidatedResult<ParsedTemplate> parsedTemplate = input.Left;
-				if (parsedTemplate.Failure)
-					productionContext.AddCompilationErrors(parsedTemplate.FilePath, parsedTemplate.CompilationErrors);
+				ValidatedResult<ParsedTemplate> parsedTemplateResult = input.Left;
+				if (parsedTemplateResult.Failure)
+					productionContext.AddCompilationErrors(parsedTemplateResult.FilePath, parsedTemplateResult.CompilationErrors);
 				else
 				{
 					ProjectInformationMeta projectInfo = input.Right;
-					string generatedSourceCode = TemplateAttributeSourceGenerator.Generate(
-						rootNamespace: projectInfo.Namespace,
-						projectPath: projectInfo.Path,
-						parsedTemplate: parsedTemplate.Value);
-					productionContext.AddSource(
-						hintName: $"{parsedTemplate.Value.Name}.TemplateAttribute.Moxy.g.cs",
-						source: generatedSourceCode);
+					TemplateAttributeSourceGenerator.Generate(productionContext, projectInfo, parsedTemplateResult.Value);
 				}
 			});
 
@@ -43,15 +37,13 @@ public class RoslynIncrementalGenerator : IIncrementalGenerator
 			static (productionContext, input) =>
 			{
 				ValidatedResult<CompiledTemplate> compiledTemplateResult = input.Left;
-				ImmutableArray<ClassMeta> classMetas = input.Right;
 				if (compiledTemplateResult.Failure)
 					productionContext.AddCompilationErrors(compiledTemplateResult.FilePath, compiledTemplateResult.CompilationErrors);
 				else
 				{
+					ImmutableArray<ClassMeta> classMetas = input.Right;
 					ClassSourceGenerator.Generate(productionContext, compiledTemplateResult.Value, classMetas);
 				}
 			});
-
 	}
-
 }

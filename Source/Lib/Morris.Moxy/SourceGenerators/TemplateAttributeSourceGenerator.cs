@@ -1,12 +1,31 @@
 ﻿using Morris.Moxy.Metas.Templates;
 using System.CodeDom.Compiler;
 using Morris.Moxy.Extensions;
+using Microsoft.CodeAnalysis;
+using Morris.Moxy.Metas.ProjectInformation;
+using System.Runtime.CompilerServices;
 
 namespace Morris.Moxy.SourceGenerators;
 
 internal static class TemplateAttributeSourceGenerator
 {
-	public static string Generate(
+	public static void Generate(
+		SourceProductionContext productionContext,
+		ProjectInformationMeta projectInfo,
+		ParsedTemplate parsedTemplate)
+	{
+		string generatedSourceCode = GenerateSource(
+			rootNamespace: projectInfo.Namespace,
+			projectPath: projectInfo.Path,
+			parsedTemplate: parsedTemplate);
+
+		productionContext.AddSource(
+			hintName: $"{parsedTemplate.Name}.MixinAttribute.Moxy.g.cs",
+			source: generatedSourceCode);
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	private static string GenerateSource(
 		string rootNamespace,
 		string projectPath,
 		ParsedTemplate parsedTemplate)
