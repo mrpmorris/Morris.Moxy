@@ -5,6 +5,8 @@ namespace Morris.Moxy.Metas.Templates;
 
 internal readonly struct ParsedTemplate : IEquatable<ParsedTemplate>
 {
+	public static readonly ParsedTemplate Empty = new ParsedTemplate();
+
 	public readonly string Name;
 	public readonly string FilePath;
 	public readonly string TemplateSource;
