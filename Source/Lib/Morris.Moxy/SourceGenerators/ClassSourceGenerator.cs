@@ -28,23 +28,40 @@ internal static class ClassSourceGenerator
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private static void GenerateForClassMeta(SourceProductionContext productionContext, CompiledTemplate compiledTemplate, ClassMeta classMeta)
 	{
-		for (int i = 0; i < classMeta.PossibleTemplates.Length; i++)
+		var groupedTemplates = classMeta.PossibleTemplates.GroupBy(t => t.Name).ToArray();
+
+		for (int groupIndex = 0; groupIndex < groupedTemplates.Length; groupIndex++)
 		{
-			AttributeInstance possibleTemplate = classMeta.PossibleTemplates[i];
-			if (possibleTemplate.Name == compiledTemplate.Name)
-				GenerateForTemplate(productionContext, compiledTemplate, classMeta, possibleTemplate);
+			var grouped = groupedTemplates[groupIndex];
+			if (grouped.Key == compiledTemplate.Name)
+				GenerateForGroupedTemplates(productionContext, compiledTemplate, classMeta, grouped.ToImmutableArray());
 		}
 	}
 
-	// TODO: PeteM - Need to allow for duplicate attributes in filename
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	private static void GenerateForGroupedTemplates(
+		SourceProductionContext productionContext,
+		CompiledTemplate compiledTemplate,
+		ClassMeta classMeta,
+		ImmutableArray<AttributeInstance> attributeInstances)
+	{
+		int fileIndex = 1;
+		for (int i = 0; i < attributeInstances.Length; i++)
+		{
+			AttributeInstance attributeInstance = attributeInstances[i];
+			GenerateForTemplate(productionContext, compiledTemplate, classMeta, attributeInstance, fileIndex++);
+		}
+	}
+
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private static void GenerateForTemplate(
 		SourceProductionContext productionContext,
 		CompiledTemplate compiledTemplate,
 		ClassMeta classMeta,
-		AttributeInstance attributeInstance)
+		AttributeInstance attributeInstance,
+		int index)
 	{
-		string classFileName = $"{classMeta.FullName}.{compiledTemplate.Name}.MixinCode.Moxy.g.cs"
+		string classFileName = $"{classMeta.FullName}.{compiledTemplate.Name}.Instance{index}.MixinCode.Moxy.g.cs"
 			.Replace("<", "{")
 			.Replace(">", "}");
 
@@ -53,7 +70,6 @@ internal static class ClassSourceGenerator
 			productionContext.AddSource(
 				hintName: classFileName,
 				source: generatedSource);
-
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
