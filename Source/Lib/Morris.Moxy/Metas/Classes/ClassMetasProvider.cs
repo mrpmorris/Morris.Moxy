@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Morris.Moxy.Extensions;
 using Morris.Moxy.Metas.ProjectInformation;
 using System.Collections.Immutable;
+using System.Runtime.CompilerServices;
 
 namespace Morris.Moxy.Metas.Classes;
 
@@ -30,6 +31,7 @@ internal static class ClassMetasProvider
 			: x.Left.WithNamespace(x.Right.Namespace)
 		);
 
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private static ClassMeta CreateClassMeta(GeneratorSyntaxContext context, CancellationToken cancellationToken)
 	{
 		var typeDeclarationSyntax = (TypeDeclarationSyntax)context.Node;
