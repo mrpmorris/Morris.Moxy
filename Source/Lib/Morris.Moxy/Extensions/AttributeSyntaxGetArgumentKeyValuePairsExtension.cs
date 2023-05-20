@@ -1,5 +1,4 @@
 ﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
@@ -10,10 +9,12 @@ internal static class AttributeSyntaxGetArgumentKeyValuePairsExtension
 {
 	public static ImmutableArray<KeyValuePair<string, string>> GetArgumentKeyValuePairs(
 		this AttributeSyntax attributeSyntax,
-		SemanticModel semanticModel)
+		SemanticModel semanticModel,
+		ImmutableArray<Metas.Templates.TemplateInput> requiredInputs)
 	{
 		SeparatedSyntaxList<AttributeArgumentSyntax>? arguments = attributeSyntax.ArgumentList?.Arguments;
-		if (arguments is null) return ImmutableArray<KeyValuePair<string, string>>.Empty;
+		if (arguments is null)
+			return ImmutableArray<KeyValuePair<string, string>>.Empty;
 
 		var resultBuilder = ImmutableArray.CreateBuilder<KeyValuePair<string, string>>();
 
@@ -26,7 +27,7 @@ internal static class AttributeSyntaxGetArgumentKeyValuePairsExtension
 				? argument.NameEquals.Name.Identifier.ValueText
 				: argument.NameColon is not null
 				? argument.NameColon.Name.Identifier.ValueText
-				: throw new NotImplementedException(); // TODO: PeteM - Fix this //attributeSyntax.AttributeConstructorParameterNames[argumentIndex];
+				: requiredInputs[argumentIndex].Name;
 
 			string value = argument.Expression switch {
 				TypeOfExpressionSyntax x => x.ToFullString(),

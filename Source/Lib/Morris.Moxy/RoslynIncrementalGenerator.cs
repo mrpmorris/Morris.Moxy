@@ -14,9 +14,9 @@ public class RoslynIncrementalGenerator : IIncrementalGenerator
 	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
 		IncrementalValueProvider<ProjectInformationMeta> projectInformationProvider = context.CreateProjectInformationProvider();
-		IncrementalValuesProvider<ClassMeta> classMetaProvider = context.CreateClassMetasProvider(projectInformationProvider);
 		IncrementalValuesProvider<ValidatedResult<ParsedTemplate>> parsedTemplatesProvider = context.CreateParsedTemplatesProvider();
 		IncrementalValuesProvider<ValidatedResult<CompiledTemplate>> compiledTemplatesProvider = parsedTemplatesProvider.CreateCompiledTemplateProvider();
+		IncrementalValuesProvider<ClassMeta> classMetaProvider = context.CreateClassMetasProvider(projectInformationProvider, parsedTemplatesProvider);
 
 		context.RegisterSourceOutput(
 			source: parsedTemplatesProvider.Combine(projectInformationProvider),

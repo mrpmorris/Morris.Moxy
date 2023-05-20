@@ -12,8 +12,8 @@ internal static class ClassMetasProvider
 	public static IncrementalValuesProvider<ClassMeta> CreateClassMetasProvider
 	(
 		this IncrementalGeneratorInitializationContext context,
-		IncrementalValueProvider<ProjectInformationMeta> projectInformationProvider
-	)
+		IncrementalValueProvider<ProjectInformationMeta> projectInformationProvider,
+		IncrementalValuesProvider<ValidatedResult<Templates.ParsedTemplate>> parsedTemplatesProvider)
 	=>
 		context
 		.SyntaxProvider
@@ -22,7 +22,8 @@ internal static class ClassMetasProvider
 			predicate: static (syntaxNode, _) => syntaxNode is TypeDeclarationSyntax,
 			transform: static (syntaxContext, _) => syntaxContext
 		)
-		.Select(CreateClassMeta)
+		.Combine(parsedTemplatesProvider.Collect())
+		.Select((x, cancellationToken) => CreateClassMeta(x.Left, x.Right, cancellationToken))
 		.Where(static(x) => x != ClassMeta.Empty)
 		.Combine(projectInformationProvider)
 		.Select(static(x, _) =>
@@ -32,22 +33,32 @@ internal static class ClassMetasProvider
 		);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private static ClassMeta CreateClassMeta(GeneratorSyntaxContext context, CancellationToken cancellationToken)
+	private static ClassMeta CreateClassMeta(
+		GeneratorSyntaxContext context,
+		ImmutableArray<ValidatedResult<Templates.ParsedTemplate>> parsedTemplates,
+		CancellationToken cancellationToken)
 	{
 		var typeDeclarationSyntax = (TypeDeclarationSyntax)context.Node;
 		var typeSymbol = (INamedTypeSymbol?)context.SemanticModel.GetDeclaredSymbol(typeDeclarationSyntax, cancellationToken);
-		if (typeSymbol is null) return ClassMeta.Empty;
+		if (typeSymbol is null)
+			return ClassMeta.Empty;
 
-		ImmutableArray<AttributeInstance> possibleTemplates = typeDeclarationSyntax
-			.AttributeLists
-			.SelectMany(x => x.Attributes)
-			.Where(x => context.SemanticModel.GetDeclaredSymbol(x, cancellationToken) is null)
-			.Select(x => 
-				new AttributeInstance(
-					name: x.Name.ToFullString(),
-					arguments: x.GetArgumentKeyValuePairs(context.SemanticModel)))
-			.ToImmutableArray();
-		if (possibleTemplates.Length == 0) return ClassMeta.Empty;
+		ImmutableArray<AttributeInstance> possibleTemplates =
+		(
+			from x in typeDeclarationSyntax.AttributeLists.SelectMany(x => x.Attributes)
+			let attributeFullName = x.Name.ToFullString()
+			let parsedTemplate = parsedTemplates.FirstOrDefault(x => x.Success && x.Value.Name == attributeFullName)
+			where parsedTemplate.Value != Templates.ParsedTemplate.Empty
+			where context.SemanticModel.GetDeclaredSymbol(x, cancellationToken) == null
+			select new AttributeInstance(
+				name: attributeFullName,
+				arguments: x.GetArgumentKeyValuePairs(context.SemanticModel, parsedTemplate.Value.RequiredInputs)
+			)
+		)
+		.ToImmutableArray();
+
+		if (possibleTemplates.Length == 0)
+			return ClassMeta.Empty;
 
 		string className = typeDeclarationSyntax.Identifier.Text;
 		string @namespace = typeSymbol.ContainingNamespace.ToFullString();

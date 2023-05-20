@@ -8,7 +8,8 @@ internal static class ImmutableArrayTGetContentsHashCodeExtension
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static int GetContentsHashCode<T>(this ImmutableArray<T> source)
 	{
-		if (source.IsDefaultOrEmpty) return 0;
+		if (source.IsDefaultOrEmpty)
+			return 0;
 
 		int result = 17;
 
