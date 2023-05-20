@@ -61,7 +61,7 @@ internal static class ClassMetasProvider
 			return ClassMeta.Empty;
 
 		string className = typeDeclarationSyntax.Identifier.Text;
-		string @namespace = typeSymbol.ContainingNamespace.ToFullString();
+		string @namespace = typeSymbol.ContainingNamespace.ToDisplayString();
 		var genericParameterNames = 
 			(typeDeclarationSyntax.TypeParameterList?.Parameters.Count ?? 0) == 0
 			? ImmutableArray<string>.Empty
