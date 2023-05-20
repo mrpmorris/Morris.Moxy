@@ -4,7 +4,6 @@ using Morris.Moxy.Metas;
 using Morris.Moxy.Metas.Classes;
 using Morris.Moxy.Metas.ScriptVariables;
 using Morris.Moxy.Metas.Templates;
-using Scriban;
 using Scriban.Runtime;
 using Scriban.Syntax;
 using System.CodeDom.Compiler;
@@ -82,6 +81,7 @@ internal static class ClassSourceGenerator
 		using var stringWriter = new StringWriter();
 		using var writer = new IndentedTextWriter(stringWriter);
 		writer.WriteLine($"// Generated at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC");
+		AddUsingClausesFromTargetClass(classMeta, writer);
 
 		var classVariable = new ClassVariable(
 			name: classMeta.ClassName,
@@ -121,5 +121,14 @@ internal static class ClassSourceGenerator
 
 		stringWriter.Flush();
 		return stringWriter.ToString();
+	}
+
+	private static void AddUsingClausesFromTargetClass(ClassMeta classMeta, IndentedTextWriter writer)
+	{
+		for (int i = classMeta.UsingClauses.Length - 1; i >= 0; i--)
+		{
+			string usingClause = classMeta.UsingClauses[i];
+			writer.WriteLine($"using {usingClause};");
+		}
 	}
 }
