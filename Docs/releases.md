@@ -1,5 +1,8 @@
 # Releases
 
+## New in 1.3
+Rewritten to improve performance
+
 ## New in 1.2
 Allow mixins to be applied to a class more than once [Fixes #10](https://github.com/mrpmorris/Morris.Moxy/issues/10)
 

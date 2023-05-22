@@ -1,78 +1,110 @@
-﻿using System.CodeDom.Compiler;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis;
+﻿using Morris.Moxy.Metas.Templates;
+using System.CodeDom.Compiler;
 using Morris.Moxy.Extensions;
-using Morris.Moxy.Templates;
-using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
+using Morris.Moxy.Metas.ProjectInformation;
+using System.Runtime.CompilerServices;
+using Morris.Moxy.Metas;
 
 namespace Morris.Moxy.SourceGenerators;
 
 internal static class TemplateAttributeSourceGenerator
 {
-	public static CompiledTemplateAndAttributeSource Generate(
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void Generate(
+		SourceProductionContext productionContext,
+		ProjectInformationMeta projectInfo,
+		ParsedTemplate parsedTemplate)
+	{
+		string? generatedSourceCode = null;
+		string classFileName = $"{parsedTemplate.Name}.MixinAttribute.Moxy.g.cs";
+
+		try
+		{
+			generatedSourceCode = GenerateSource(
+				rootNamespace: projectInfo.Namespace,
+				projectPath: projectInfo.Path,
+				parsedTemplate: parsedTemplate);
+		}
+		catch (Exception ex)
+		{
+			generatedSourceCode = ex.ToString();
+			CompilationError compilationError = CompilationErrors.UnexpectedError with {
+				Message = $"Unexpected error\r\n{generatedSourceCode}"
+			};
+			productionContext.AddCompilationError("", compilationError);
+		}
+
+		if (generatedSourceCode is not null)
+			productionContext.AddSource(
+				hintName: classFileName,
+				source: generatedSourceCode);
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	private static string GenerateSource(
 		string rootNamespace,
 		string projectPath,
-		CompiledTemplate compiledTemplate)
+		ParsedTemplate parsedTemplate)
 	{
 		using var sourceCode = new StringWriter();
 		using var writer = new IndentedTextWriter(sourceCode);
 
-		string templateFilePath = compiledTemplate.FilePath;
+		string templateFilePath = parsedTemplate.FilePath;
 		if (templateFilePath.StartsWith(projectPath))
 			templateFilePath = templateFilePath.Substring(projectPath.Length);
 
 		writer.WriteLine($"// Generated from {templateFilePath} at {DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")} UTC");
 
-		ParsedTemplate directives = compiledTemplate.Directives!.Value;
 		writer.WriteLine($"namespace {rootNamespace}");
 		using (writer.CodeBlock())
 		{
-			foreach (string attributeUsingClause in compiledTemplate.Directives!.Value.AttributeUsingClauses)
+			foreach (string attributeUsingClause in parsedTemplate.AttributeUsingClauses)
 				writer.WriteLine($"using {attributeUsingClause};");
 			writer.WriteLine();
 
 			writer.WriteLine("[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]");
-			writer.WriteLine($"internal class {compiledTemplate.Name}Attribute : Attribute");
+			writer.WriteLine($"internal class {parsedTemplate.Name}Attribute : Attribute");
 			using (writer.CodeBlock())
 			{
-				var allProperties = directives.AttributeRequiredProperties.Union(directives.AttributeOptionalProperties);
-				foreach (TemplateAttributeProperty property in allProperties)
+				var allTemplateInputs = parsedTemplate.RequiredInputs.Union(parsedTemplate.OptionalInputs);
+				foreach (TemplateInput templateInput in allTemplateInputs)
 				{
-					writer.Write($"public {property.TypeName} {property.Name} {{ get; set; }}");
-					if (property.DefaultValue is null)
+					writer.Write($"public {templateInput.TypeName} {templateInput.Name} {{ get; set; }}");
+					if (templateInput.DefaultValue is null)
 						writer.WriteLine("");
 					else
-						writer.WriteLine($" = {property.DefaultValue};");
+						writer.WriteLine($" = {templateInput.DefaultValue};");
 				}
 
-				if (directives.AttributeRequiredProperties.Length > 0)
+				if (parsedTemplate.RequiredInputs.Length > 0)
 				{
 					writer.WriteLine();
-					writer.WriteLine($"public {compiledTemplate.Name}Attribute(");
-					using (writer.Indent())
+					writer.WriteLine($"public {parsedTemplate.Name}Attribute(");
+					using (IndentedTextWriterIndentExtensions.IndentedBlock(writer))
 					{
-						string comma = ",";
 						int propertyIndex = 0;
-						int lastPropertyIndex = directives.AttributeRequiredProperties.Length - 1;
-						foreach (TemplateAttributeProperty property in directives.AttributeRequiredProperties)
+						int finalPropertyIndex = parsedTemplate.RequiredInputs.Length - 1;
+						foreach (TemplateInput requiredTemplateInput in parsedTemplate.RequiredInputs)
 						{
-							if (propertyIndex == lastPropertyIndex)
-								comma = "";
-							propertyIndex++;
+							writer.Write($"{requiredTemplateInput.TypeName} {requiredTemplateInput.Name}");
+							
+							if (requiredTemplateInput.DefaultValue is not null)
+								writer.Write($" = {requiredTemplateInput.DefaultValue}");
 
-							writer.Write($"{property.TypeName} {property.Name}");
-							if (property.DefaultValue is not null)
-								writer.Write($" = {property.DefaultValue}");
-							writer.WriteLine(comma);
+							if (propertyIndex != finalPropertyIndex)
+								writer.WriteLine(",");
+
+							propertyIndex++;
 						}
 					}
 					writer.WriteLine(")");
+
 					using (writer.CodeBlock())
 					{
-						foreach(TemplateAttributeProperty property in directives.AttributeRequiredProperties)
+						foreach (TemplateInput requiredTemplateInput in parsedTemplate.RequiredInputs)
 						{
-							writer.WriteLine($"this.{property.Name} = {property.Name};");
+							writer.WriteLine($"this.{requiredTemplateInput.Name} = {requiredTemplateInput.Name};");
 						}
 					}
 				}
@@ -80,38 +112,8 @@ internal static class TemplateAttributeSourceGenerator
 		} // namespace
 		writer.WriteLine();
 
-		return CreateResult(sourceCode.ToString(), compiledTemplate);
-	}
-
-	private static CompiledTemplateAndAttributeSource CreateResult(
-		string sourceCode,
-		CompiledTemplate compiledTemplate)
-	{
-		var options = new CSharpParseOptions(LanguageVersion.Preview, kind: SourceCodeKind.Regular);
-		CompilationUnitSyntax syntaxTree = SyntaxFactory.ParseCompilationUnit(sourceCode, options: options);
-
-		var namespaceDeclarationSyntax = syntaxTree.Members.OfType<NamespaceDeclarationSyntax>().Single();
-		var classDeclarationSyntax = namespaceDeclarationSyntax.Members.OfType<ClassDeclarationSyntax>().First();
-
-		var constructorDeclarationSyntax = classDeclarationSyntax
-			.Members
-			.OfType<ConstructorDeclarationSyntax>()
-			.FirstOrDefault();
-
-		ImmutableArray<string> attributeConstructorParameterNames =
-			constructorDeclarationSyntax is null
-			? ImmutableArray.Create<string>()
-			: constructorDeclarationSyntax
-				.ParameterList
-				.Parameters
-				.Select(x => x.Identifier.ValueText)
-				.ToImmutableArray();
-
-		var result = new CompiledTemplateAndAttributeSource(
-			compiledTemplate: compiledTemplate,
-			attributeSource: sourceCode,
-			attributeConstructorParameterNames: attributeConstructorParameterNames);
-
-		return result;
+		writer.Flush();
+		return sourceCode.ToString();
 	}
 }
+
