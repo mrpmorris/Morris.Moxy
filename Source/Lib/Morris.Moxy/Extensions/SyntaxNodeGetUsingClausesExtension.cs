@@ -13,9 +13,21 @@ internal static class SyntaxNodeGetUsingClausesExtension
 		while (current is not null)
 		{
 			if (current is CompilationUnitSyntax compilationUnitSyntax)
-				usingClausesBuilder.AddRange(compilationUnitSyntax.Usings.Select(x => x.Name.ToString()));
+				usingClausesBuilder.AddRange
+				(
+					compilationUnitSyntax
+					.Usings
+					.Where(x => x.Name is not null)
+					.Select(x => x.Name!.ToString())
+				);
+
 			if (current is FileScopedNamespaceDeclarationSyntax fileScopedNamespaceDeclarationSyntax)
-				usingClausesBuilder.AddRange(fileScopedNamespaceDeclarationSyntax.Usings.Select(x => x.Name.ToString()));
+				usingClausesBuilder.AddRange
+				(
+					fileScopedNamespaceDeclarationSyntax
+					.Usings
+					.Where(x => x.Name is not null)
+					.Select(x => x.Name!.ToString()));
 
 			current = current.Parent;
 		}

@@ -1,5 +1,5 @@
 cls
-@echo **** 1.3.0-Beta3 : UPDATED THE VERSION NUMBER IN THE PROJECT *AND* BATCH FILE? ****
+@echo **** 1.3.0-Beta4 : UPDATED THE VERSION NUMBER IN THE PROJECT *AND* BATCH FILE? ****
 pause
 
 cls
@@ -7,9 +7,9 @@ cls
 
 @echo ======================
 
-set /p ShouldPublish=Publish 1.3.0-Beta3 [yes]?
+set /p ShouldPublish=Publish 1.3.0-Beta4 [yes]?
 @if "%ShouldPublish%" == "yes" (
 	@echo PUBLISHING
-	dotnet nuget push .\Source\Lib\Morris.Moxy\bin\Release\Morris.Moxy.1.3.0-Beta3.nupkg -k %MORRIS.NUGET.KEY% -s https://api.nuget.org/v3/index.json
+	dotnet nuget push .\Source\Lib\Morris.Moxy\bin\Release\Morris.Moxy.1.3.0-Beta4.nupkg -k %MORRIS.NUGET.KEY% -s https://api.nuget.org/v3/index.json
 )
 

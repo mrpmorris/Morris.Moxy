@@ -43,8 +43,8 @@
 
 	<ItemGroup>
 		<!-- Generator package dependencies -->
-		<PackageReference Include="Scriban.Signed" Version="5.7.0" PrivateAssets="all" GeneratePathProperty="true" />
-		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" PrivateAssets="all" GeneratePathProperty="true" />
+		<PackageReference Include="Scriban.Signed" Version="5.6.0" PrivateAssets="all" GeneratePathProperty="true" />
+		<PackageReference Include="Microsoft.CSharp" Version="4.5.0" PrivateAssets="all" GeneratePathProperty="true" />
 	</ItemGroup>
 
 	<PropertyGroup>
