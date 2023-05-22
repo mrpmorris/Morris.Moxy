@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 
 namespace Morris.Moxy.Metas.Templates;
 
-internal readonly struct ParsedTemplate : IEquatable<ParsedTemplate>
+internal class ParsedTemplate : IEquatable<ParsedTemplate>
 {
 	public static readonly ParsedTemplate Empty = new ParsedTemplate();
 
@@ -62,16 +62,20 @@ internal readonly struct ParsedTemplate : IEquatable<ParsedTemplate>
 	public override bool Equals(object obj) => obj is ParsedTemplate other && Equals(other);
 
 	public bool Equals(ParsedTemplate other) =>
-		CachedHashCode.IsValueCreated == other.CachedHashCode.IsValueCreated == true
-			? CachedHashCode.Value == other.CachedHashCode.Value
-			: true
-		&& TemplateBodyLineIndex == other.TemplateBodyLineIndex
-		&& Name == other.Name
-		&& FilePath == other.FilePath
-		&& TemplateSource == other.TemplateSource
-		&& AttributeUsingClauses.SequenceEqual(other.AttributeUsingClauses)
-		&& RequiredInputs.SequenceEqual(other.RequiredInputs)
-		&& OptionalInputs.SequenceEqual(other.OptionalInputs);
+		ReferenceEquals(this, other)
+		||
+		(
+			CachedHashCode.IsValueCreated == other.CachedHashCode.IsValueCreated == true
+				? CachedHashCode.Value == other.CachedHashCode.Value
+				: true
+			&& TemplateBodyLineIndex == other.TemplateBodyLineIndex
+			&& Name == other.Name
+			&& FilePath == other.FilePath
+			&& TemplateSource == other.TemplateSource
+			&& AttributeUsingClauses.SequenceEqual(other.AttributeUsingClauses)
+			&& RequiredInputs.SequenceEqual(other.RequiredInputs)
+			&& OptionalInputs.SequenceEqual(other.OptionalInputs)
+		);
 
 	public override int GetHashCode() => CachedHashCode.Value;
 }

@@ -3,7 +3,7 @@ using Morris.Moxy.Extensions;
 
 namespace Morris.Moxy.Metas.Classes;
 
-internal readonly struct AttributeInstance : IEquatable<AttributeInstance>
+internal class AttributeInstance : IEquatable<AttributeInstance>
 {
 	public readonly string Name;
 	public readonly ImmutableArray<KeyValuePair<string, string>> Arguments;
@@ -40,11 +40,15 @@ internal readonly struct AttributeInstance : IEquatable<AttributeInstance>
 	public override bool Equals(object obj) => obj is AttributeInstance other && Equals(other);
 
 	public bool Equals(AttributeInstance other) =>
-		CachedHashCode.IsValueCreated == other.CachedHashCode.IsValueCreated == true
-			? CachedHashCode.Value == other.CachedHashCode.Value
-			: true
-		&& Name == other.Name
-		&& Arguments.SequenceEqual(other.Arguments);
+		ReferenceEquals(this, other)
+		||
+		(
+			CachedHashCode.IsValueCreated == other.CachedHashCode.IsValueCreated == true
+				? CachedHashCode.Value == other.CachedHashCode.Value
+				: true
+			&& Name == other.Name
+			&& Arguments.SequenceEqual(other.Arguments)
+		);
 
 	public override int GetHashCode() => CachedHashCode.Value;
 }

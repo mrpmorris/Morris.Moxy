@@ -2,7 +2,7 @@
   <PropertyGroup>
 	<TargetFramework>netstandard2.0</TargetFramework>
 	<LangVersion>10</LangVersion>
-	<Version>1.3.0-Beta4</Version>
+	<Version>1.3.0-Beta5</Version>
 
 	<Authors>Peter Morris</Authors>
 	<Company />

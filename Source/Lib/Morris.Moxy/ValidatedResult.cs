@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 
 namespace Morris.Moxy;
 
-internal readonly struct ValidatedResult<T>
+internal class ValidatedResult<T>
 {
 	public readonly string FilePath;
 	public readonly bool Success;

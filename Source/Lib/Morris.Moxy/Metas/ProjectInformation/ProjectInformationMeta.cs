@@ -1,6 +1,6 @@
 ﻿namespace Morris.Moxy.Metas.ProjectInformation;
 
-internal readonly struct ProjectInformationMeta : IEquatable<ProjectInformationMeta>
+internal class ProjectInformationMeta : IEquatable<ProjectInformationMeta>
 {
 	public readonly string Path;
 	public readonly string Namespace;
@@ -26,11 +26,15 @@ internal readonly struct ProjectInformationMeta : IEquatable<ProjectInformationM
 	public override bool Equals(object obj) => obj is ProjectInformationMeta other && Equals(other);
 
 	public bool Equals(ProjectInformationMeta other) =>
-		CachedHashCode.IsValueCreated == other.CachedHashCode.IsValueCreated == true
-			? CachedHashCode.Value == other.CachedHashCode.Value
-			: true
-		&& Path == other.Path
-		&& Namespace == other.Namespace;
+		ReferenceEquals(this, other)
+		||
+		(
+			CachedHashCode.IsValueCreated == other.CachedHashCode.IsValueCreated == true
+				? CachedHashCode.Value == other.CachedHashCode.Value
+				: true
+			&& Path == other.Path
+			&& Namespace == other.Namespace
+		);
 
 	public override int GetHashCode() => CachedHashCode.Value;
 }

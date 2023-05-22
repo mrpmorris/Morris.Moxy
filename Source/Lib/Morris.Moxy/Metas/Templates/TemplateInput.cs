@@ -1,6 +1,6 @@
 ﻿namespace Morris.Moxy.Metas.Templates;
 
-internal readonly struct TemplateInput : IEquatable<TemplateInput>
+internal class TemplateInput : IEquatable<TemplateInput>
 {
 	public readonly string Name;
 	public readonly string TypeName;
@@ -34,12 +34,16 @@ internal readonly struct TemplateInput : IEquatable<TemplateInput>
 	public override bool Equals(object obj) => obj is TemplateInput other && Equals(other);
 
 	public bool Equals(TemplateInput other) =>
-		CachedHashCode.IsValueCreated == other.CachedHashCode.IsValueCreated == true
-			? CachedHashCode.Value == other.CachedHashCode.Value
-			: true
-		&& Name == other.Name
-		&& TypeName == other.TypeName
-		&& DefaultValue == other.DefaultValue;
+		ReferenceEquals(this, other)
+		||
+		(
+			CachedHashCode.IsValueCreated == other.CachedHashCode.IsValueCreated == true
+				? CachedHashCode.Value == other.CachedHashCode.Value
+				: true
+			&& Name == other.Name
+			&& TypeName == other.TypeName
+			&& DefaultValue == other.DefaultValue
+		);
 
 	public override int GetHashCode() => CachedHashCode.Value;
 }

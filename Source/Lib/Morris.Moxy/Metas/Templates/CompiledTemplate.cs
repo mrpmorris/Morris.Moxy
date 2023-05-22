@@ -2,7 +2,7 @@
 
 namespace Morris.Moxy.Metas.Templates;
 
-internal readonly struct CompiledTemplate : IEquatable<CompiledTemplate>
+internal class CompiledTemplate : IEquatable<CompiledTemplate>
 {
 	public static readonly CompiledTemplate Error = new CompiledTemplate();
 	private readonly static Template ErrorTemplate = Template.Parse("// The mixin template for this script has errors");
@@ -46,12 +46,16 @@ internal readonly struct CompiledTemplate : IEquatable<CompiledTemplate>
 	public override bool Equals(object obj) => obj is CompiledTemplate other && Equals(other);
 
 	public bool Equals(CompiledTemplate other) =>
-		CachedHashCode.IsValueCreated == other.CachedHashCode.IsValueCreated == true
-			? CachedHashCode.Value == other.CachedHashCode.Value
-			: true
-		&& Name == other.Name
-		&& FilePath == other.FilePath
-		&& ParsedTemplate == other.ParsedTemplate;
+		ReferenceEquals(this, other)
+		||
+		(
+			CachedHashCode.IsValueCreated == other.CachedHashCode.IsValueCreated == true
+				? CachedHashCode.Value == other.CachedHashCode.Value
+				: true
+			&& Name == other.Name
+			&& FilePath == other.FilePath
+			&& ParsedTemplate == other.ParsedTemplate
+		);
 
 	public override int GetHashCode() => CachedHashCode.Value;
 }
