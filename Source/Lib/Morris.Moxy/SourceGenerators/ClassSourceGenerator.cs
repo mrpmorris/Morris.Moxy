@@ -15,7 +15,11 @@ namespace Morris.Moxy.SourceGenerators;
 
 internal static class ClassSourceGenerator
 {
-	public static void Generate(SourceProductionContext productionContext, CompiledTemplate compiledTemplate, ImmutableArray<ClassMeta> classMetas)
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void Generate(
+		SourceProductionContext productionContext,
+		CompiledTemplate compiledTemplate,
+		ImmutableArray<ClassMeta> classMetas)
 	{
 		for (int i = 0; i < classMetas.Length; i++)
 		{
@@ -135,6 +139,7 @@ internal static class ClassSourceGenerator
 		return stringWriter.ToString();
 	}
 
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private static void AddUsingClausesFromTargetClass(ClassMeta classMeta, IndentedTextWriter writer)
 	{
 		for (int i = classMeta.UsingClauses.Length - 1; i >= 0; i--)

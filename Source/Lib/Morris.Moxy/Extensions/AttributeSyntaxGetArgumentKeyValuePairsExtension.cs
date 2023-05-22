@@ -7,6 +7,7 @@ namespace Morris.Moxy.Extensions;
 
 internal static class AttributeSyntaxGetArgumentKeyValuePairsExtension
 {
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static ImmutableArray<KeyValuePair<string, string>> GetArgumentKeyValuePairs(
 		this AttributeSyntax attributeSyntax,
 		SemanticModel semanticModel,

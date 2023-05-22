@@ -10,6 +10,7 @@ namespace Morris.Moxy.SourceGenerators;
 
 internal static class TemplateAttributeSourceGenerator
 {
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void Generate(
 		SourceProductionContext productionContext,
 		ProjectInformationMeta projectInfo,

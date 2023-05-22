@@ -14,7 +14,7 @@ internal static class CompiledTemplateProvider
 		.Select((x, _) =>
 			x.Success switch
 			{
-				false => (x.FilePath, CompiledTemplate.Error), // TODO: PeteM - Get name from somewhere
+				false => (x.FilePath, CompiledTemplate.Error),
 				true => CreateCompiledTemplateResult(x.Value)
 			});
 

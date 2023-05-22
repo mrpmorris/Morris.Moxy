@@ -1,11 +1,13 @@
 ﻿using Morris.Moxy.Metas;
 using Scriban;
 using System.Collections.Immutable;
+using System.Runtime.CompilerServices;
 
 namespace Morris.Moxy.Extensions;
 
 internal static class ScribanLogMessageBagToCompilationErrorsExtension
 {
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static ImmutableArray<CompilationError> ToCompilationErrors(this LogMessageBag scribanErrors, int templateBodyLineIndex) =>
 		scribanErrors
 		.Select(x =>
