@@ -31,14 +31,8 @@ internal static class ClassSourceGenerator
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private static void GenerateForClassMeta(SourceProductionContext productionContext, CompiledTemplate compiledTemplate, ClassMeta classMeta)
 	{
-		var groupedTemplates = classMeta.PossibleTemplates.GroupBy(t => t.Name).ToArray();
-
-		for (int groupIndex = 0; groupIndex < groupedTemplates.Length; groupIndex++)
-		{
-			var grouped = groupedTemplates[groupIndex];
-			if (grouped.Key == compiledTemplate.Name)
-				GenerateForGroupedTemplates(productionContext, compiledTemplate, classMeta, grouped.ToImmutableArray());
-		}
+		var filteredTemplates = classMeta.PossibleTemplates.Where(x => x.Name == compiledTemplate.Name).ToImmutableArray();
+		GenerateForGroupedTemplates(productionContext, compiledTemplate, classMeta, filteredTemplates);
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -37,12 +37,12 @@ internal class ClassMeta : IEquatable<ClassMeta>
 		ImmutableArray<string> usingClauses,
 		ImmutableArray<AttributeInstance> possibleTemplates)
 	{
-		ClassName = className;
+		GenericParametersSignature = GetGenericParametersSignature(genericParameterNames);
+		ClassName = className + GenericParametersSignature;
 		Namespace = @namespace;
 		GenericParameterNames = genericParameterNames;
 		UsingClauses = usingClauses;
 		PossibleTemplates = possibleTemplates;
-		GenericParametersSignature = GetGenericParametersSignature(genericParameterNames);
 
 		CachedHashCode = new Lazy<int>(() => HashCode.Combine(
 			className,
