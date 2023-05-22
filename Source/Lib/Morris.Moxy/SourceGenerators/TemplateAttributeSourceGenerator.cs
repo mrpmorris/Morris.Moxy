@@ -4,6 +4,7 @@ using Morris.Moxy.Extensions;
 using Microsoft.CodeAnalysis;
 using Morris.Moxy.Metas.ProjectInformation;
 using System.Runtime.CompilerServices;
+using Morris.Moxy.Metas;
 
 namespace Morris.Moxy.SourceGenerators;
 
@@ -14,14 +15,29 @@ internal static class TemplateAttributeSourceGenerator
 		ProjectInformationMeta projectInfo,
 		ParsedTemplate parsedTemplate)
 	{
-		string generatedSourceCode = GenerateSource(
-			rootNamespace: projectInfo.Namespace,
-			projectPath: projectInfo.Path,
-			parsedTemplate: parsedTemplate);
+		string? generatedSourceCode = null;
+		string classFileName = $"{parsedTemplate.Name}.MixinAttribute.Moxy.g.cs";
 
-		productionContext.AddSource(
-			hintName: $"{parsedTemplate.Name}.MixinAttribute.Moxy.g.cs",
-			source: generatedSourceCode);
+		try
+		{
+			generatedSourceCode = GenerateSource(
+				rootNamespace: projectInfo.Namespace,
+				projectPath: projectInfo.Path,
+				parsedTemplate: parsedTemplate);
+		}
+		catch (Exception ex)
+		{
+			generatedSourceCode = ex.ToString();
+			CompilationError compilationError = CompilationErrors.UnexpectedError with {
+				Message = $"Unexpected error\r\n{generatedSourceCode}"
+			};
+			productionContext.AddCompilationError("", compilationError);
+		}
+
+		if (generatedSourceCode is not null)
+			productionContext.AddSource(
+				hintName: classFileName,
+				source: generatedSourceCode);
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]

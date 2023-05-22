@@ -60,15 +60,27 @@ internal static class ClassSourceGenerator
 		AttributeInstance attributeInstance,
 		int index)
 	{
+		string? generatedSourceCode = null;
 		string classFileName = $"{classMeta.FullName}.{compiledTemplate.Name}.Instance{index}.MixinCode.Moxy.g.cs"
 			.Replace("<", "{")
 			.Replace(">", "}");
 
-		string? generatedSource = GenerateSourceCodeForAttributeInstance(productionContext, compiledTemplate, classMeta, attributeInstance);
-		if (generatedSource is not null)
+		try
+		{
+			generatedSourceCode = GenerateSourceCodeForAttributeInstance(productionContext, compiledTemplate, classMeta, attributeInstance);
+		}
+		catch (Exception ex)
+		{
+			generatedSourceCode = ex.ToString();
+			CompilationError compilationError = CompilationErrors.UnexpectedError with {
+				Message = $"Unexpected error\r\n{generatedSourceCode}"
+			};
+			productionContext.AddCompilationError("", compilationError);
+		}
+		if (generatedSourceCode is not null)
 			productionContext.AddSource(
 				hintName: classFileName,
-				source: generatedSource);
+				source: generatedSourceCode);
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
