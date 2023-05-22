@@ -6,7 +6,6 @@
   <ImplicitUsings>enable</ImplicitUsings>
 	<Nullable>enable</Nullable>
 	<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-	<RootNamespace>$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

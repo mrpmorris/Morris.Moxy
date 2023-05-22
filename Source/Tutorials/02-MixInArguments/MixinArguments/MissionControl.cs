@@ -1,6 +1,6 @@
 ﻿namespace MixInArguments;
 
-[CountDown(3)]
+[CountDown(From: 3)]
 internal partial class MissionControl
 {
 }
