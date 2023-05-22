@@ -18,13 +18,13 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-	  <NoWarn>NU5118;NU5128</NoWarn>
+		<NoWarn>NU5118;NU5128</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="bin\**" />
-	  <EmbeddedResource Remove="bin\**" />
-	  <None Remove="bin\**" />
+		<Compile Remove="bin\**" />
+		<EmbeddedResource Remove="bin\**" />
+		<None Remove="bin\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -33,7 +33,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="bin\Debug\netstandard2.0\\Morris.Moxy.dll" />
+		<None Remove="bin\Debug\netstandard2.0\\Morris.Moxy.dll" />
 	</ItemGroup>
 
 	<ItemGroup>
