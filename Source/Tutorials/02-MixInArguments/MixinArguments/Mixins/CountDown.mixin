@@ -1,5 +1,6 @@
 ﻿@moxy
 @attribute required int From
+@attribute optional Type Target
 @moxy
 
 namespace {{ moxy.Class.Namespace }}

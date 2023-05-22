@@ -8,7 +8,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{FB2E8D9E-C0D7-431B-AF25-B90B7DDDAF9A}"
 	ProjectSection(SolutionItems) = preProject
 		Lib\Directory.Build.props = Lib\Directory.Build.props
-		Lib\MrPMorris.snk = Lib\MrPMorris.snk
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{85F11B12-DD05-43E3-ABC4-420032F3428D}"
