@@ -16,21 +16,21 @@ internal static class ClassMetasProvider
 		IncrementalValuesProvider<ValidatedResult<Templates.ParsedTemplate>> parsedTemplatesProvider)
 	=>
 		context
-		.SyntaxProvider
-		.CreateSyntaxProvider
-		(
-			predicate: static (syntaxNode, _) => syntaxNode is TypeDeclarationSyntax,
-			transform: static (syntaxContext, _) => syntaxContext
-		)
-		.Combine(parsedTemplatesProvider.Collect())
-		.Select((x, cancellationToken) => CreateClassMeta(x.Left, x.Right, cancellationToken))
-		.Where(static(x) => x is not null)
-		.Combine(projectInformationProvider)
-		.Select(static(x, _) =>
-			x.Left!.Namespace != string.Empty
-			? x.Left!
-			: x.Left!.WithNamespace(x.Right.Namespace)
-		);
+			.SyntaxProvider
+			.CreateSyntaxProvider
+			(
+				predicate: static (syntaxNode, _) => syntaxNode is TypeDeclarationSyntax,
+				transform: static (syntaxContext, _) => syntaxContext
+			)
+			.Combine(parsedTemplatesProvider.Collect())
+			.Select((x, cancellationToken) => CreateClassMeta(x.Left, x.Right, cancellationToken))
+			.Where(static(x) => x is not null)
+			.Combine(projectInformationProvider)
+			.Select(static(x, _) =>
+				x.Left!.Namespace != string.Empty
+				? x.Left!
+				: x.Left!.WithNamespace(x.Right.Namespace)
+			);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private static ClassMeta? CreateClassMeta(
@@ -52,7 +52,12 @@ internal static class ClassMetasProvider
 			where context.SemanticModel.GetDeclaredSymbol(x, cancellationToken) is null
 			select new AttributeInstance(
 				name: attributeFullName,
-				arguments: x.GetArgumentKeyValuePairs(context.SemanticModel, parsedTemplate.Value.RequiredInputs)
+				arguments: x.GetArgumentKeyValuePairs
+				(
+					semanticModel: context.SemanticModel,
+					requiredInputs: parsedTemplate.Value.RequiredInputs,
+					optionalInputs: parsedTemplate.Value.OptionalInputs
+				)
 			)
 		)
 		.ToImmutableArray();
