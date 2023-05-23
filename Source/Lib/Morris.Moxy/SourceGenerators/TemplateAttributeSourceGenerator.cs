@@ -75,7 +75,7 @@ internal static class TemplateAttributeSourceGenerator
 			writer.WriteLine($"using {attributeUsingClause};");
 		writer.WriteLine();
 
-		writer.WriteLine("[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]");
+		writer.WriteLine("[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]");
 		writer.WriteLine($"internal class {parsedTemplate.Name}Attribute : Attribute");
 		using (writer.CodeBlock())
 		{
