@@ -11,11 +11,14 @@ internal static class AttributeSyntaxGetArgumentKeyValuePairsExtension
 	public static ImmutableArray<KeyValuePair<string, string>> GetArgumentKeyValuePairs(
 		this AttributeSyntax attributeSyntax,
 		SemanticModel semanticModel,
-		ImmutableArray<Metas.Templates.TemplateInput> requiredInputs)
+		ImmutableArray<Metas.Templates.TemplateInput> requiredInputs,
+		ImmutableArray<Metas.Templates.TemplateInput> optionalInputs)
 	{
 		SeparatedSyntaxList<AttributeArgumentSyntax>? arguments = attributeSyntax.ArgumentList?.Arguments;
 		if (arguments is null)
 			return ImmutableArray<KeyValuePair<string, string>>.Empty;
+
+		ImmutableArray<Metas.Templates.TemplateInput> allInputs = requiredInputs.AddRange(optionalInputs);
 
 		var resultBuilder = ImmutableArray.CreateBuilder<KeyValuePair<string, string>>();
 
@@ -28,7 +31,7 @@ internal static class AttributeSyntaxGetArgumentKeyValuePairsExtension
 				? argument.NameEquals.Name.Identifier.ValueText
 				: argument.NameColon is not null
 				? argument.NameColon.Name.Identifier.ValueText
-				: requiredInputs[argumentIndex].Name;
+				: allInputs[argumentIndex].Name;
 
 			string value = argument.Expression switch {
 				TypeOfExpressionSyntax x => x.ToFullString(),
