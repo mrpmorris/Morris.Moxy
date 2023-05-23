@@ -52,7 +52,12 @@ internal static class ClassMetasProvider
 			where context.SemanticModel.GetDeclaredSymbol(x, cancellationToken) is null
 			select new AttributeInstance(
 				name: attributeFullName,
-				arguments: x.GetArgumentKeyValuePairs(context.SemanticModel, parsedTemplate.Value.RequiredInputs)
+				arguments: x.GetArgumentKeyValuePairs
+				(
+					semanticModel: context.SemanticModel,
+					requiredInputs: parsedTemplate.Value.RequiredInputs,
+					optionalInputs: parsedTemplate.Value.OptionalInputs
+				)
 			)
 		)
 		.ToImmutableArray();
