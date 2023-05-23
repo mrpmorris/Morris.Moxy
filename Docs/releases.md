@@ -1,5 +1,7 @@
 # Releases
 
+## New in 1.5
+* Static and aliased using clauses were not being output correctly [Fixes #20](https://github.com/mrpmorris/Morris.Moxy/issues/20)
 ## New in 1.4
 * Allow mixins to be applied to structs [Fixes #13](https://github.com/mrpmorris/Morris.Moxy/issues/13)
 
