@@ -18,22 +18,22 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-	  <NoWarn>NU5118;NU5128</NoWarn>
+		<NoWarn>NU5118;NU5128</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="bin\**" />
-	  <EmbeddedResource Remove="bin\**" />
-	  <None Remove="bin\**" />
+		<Compile Remove="bin\**" />
+		<EmbeddedResource Remove="bin\**" />
+		<None Remove="bin\**" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.5.0" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="bin\Release\netstandard2.0\\Morris.Moxy.dll" />
+		<None Remove="bin\Debug\netstandard2.0\\Morris.Moxy.dll" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -43,12 +43,22 @@
 
 	<ItemGroup>
 		<!-- Generator package dependencies -->
-		<PackageReference Include="Scriban.Signed" Version="5.7.0" PrivateAssets="all" GeneratePathProperty="true" />
-		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" PrivateAssets="all" GeneratePathProperty="true" />
+		<PackageReference Include="Scriban.Signed" Version="5.6.0" PrivateAssets="all" GeneratePathProperty="true" />
+		<PackageReference Include="Microsoft.CSharp" Version="4.5.0" PrivateAssets="all" GeneratePathProperty="true" />
 	</ItemGroup>
 
 	<PropertyGroup>
 		<GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetDependencyTargetPaths</GetTargetPathDependsOn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<DebugType>portable</DebugType>
+		<Optimize>False</Optimize>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DebugType>portable</DebugType>
+		<Optimize>True</Optimize>
 	</PropertyGroup>
 	<Target Name="GetDependencyTargetPaths">
 		<ItemGroup>
