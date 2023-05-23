@@ -139,7 +139,7 @@ internal static class ClassSourceGenerator
 		for (int i = classMeta.UsingClauses.Length - 1; i >= 0; i--)
 		{
 			string usingClause = classMeta.UsingClauses[i];
-			writer.WriteLine($"using {usingClause};");
+			writer.WriteLine(usingClause);
 		}
 	}
 }

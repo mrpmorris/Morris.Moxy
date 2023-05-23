@@ -15,24 +15,22 @@ internal static class SyntaxNodeGetUsingClausesExtension
 		while (current is not null)
 		{
 			if (current is CompilationUnitSyntax compilationUnitSyntax)
-				usingClausesBuilder.AddRange
-				(
-					compilationUnitSyntax
-					.Usings
-					.Where(x => x.Name is not null)
-					.Select(x => x.Name!.ToString())
-				);
+				usingClausesBuilder.AddRange(GetUsingClauses(compilationUnitSyntax.Usings));
 
 			if (current is FileScopedNamespaceDeclarationSyntax fileScopedNamespaceDeclarationSyntax)
-				usingClausesBuilder.AddRange
-				(
-					fileScopedNamespaceDeclarationSyntax
-					.Usings
-					.Where(x => x.Name is not null)
-					.Select(x => x.Name!.ToString()));
+				usingClausesBuilder.AddRange(GetUsingClauses(fileScopedNamespaceDeclarationSyntax.Usings));
+
+			if (current is NamespaceDeclarationSyntax namespaceDeclarationSyntax)
+				usingClausesBuilder.AddRange(GetUsingClauses(namespaceDeclarationSyntax.Usings));
 
 			current = current.Parent;
 		}
 		return usingClausesBuilder.ToImmutableArray();
 	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	private static IEnumerable<string> GetUsingClauses(SyntaxList<UsingDirectiveSyntax> usingClauses) =>
+		usingClauses
+			.Where(x => x?.Name is not null)
+			.Select(x => x.ToFullString().Replace("\r", "").Replace("\n", ""));
 }
