@@ -36,7 +36,7 @@ internal static class TemplateAttributeSourceGenerator
 			productionContext.AddCompilationError("", compilationError);
 		}
 
-		if (generatedSourceCode is not null)
+		if (generatedSourceCode is not null && !productionContext.CancellationToken.IsCancellationRequested)
 			productionContext.AddSource(
 				hintName: classFileName,
 				source: generatedSourceCode);

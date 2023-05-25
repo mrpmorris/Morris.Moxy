@@ -23,6 +23,9 @@ internal static class ClassSourceGenerator
 	{
 		for (int i = 0; i < classMetas.Length; i++)
 		{
+			if (productionContext.CancellationToken.IsCancellationRequested)
+				return;
+
 			ClassMeta classMeta = classMetas[i];
 			GenerateForClassMeta(productionContext, compiledTemplate, classMeta);
 		}
@@ -31,6 +34,9 @@ internal static class ClassSourceGenerator
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private static void GenerateForClassMeta(SourceProductionContext productionContext, CompiledTemplate compiledTemplate, ClassMeta classMeta)
 	{
+		if (productionContext.CancellationToken.IsCancellationRequested)
+			return;
+
 		var filteredTemplates = classMeta.PossibleTemplates.Where(x => x.Name == compiledTemplate.Name).ToImmutableArray();
 		GenerateForGroupedTemplates(productionContext, compiledTemplate, classMeta, filteredTemplates);
 	}
@@ -45,6 +51,9 @@ internal static class ClassSourceGenerator
 		int fileIndex = 1;
 		for (int i = 0; i < attributeInstances.Length; i++)
 		{
+			if (productionContext.CancellationToken.IsCancellationRequested)
+				return;
+
 			AttributeInstance attributeInstance = attributeInstances[i];
 			GenerateForTemplate(productionContext, compiledTemplate, classMeta, attributeInstance, fileIndex++);
 		}
@@ -58,6 +67,9 @@ internal static class ClassSourceGenerator
 		AttributeInstance attributeInstance,
 		int index)
 	{
+		if (productionContext.CancellationToken.IsCancellationRequested)
+			return;
+
 		string? generatedSourceCode = null;
 		string classFileName = $"{classMeta.FullName}.{compiledTemplate.Name}.Instance{index}.MixinCode.Moxy.g.cs"
 			.Replace("<", "{")
@@ -75,7 +87,7 @@ internal static class ClassSourceGenerator
 			};
 			productionContext.AddCompilationError("", compilationError);
 		}
-		if (generatedSourceCode is not null)
+		if (generatedSourceCode is not null && !productionContext.CancellationToken.IsCancellationRequested)
 			productionContext.AddSource(
 				hintName: classFileName,
 				source: generatedSourceCode);
@@ -88,6 +100,9 @@ internal static class ClassSourceGenerator
 		ClassMeta classMeta,
 		AttributeInstance attributeInstance)
 	{
+		if (productionContext.CancellationToken.IsCancellationRequested)
+			return null;
+
 		using var stringWriter = new StringWriter();
 		using var writer = new IndentedTextWriter(stringWriter);
 		writer.WriteLine($"// Generated at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC");
