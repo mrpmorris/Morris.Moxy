@@ -2,6 +2,7 @@
 
 ## New in 1.6
 * Honour Roslyn `ProductionContext.Cancellation.IsCancellationRequested` to improve performance
+* Do not output `typeof()` in generated source when user has specified a type name as a mixin argument [Fixes #28](https://github.com/mrpmorris/Morris.Moxy/issues/28)
 
 ## New in 1.5
 * Fixed IndexOutOfBoundsException when using attribute optional inputs [Fixes #19](https://github.com/mrpmorris/Morris.Moxy/issues/19)
