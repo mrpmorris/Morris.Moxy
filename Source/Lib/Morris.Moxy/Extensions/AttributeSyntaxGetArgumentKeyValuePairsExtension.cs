@@ -34,7 +34,7 @@ internal static class AttributeSyntaxGetArgumentKeyValuePairsExtension
 				: allInputs[argumentIndex].Name;
 
 			string value = argument.Expression switch {
-				TypeOfExpressionSyntax x => x.ToFullString(),
+				TypeOfExpressionSyntax x => x.Type.ToFullString(),
 				_ => TrimQuotes(argument)
 			};
 
