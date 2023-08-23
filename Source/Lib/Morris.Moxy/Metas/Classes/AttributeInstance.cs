@@ -6,20 +6,20 @@ namespace Morris.Moxy.Metas.Classes;
 internal class AttributeInstance : IEquatable<AttributeInstance>
 {
 	public readonly string Name;
-	public readonly ImmutableArray<KeyValuePair<string, string>> Arguments;
+	public readonly ImmutableArray<KeyValuePair<string, object?>> Arguments;
 
 	private readonly Lazy<int> CachedHashCode;
 
 	public AttributeInstance()
 	{
 		Name = "";
-		Arguments = ImmutableArray<KeyValuePair<string, string>>.Empty;
+		Arguments = ImmutableArray<KeyValuePair<string, object?>>.Empty;
 		CachedHashCode = new Lazy<int>(() => typeof(AttributeInstance).GetHashCode());
 	}
 
 	public AttributeInstance(
 		string name,
-		ImmutableArray<KeyValuePair<string, string>> arguments)
+		ImmutableArray<KeyValuePair<string, object?>> arguments)
 	{
 		if (name.EndsWith("Attribute"))
 			name = name.Substring(0, name.Length - 10);

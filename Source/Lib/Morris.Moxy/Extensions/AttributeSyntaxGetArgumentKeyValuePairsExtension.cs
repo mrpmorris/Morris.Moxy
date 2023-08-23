@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
@@ -8,7 +9,7 @@ namespace Morris.Moxy.Extensions;
 internal static class AttributeSyntaxGetArgumentKeyValuePairsExtension
 {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static ImmutableArray<KeyValuePair<string, string>> GetArgumentKeyValuePairs(
+	public static ImmutableArray<KeyValuePair<string, object?>> GetArgumentKeyValuePairs(
 		this AttributeSyntax attributeSyntax,
 		SemanticModel semanticModel,
 		ImmutableArray<Metas.Templates.TemplateInput> requiredInputs,
@@ -16,11 +17,13 @@ internal static class AttributeSyntaxGetArgumentKeyValuePairsExtension
 	{
 		SeparatedSyntaxList<AttributeArgumentSyntax>? arguments = attributeSyntax.ArgumentList?.Arguments;
 		if (arguments is null)
-			return ImmutableArray<KeyValuePair<string, string>>.Empty;
+			return ImmutableArray<KeyValuePair<string, object?>>.Empty;
 
 		ImmutableArray<Metas.Templates.TemplateInput> allInputs = requiredInputs.AddRange(optionalInputs);
 
-		var resultBuilder = ImmutableArray.CreateBuilder<KeyValuePair<string, string>>();
+		var nameToValueLookup = new Dictionary<string, object?>();
+		foreach (var item in optionalInputs.Union(requiredInputs).Where(x => x.DefaultValue is not null))
+			nameToValueLookup[item.Name] = GetValueFromStringRepresentation(item.DefaultValue!);
 
 		for(int argumentIndex = 0; argumentIndex < arguments.Value.Count; argumentIndex++)
 		{
@@ -33,21 +36,37 @@ internal static class AttributeSyntaxGetArgumentKeyValuePairsExtension
 				? argument.NameColon.Name.Identifier.ValueText
 				: allInputs[argumentIndex].Name;
 
-			string value = argument.Expression switch {
-				TypeOfExpressionSyntax x => x.Type.ToFullString(),
-				_ => TrimQuotes(argument)
-			};
 
-			resultBuilder.Add(new KeyValuePair<string, string>(argumentName, value));
+			object? value = GetValueFromStringRepresentation(argument.ToString());
+			nameToValueLookup[argumentName] = value;
+
 		}
-
-		return resultBuilder.ToImmutableArray();
+		return nameToValueLookup.ToImmutableArray();
 	}
 
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private static string TrimQuotes(AttributeArgumentSyntax argument) =>
-		argument.Expression.ToFullString() switch {
+	private static object? GetValueFromStringRepresentation(string expressionStr)
+	{
+		var expression = SyntaxFactory.ParseExpression(expressionStr);
+		return GetValueFromArgument(expression);
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	private static object? GetValueFromArgument(ExpressionSyntax expression)
+	{
+		return expression switch {
+			TypeOfExpressionSyntax x => x.Type.ToFullString(),
+			LiteralExpressionSyntax lit when lit.Token.IsKind(SyntaxKind.TrueKeyword) => true,
+			LiteralExpressionSyntax lit when lit.Token.IsKind(SyntaxKind.FalseKeyword) => false,
+			LiteralExpressionSyntax lit when lit.Token.IsKind(SyntaxKind.NullKeyword) => null,
+			_ => TrimQuotes(expression)
+		};
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	private static string TrimQuotes(ExpressionSyntax expression) =>
+		expression.ToFullString() switch {
 			string x when x.StartsWith("\"") => x.Substring(1, x.Length - 2),
 			string x => x,
 			_ => throw new NotImplementedException()

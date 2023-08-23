@@ -7,11 +7,13 @@ namespace Morris.Moxy.Extensions;
 internal static class ScriptObjectAddVariablesForAttributeInstanceArgumentsExtension
 {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static void AddVariablesForAttributeInstanceArguments(this ScriptObject scriptObject, AttributeInstance attributeInstance)
+	public static void AddVariablesForAttributeInstanceArguments(
+		this ScriptObject scriptObject,
+		AttributeInstance attributeInstance)
 	{
 		for (int i = 0; i < attributeInstance.Arguments.Length; i++)
 		{
-			KeyValuePair<string, string> argument = attributeInstance.Arguments[i];
+			KeyValuePair<string, object?> argument = attributeInstance.Arguments[i];
 			scriptObject.Add(argument.Key, argument.Value);
 		}
 	}
