@@ -1,0 +1,65 @@
+@moxy
+@attribute required string RouteTemplate
+@moxy
+
+{{
+  $routeParameterTypesAndNames = [];
+  $urlSegmentsForRouteAttribute = [];
+  $getRouteMethodFormatParts = [];
+  $getRouteMethodParameterSources = [];
+
+  $segments = RouteTemplate | regex.split(`/`);
+
+  for $segment in $segments
+   $match = $segment | regex.match `\{(\w+)\s*:?(\w+)\}?`;
+    if !$match[0]
+      $urlSegmentsForRouteAttribute = $urlSegmentsForRouteAttribute | array.add($segment)
+      $getRouteMethodFormatParts = $getRouteMethodFormatParts | array.add($segment)
+    else
+      $paramName = $match[1]
+      $paramType = $match[2]
+      $paramTypeLowerCase = $paramType | string.downcase
+
+      case $paramTypeLowerCase
+        when `datetime`
+          $paramValueFormat = `:yyyy-MM-dd`
+        else
+          $paramValueFormat = "";
+      end
+
+      $getRouteMethodFormatParts = $getRouteMethodFormatParts | array.add(`{HttpUtility.UrlEncode($"{` + $paramName + $paramValueFormat + `}")}`)
+      $getRouteMethodParameterSources = $getRouteMethodParameterSources | array.add($paramType + ` ` + $paramName);
+
+      $routeParameterTypesAndNames = $routeParameterTypesAndNames | array.add({ Name: $paramName, Type: $paramType})
+      if $paramTypeLowerCase != `string`
+        $urlSegmentsForRouteAttribute = $urlSegmentsForRouteAttribute | array.add(`{` + $paramName + `:` + $paramTypeLowerCase + `}`)
+      else
+        $urlSegmentsForRouteAttribute = $urlSegmentsForRouteAttribute | array.add(`{` + $paramName + `}`)
+      end
+    end
+  end
+
+  capture $parametersSource
+    for $currentParameter in $routeParameterTypesAndNames
+      "[Parameter] public " + $currentParameter.Type + " " + $currentParameter.Name + " { get; set; }\r\n"
+    end
+  end
+
+  $routeAttributeString = $urlSegmentsForRouteAttribute | array.join(`/`);
+  $getRouteSignatureSource = $getRouteMethodParameterSources | array.join(`, `)
+  $getRouteFormat = $getRouteMethodFormatParts | array.join(`/`)
+}}
+
+namespace {{ moxy.Class.Namespace }}
+{
+  using Microsoft.AspNetCore.Components;
+  using System.Web;
+
+  [Route("{{ $routeAttributeString }}")]
+  partial class {{ moxy.Class.Name }}
+  {
+    public static string GetPageUrl({{ $getRouteSignatureSource }}) => FormattableString.Invariant($"{{$getRouteFormat}}");
+    {{ $parametersSource }}
+  }
+}
+
