@@ -34,8 +34,9 @@ internal static class AttributeSyntaxGetArgumentKeyValuePairsExtension
 				? argument.NameEquals.Name.Identifier.ValueText
 				: argument.NameColon is not null
 				? argument.NameColon.Name.Identifier.ValueText
-				: allInputs[argumentIndex].Name;
-
+				: allInputs.Length > argumentIndex
+				? allInputs[argumentIndex].Name
+				: "";
 
 			object? value = GetValueFromStringRepresentation(argument.ToString());
 			nameToValueLookup[argumentName] = value;
