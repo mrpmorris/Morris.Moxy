@@ -4,7 +4,7 @@
     {
       public void SayHello()
       {
-        Console.WriteLine("Hello");
+        System.Console.WriteLine("Hello");
       }
     }
 }
