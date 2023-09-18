@@ -1,5 +1,8 @@
 # Releases
 
+## New in 1.8
+* Fix: When `ImplicitUsings` is disabled for a project, the attribute for a MixIn won't compile [Fixes #36](https://github.com/mrpmorris/Morris.Moxy/issues/36). 
+
 ## New in 1.7
 * Fix: Moxy stops generating code when @moxy header is malformed [Fixes #33](https://github.com/mrpmorris/Morris.Moxy/issues/33)
 
