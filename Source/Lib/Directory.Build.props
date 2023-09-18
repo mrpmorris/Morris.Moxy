@@ -1,39 +1,39 @@
 <Project>
-  <PropertyGroup>
-	<TargetFramework>netstandard2.0</TargetFramework>
-	<LangVersion>10</LangVersion>
-	<Version>1.7.0</Version>
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<LangVersion>10</LangVersion>
+		<Version>8.0-Beta1</Version>
 
-	<Authors>Peter Morris</Authors>
-	<Company />
-	<Copyright>Peter Morris</Copyright>
-	<PackageLicenseFile></PackageLicenseFile>
-	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<Authors>Peter Morris</Authors>
+		<Company />
+		<Copyright>Peter Morris</Copyright>
+		<PackageLicenseFile></PackageLicenseFile>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 
-	<PackageProjectUrl>https://github.com/mrpmorris/Morris.Moxy</PackageProjectUrl>
-	<PackageIconUrl />
-	<RepositoryUrl>https://github.com/mrpmorris/Morris.Moxy</RepositoryUrl>
-	<RepositoryType>git</RepositoryType>
-  </PropertyGroup>
+		<PackageProjectUrl>https://github.com/mrpmorris/Morris.Moxy</PackageProjectUrl>
+		<PackageIconUrl />
+		<RepositoryUrl>https://github.com/mrpmorris/Morris.Moxy</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+	</PropertyGroup>
 
-  <PropertyGroup>
-	<PackageReadmeFile>README.md</PackageReadmeFile>
-	<PackageIcon>moxy-logo-small.png</PackageIcon>
-  </PropertyGroup>
+	<PropertyGroup>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageIcon>moxy-logo-small.png</PackageIcon>
+	</PropertyGroup>
 
-  <ItemGroup>
-	<None Include="..\..\..\Images\moxy-logo-small.png">
-	  <Pack>True</Pack>
-	  <PackagePath>\</PackagePath>
-	</None>
-	<None Include="..\..\..\README.md">
-	  <Pack>True</Pack>
-	  <PackagePath>\</PackagePath>
-	</None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\..\..\Images\moxy-logo-small.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\..\..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 
-  <PropertyGroup>
-	<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-	<NoWarn>NU5118</NoWarn>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<NoWarn>NU5118</NoWarn>
+	</PropertyGroup>
 </Project>
