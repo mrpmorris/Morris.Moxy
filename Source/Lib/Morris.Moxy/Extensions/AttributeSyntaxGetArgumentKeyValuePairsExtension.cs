@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Morris.Moxy.Metas.ScriptVariables;
 using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
 
@@ -23,9 +24,9 @@ internal static class AttributeSyntaxGetArgumentKeyValuePairsExtension
 
 		var nameToValueLookup = new Dictionary<string, object?>();
 		foreach (var item in optionalInputs.Union(requiredInputs).Where(x => x.DefaultValue is not null))
-			nameToValueLookup[item.Name] = GetValueFromStringRepresentation(item.DefaultValue!);
+			nameToValueLookup[item.Name] = GetValueFromStringRepresentation(semanticModel, item.DefaultValue!);
 
-		for(int argumentIndex = 0; argumentIndex < arguments.Value.Count; argumentIndex++)
+		for (int argumentIndex = 0; argumentIndex < arguments.Value.Count; argumentIndex++)
 		{
 			AttributeArgumentSyntax argument = arguments.Value[argumentIndex];
 
@@ -38,7 +39,7 @@ internal static class AttributeSyntaxGetArgumentKeyValuePairsExtension
 				? allInputs[argumentIndex].Name
 				: "";
 
-			object? value = GetValueFromStringRepresentation(argument.ToString());
+			object? value = GetValueFromStringRepresentation(semanticModel, argument);
 			nameToValueLookup[argumentName] = value;
 
 		}
@@ -47,22 +48,37 @@ internal static class AttributeSyntaxGetArgumentKeyValuePairsExtension
 
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private static object? GetValueFromStringRepresentation(string expressionStr)
+	private static object? GetValueFromStringRepresentation(SemanticModel model, string expressionStr)
 	{
 		var expression = SyntaxFactory.ParseExpression(expressionStr);
-		return GetValueFromArgument(expression);
+		return GetValueFromArgument(model, expression);
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private static object? GetValueFromArgument(ExpressionSyntax expression)
+	private static object? GetValueFromStringRepresentation(SemanticModel model, AttributeArgumentSyntax syntax)
+	{
+		var expression = syntax.Expression;
+		return GetValueFromArgument(model, expression);
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	private static object? GetValueFromArgument(SemanticModel model, ExpressionSyntax expression)
 	{
 		return expression switch {
-			TypeOfExpressionSyntax x => x.Type.ToFullString(),
 			LiteralExpressionSyntax lit when lit.Token.IsKind(SyntaxKind.TrueKeyword) => true,
 			LiteralExpressionSyntax lit when lit.Token.IsKind(SyntaxKind.FalseKeyword) => false,
 			LiteralExpressionSyntax lit when lit.Token.IsKind(SyntaxKind.NullKeyword) => null,
+			TypeOfExpressionSyntax x => CreateTypeVariable(model, x),
 			_ => TrimQuotes(expression)
 		};
+	}
+
+	private static TypeVariable CreateTypeVariable(SemanticModel model, TypeOfExpressionSyntax x)
+	{
+		ITypeSymbol modelType = model.GetTypeInfo(x.Type).Type!;
+		return new TypeVariable(
+			name: modelType.Name,
+			fullName: modelType.ToDisplayString());
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
