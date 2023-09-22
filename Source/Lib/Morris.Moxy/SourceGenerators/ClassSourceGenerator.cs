@@ -106,7 +106,6 @@ internal static class ClassSourceGenerator
 		using var stringWriter = new StringWriter();
 		using var writer = new IndentedTextWriter(stringWriter);
 		writer.WriteLine($"// Generated at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC");
-		AddUsingClausesFromTargetClass(classMeta, writer);
 
 		var classVariable = new ClassVariable(
 			name: classMeta.ClassName,
@@ -146,15 +145,5 @@ internal static class ClassSourceGenerator
 
 		stringWriter.Flush();
 		return stringWriter.ToString();
-	}
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private static void AddUsingClausesFromTargetClass(ClassMeta classMeta, IndentedTextWriter writer)
-	{
-		for (int i = classMeta.UsingClauses.Length - 1; i >= 0; i--)
-		{
-			string usingClause = classMeta.UsingClauses[i];
-			writer.WriteLine(usingClause);
-		}
 	}
 }
