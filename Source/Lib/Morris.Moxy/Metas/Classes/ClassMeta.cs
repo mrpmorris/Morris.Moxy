@@ -9,7 +9,6 @@ internal class ClassMeta : IEquatable<ClassMeta>
 	public readonly string ClassName;
 	public readonly string Namespace;
 	public readonly ImmutableArray<string> GenericParameterNames;
-	public readonly ImmutableArray<string> UsingClauses;
 	public readonly ImmutableArray<AttributeInstance> PossibleTemplates;
 	public readonly string GenericParametersSignature;
 
@@ -22,7 +21,6 @@ internal class ClassMeta : IEquatable<ClassMeta>
 		ClassName = "";
 		Namespace = "";
 		GenericParameterNames = ImmutableArray<string>.Empty;
-		UsingClauses = ImmutableArray<string>.Empty;
 		PossibleTemplates = ImmutableArray<AttributeInstance>.Empty;
 		GenericParametersSignature = "";
 		CachedHashCode = new Lazy<int>(() => typeof(ClassMeta).GetHashCode());
@@ -32,21 +30,18 @@ internal class ClassMeta : IEquatable<ClassMeta>
 		string className,
 		string @namespace,
 		ImmutableArray<string> genericParameterNames,
-		ImmutableArray<string> usingClauses,
 		ImmutableArray<AttributeInstance> possibleTemplates)
 	{
 		GenericParametersSignature = GetGenericParametersSignature(genericParameterNames);
 		ClassName = className + GenericParametersSignature;
 		Namespace = @namespace;
 		GenericParameterNames = genericParameterNames;
-		UsingClauses = usingClauses;
 		PossibleTemplates = possibleTemplates;
 
 		CachedHashCode = new Lazy<int>(() => HashCode.Combine(
 			className,
 			@namespace,
 			genericParameterNames.GetContentsHashCode(),
-			usingClauses.GetContentsHashCode(),
 			possibleTemplates.GetContentsHashCode()));
 	}
 
@@ -64,7 +59,6 @@ internal class ClassMeta : IEquatable<ClassMeta>
 			&& ClassName == other.ClassName
 			&& Namespace == other.Namespace
 			&& GenericParameterNames.SequenceEqual(other.GenericParameterNames)
-			&& UsingClauses.SequenceEqual(other.UsingClauses)
 			&& PossibleTemplates.SequenceEqual(other.PossibleTemplates)
 		);
 
@@ -75,7 +69,6 @@ internal class ClassMeta : IEquatable<ClassMeta>
 			className: ClassName,
 			@namespace: @namespace,
 			genericParameterNames: GenericParameterNames,
-			usingClauses: UsingClauses,
 			possibleTemplates: PossibleTemplates);
 
 	private static string GetGenericParametersSignature(ImmutableArray<string> genericParameterNames) =>

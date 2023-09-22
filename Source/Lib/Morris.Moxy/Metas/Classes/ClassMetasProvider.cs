@@ -75,13 +75,10 @@ internal static class ClassMetasProvider
 				.Parameters
 				.Select(x => x.Identifier.Text).ToImmutableArray();
 
-		ImmutableArray<string> usingClauses = typeDeclarationSyntax.GetUsingClauses();
-
 		return new ClassMeta(
 			className: className,
 			@namespace: @namespace,
 			genericParameterNames: genericParameterNames,
-			usingClauses: usingClauses,
 			possibleTemplates: possibleTemplates);
 	}
 }
