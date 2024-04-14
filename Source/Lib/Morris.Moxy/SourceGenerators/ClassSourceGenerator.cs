@@ -109,7 +109,9 @@ internal static class ClassSourceGenerator
 
 		var classVariable = new ClassVariable(
 			name: classMeta.ClassName,
-			@namespace: classMeta.Namespace);
+			@namespace: classMeta.Namespace,
+			declaringType: classMeta.DeclaringTypeName is null ? null : new DeclaringTypeVariable(classMeta.DeclaringTypeName)
+			);
 		var moxyVariable = new MoxyVariable(@class: classVariable);
 
 		ScriptObject scribanScriptObject = ScribanTemplateContext.GetDefaultBuiltinObject();
