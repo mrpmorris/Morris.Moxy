@@ -8,6 +8,7 @@ internal class ClassMeta : IEquatable<ClassMeta>
 {
 	public readonly string ClassName;
 	public readonly string Namespace;
+	public readonly string? DeclaringTypeName;
 	public readonly ImmutableArray<string> GenericParameterNames;
 	public readonly ImmutableArray<AttributeInstance> PossibleTemplates;
 	public readonly string GenericParametersSignature;
@@ -20,6 +21,7 @@ internal class ClassMeta : IEquatable<ClassMeta>
 	{
 		ClassName = "";
 		Namespace = "";
+		DeclaringTypeName = string.Empty;
 		GenericParameterNames = ImmutableArray<string>.Empty;
 		PossibleTemplates = ImmutableArray<AttributeInstance>.Empty;
 		GenericParametersSignature = "";
@@ -29,18 +31,21 @@ internal class ClassMeta : IEquatable<ClassMeta>
 	public ClassMeta(
 		string className,
 		string @namespace,
+		string? declaringTypeName,
 		ImmutableArray<string> genericParameterNames,
 		ImmutableArray<AttributeInstance> possibleTemplates)
 	{
 		GenericParametersSignature = GetGenericParametersSignature(genericParameterNames);
 		ClassName = className + GenericParametersSignature;
 		Namespace = @namespace;
+		DeclaringTypeName = declaringTypeName;
 		GenericParameterNames = genericParameterNames;
 		PossibleTemplates = possibleTemplates;
 
 		CachedHashCode = new Lazy<int>(() => HashCode.Combine(
 			className,
 			@namespace,
+			declaringTypeName,
 			genericParameterNames.GetContentsHashCode(),
 			possibleTemplates.GetContentsHashCode()));
 	}
@@ -58,6 +63,7 @@ internal class ClassMeta : IEquatable<ClassMeta>
 				: true
 			&& ClassName == other.ClassName
 			&& Namespace == other.Namespace
+			&& DeclaringTypeName == other.DeclaringTypeName
 			&& GenericParameterNames.SequenceEqual(other.GenericParameterNames)
 			&& PossibleTemplates.SequenceEqual(other.PossibleTemplates)
 		);
@@ -67,6 +73,7 @@ internal class ClassMeta : IEquatable<ClassMeta>
 	public ClassMeta WithNamespace(string @namespace) =>
 		new ClassMeta(
 			className: ClassName,
+			declaringTypeName: DeclaringTypeName,
 			@namespace: @namespace,
 			genericParameterNames: GenericParameterNames,
 			possibleTemplates: PossibleTemplates);
