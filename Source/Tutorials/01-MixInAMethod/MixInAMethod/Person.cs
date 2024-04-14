@@ -1,5 +1,6 @@
 ﻿namespace MixInAMethod;
 
+[ShowMoxyVariables]
 [SayHello]
 internal partial class Person
 {

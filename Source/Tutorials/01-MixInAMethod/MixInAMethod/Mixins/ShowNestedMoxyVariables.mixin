@@ -1,0 +1,20 @@
+﻿// Dump the Moxy Mixin variables
+// Class.Name: {{ moxy.Class.Name }}
+// Class.Namespace: {{ moxy.Class.Namespace }}
+// Class.DeclaringType.Name: {{ moxy.Class.DeclaringType?.Name }}   
+
+namespace {{ moxy.Class.Namespace }}
+{
+    partial class {{ moxy.Class.DeclaringType?.Name }}
+    {     
+        partial class {{ moxy.Class.Name }}
+        {
+          public void ShowMoxyVariables()
+          {
+            Console.WriteLine("Class.Name: {{ moxy.Class.Name }}");
+            Console.WriteLine("Class.Namespace: {{ moxy.Class.Namespace }}");
+            Console.WriteLine("Class.DeclaringType.Name: {{ moxy.Class.DeclaringType?.Name }}");
+          }
+        }
+    }
+}

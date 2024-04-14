@@ -67,6 +67,7 @@ internal static class ClassMetasProvider
 
 		string className = typeDeclarationSyntax.Identifier.Text;
 		string @namespace = typeSymbol.ContainingNamespace.ToDisplayString();
+		string? declaringTypeName = typeSymbol.ContainingType?.Name; 
 		var genericParameterNames = 
 			(typeDeclarationSyntax.TypeParameterList?.Parameters.Count ?? 0) == 0
 			? ImmutableArray<string>.Empty
@@ -78,6 +79,7 @@ internal static class ClassMetasProvider
 		return new ClassMeta(
 			className: className,
 			@namespace: @namespace,
+			declaringTypeName: declaringTypeName,
 			genericParameterNames: genericParameterNames,
 			possibleTemplates: possibleTemplates);
 	}
