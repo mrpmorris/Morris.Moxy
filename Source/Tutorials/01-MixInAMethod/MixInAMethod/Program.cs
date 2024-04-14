@@ -6,3 +6,4 @@ System.Console.WriteLine("Hello, World!");
 
 var person = new Person();
 person.SayHello();
+// person.ShowMoxyVariables();

@@ -2,3 +2,4 @@
 // Class.Name: {{ moxy.Class.Name }}
 // Class.Namespace: {{ moxy.Class.Namespace }}
 // Class.DeclaringType.Name: {{ moxy.Class.DeclaringType.Name }}   
+
