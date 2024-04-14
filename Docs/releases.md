@@ -1,5 +1,8 @@
 # Releases
 
+## New in 1.9
+* Add class's DeclaringTypeName to enable scripts to extend nested classes [Fixes #44](https://github.com/mrpmorris/Morris.Moxy/issues/44). 
+
 ## New in 1.8
 * When `ImplicitUsings` is disabled for a project, the attribute for a MixIn won't compile [Fixes #36](https://github.com/mrpmorris/Morris.Moxy/issues/36). 
 * No need to copy the target class's `using` clauses into the generated code [Fixes #38](https://github.com/mrpmorris/Morris.Moxy/issues/38). 
