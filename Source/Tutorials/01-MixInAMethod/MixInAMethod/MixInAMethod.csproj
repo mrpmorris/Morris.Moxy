@@ -14,6 +14,7 @@
 
 	<ItemGroup>
 		<AdditionalFiles Include="Mixins\SayHello.mixin" />
+		<AdditionalFiles Include="Mixins\DumpMoxy.mixin" />
 	</ItemGroup>
 
 	<ItemGroup>
