@@ -71,10 +71,11 @@ internal static class ClassSourceGenerator
 			return;
 
 		string? generatedSourceCode = null;
-		string classFileName = $"{classMeta.FullName}.{compiledTemplate.Name}.Instance{index}.MixinCode.Moxy.g.cs"
+		string classFileName = $"{classMeta.DeclaringTypeName}.{classMeta.ClassName}.{compiledTemplate.Name}.{index}.Moxy.g.cs"
 			.Replace("<", "{")
-			.Replace(">", "}");
-
+			.Replace(">", "}")
+			.TrimStart('.');
+		
 		try
 		{
 			generatedSourceCode = GenerateSourceCodeForAttributeInstance(productionContext, compiledTemplate, classMeta, attributeInstance);
