@@ -71,9 +71,10 @@ internal static class ClassSourceGenerator
 			return;
 
 		string? generatedSourceCode = null;
-		string classFileName = $"{classMeta.DeclaringTypeName}.{classMeta.ClassName}.{compiledTemplate.Name}.{index}.Moxy.g.cs"
+		string classFileName = $"{classMeta.Namespace}.{classMeta.DeclaringTypeName}.{classMeta.ClassName}.{compiledTemplate.Name}.{index}.Moxy.g.cs"
 			.Replace("<", "{")
 			.Replace(">", "}")
+			.Replace("..", ".")
 			.TrimStart('.');
 		
 		try
