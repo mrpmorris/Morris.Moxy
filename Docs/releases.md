@@ -1,5 +1,8 @@
 # Releases
 
+## New in 1.10
+* Add class's DeclaringTypeName and namespace to generated files' filenames [Fixes #45](https://github.com/mrpmorris/Morris.Moxy/issues/45). 
+
 ## New in 1.9
 * Add class's DeclaringTypeName to enable scripts to extend nested classes [Fixes #44](https://github.com/mrpmorris/Morris.Moxy/issues/44). 
 
