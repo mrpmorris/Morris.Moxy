@@ -5,6 +5,7 @@ using Morris.Moxy.Metas.Templates;
 using Morris.Moxy.SourceGenerators;
 using Morris.Moxy.Extensions;
 using System.Collections.Immutable;
+using System.Diagnostics;
 
 namespace Morris.Moxy;
 
@@ -47,5 +48,15 @@ public class RoslynIncrementalGenerator : IIncrementalGenerator
 					ClassSourceGenerator.Generate(productionContext, compiledTemplateResult.Value, classMetas);
 				}
 			});
+	}
+
+	//RoslynIncrementalGenerator.AttachDebugger();
+	[Conditional("DEBUG")]
+	public static void AttachDebugger()
+	{
+#pragma warning disable RS1035
+		Debugger.Launch();
+#pragma warning restore RS1035
+
 	}
 }
