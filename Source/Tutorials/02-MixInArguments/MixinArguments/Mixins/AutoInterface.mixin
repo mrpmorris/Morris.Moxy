@@ -1,0 +1,21 @@
+﻿@moxy
+@attribute required string Name
+@moxy
+// Dump the Moxy Mixin variables
+// Class.Name: {{ moxy.Class.Name }}
+// Class.Namespace: {{ moxy.Class.Namespace }}
+// Class.DeclaringType.Name: {{ moxy.Class.DeclaringType?.Name }}
+
+namespace {{ moxy.Class.Namespace }}
+{
+    public interface {{ Name }}
+    {
+        {{~ for prop in moxy.Class.Properties ~}}
+        {{prop.Type}} {{prop.Name}} { {{if prop.HasGetter}}get;{{end}} {{if prop.HasSetter}}set;{{end}} }
+        {{~ end ~}}
+
+        {{~ for method in moxy.Class.Methods ~}}
+        {{method.ReturnType}} {{method.Name}}({{~ for param in method.Parameters ~}}{{param.Type}} {{param.Name}}{{if param.DefaultValue}} = {{param.DefaultValue | string.escape}}{{end}}{{if !for.last}},{{~ end ~}}{{~ end ~}});
+        {{~ end ~}}
+    }
+}

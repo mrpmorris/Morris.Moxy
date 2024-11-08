@@ -108,11 +108,29 @@ internal static class ClassSourceGenerator
 		using var stringWriter = new StringWriter();
 		using var writer = new IndentedTextWriter(stringWriter);
 		writer.WriteLine($"// Generated at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC");
+		var classFields = classMeta.Fields
+			.Select(f => new FieldInfo(f.Name, f.TypeName, f.Accessibility))
+			.ToList();
+
+		var classProperties = classMeta.Properties
+			.Select(p => new PropertyInfo(p.Name, p.TypeName, p.Accessibility, p.HasGetter, p.HasSetter))
+			.ToList();
+
+		var classMethods = classMeta.Methods
+			.Select(m => new MethodInfo(
+				m.Name,
+				m.ReturnTypeName,
+				m.Accessibility,
+				m.Parameters.Select(p => new ParameterInfo(p.Name, p.TypeName, p.DefaultValue)).ToList()))
+			.ToList();
 
 		var classVariable = new ClassVariable(
 			name: classMeta.ClassName,
 			@namespace: classMeta.Namespace,
-			declaringType: classMeta.DeclaringTypeName is null ? null : new DeclaringTypeVariable(classMeta.DeclaringTypeName)
+			declaringType: classMeta.DeclaringTypeName is null ? null : new DeclaringTypeVariable(classMeta.DeclaringTypeName),
+			fields: classFields,
+			properties: classProperties,
+			methods: classMethods
 			);
 		var moxyVariable = new MoxyVariable(@class: classVariable);
 
