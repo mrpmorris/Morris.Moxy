@@ -31,7 +31,7 @@ public class RoslynIncrementalGenerator : IIncrementalGenerator
 					TemplateAttributeSourceGenerator.Generate(productionContext, projectInfo, parsedTemplateResult.Value);
 				}
 			});
-
+		
 		context.RegisterSourceOutput(
 			source: compiledTemplatesProvider.Combine(classMetaProvider.Collect()),
 			static (productionContext, input) =>
@@ -41,7 +41,9 @@ public class RoslynIncrementalGenerator : IIncrementalGenerator
 					productionContext.AddCompilationErrors(compiledTemplateResult.FilePath, compiledTemplateResult.CompilationErrors);
 				else
 				{
-					ImmutableArray<ClassMeta> classMetas = input.Right;
+					ImmutableArray<ClassMeta> classMetas = input.Right
+						.Where(x => x.PossibleTemplates
+									.Any(p => p.Name == compiledTemplateResult.Value.Name)).ToImmutableArray();
 					ClassSourceGenerator.Generate(productionContext, compiledTemplateResult.Value, classMetas);
 				}
 			});
