@@ -5,6 +5,7 @@ using Morris.Moxy.Metas.Templates;
 using Morris.Moxy.SourceGenerators;
 using Morris.Moxy.Extensions;
 using System.Collections.Immutable;
+using System.Diagnostics;
 
 namespace Morris.Moxy;
 
@@ -31,7 +32,7 @@ public class RoslynIncrementalGenerator : IIncrementalGenerator
 					TemplateAttributeSourceGenerator.Generate(productionContext, projectInfo, parsedTemplateResult.Value);
 				}
 			});
-
+		
 		context.RegisterSourceOutput(
 			source: compiledTemplatesProvider.Combine(classMetaProvider.Collect()),
 			static (productionContext, input) =>
@@ -41,9 +42,21 @@ public class RoslynIncrementalGenerator : IIncrementalGenerator
 					productionContext.AddCompilationErrors(compiledTemplateResult.FilePath, compiledTemplateResult.CompilationErrors);
 				else
 				{
-					ImmutableArray<ClassMeta> classMetas = input.Right;
+					ImmutableArray<ClassMeta> classMetas = input.Right
+						.Where(x => x.PossibleTemplates
+									.Any(p => p.Name == compiledTemplateResult.Value.Name)).ToImmutableArray();
 					ClassSourceGenerator.Generate(productionContext, compiledTemplateResult.Value, classMetas);
 				}
 			});
+	}
+
+	//RoslynIncrementalGenerator.AttachDebugger();
+	[Conditional("DEBUG")]
+	public static void AttachDebugger()
+	{
+#pragma warning disable RS1035
+		Debugger.Launch();
+#pragma warning restore RS1035
+
 	}
 }

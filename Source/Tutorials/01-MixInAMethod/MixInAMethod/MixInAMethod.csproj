@@ -9,11 +9,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="Mixins\SayHello.mixin" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<AdditionalFiles Include="Mixins\SayHello.mixin" />
+		<AdditionalFiles Include="Mixins\MemberDump.mixin" />
 		<AdditionalFiles Include="Mixins\ShowMoxyVariables.mixin" />
 		<AdditionalFiles Include="Mixins\ShowNestedMoxyVariables.mixin" />
 	</ItemGroup>
