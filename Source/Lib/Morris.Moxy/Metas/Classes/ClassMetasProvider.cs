@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Morris.Moxy.Extensions;
 using Morris.Moxy.Metas.ProjectInformation;
@@ -75,12 +76,71 @@ internal static class ClassMetasProvider
 				.TypeParameterList!
 				.Parameters
 				.Select(x => x.Identifier.Text).ToImmutableArray();
+		// Get members
+		var fields = GetFields(typeDeclarationSyntax).ToImmutableArray();
+		var properties = GetProperties(typeDeclarationSyntax).ToImmutableArray();
+		var methods = GetMethods(typeDeclarationSyntax).ToImmutableArray();
 
 		return new ClassMeta(
 			className: className,
 			@namespace: @namespace,
 			declaringTypeName: declaringTypeName,
 			genericParameterNames: genericParameterNames,
-			possibleTemplates: possibleTemplates);
+			possibleTemplates: possibleTemplates,
+			fields: fields,
+			properties: properties,
+			methods: methods);
+	}
+
+	private static IEnumerable<FieldMeta> GetFields(TypeDeclarationSyntax typeDeclaration)
+	{
+		return typeDeclaration.Members
+			.OfType<FieldDeclarationSyntax>()
+			.SelectMany(fieldDecl => fieldDecl.Declaration.Variables.Select(variable =>
+				new FieldMeta(
+					name: variable.Identifier.Text,
+					typeName: fieldDecl.Declaration.Type.ToString(),
+					accessibility: GetAccessibilityString(fieldDecl.Modifiers))));
+	}
+
+	private static IEnumerable<PropertyMeta> GetProperties(TypeDeclarationSyntax typeDeclaration)
+	{
+		return typeDeclaration.Members
+			.OfType<PropertyDeclarationSyntax>()
+			.Select(prop => new PropertyMeta(
+				name: prop.Identifier.Text,
+				typeName: prop.Type.ToString(),
+				accessibility: GetAccessibilityString(prop.Modifiers),
+				hasGetter: prop.AccessorList?.Accessors.Any(a => a.IsKind(SyntaxKind.GetAccessorDeclaration)) ?? false,
+				hasSetter: prop.AccessorList?.Accessors.Any(a => a.IsKind(SyntaxKind.SetAccessorDeclaration)) ?? false));
+	}
+
+	private static IEnumerable<MethodMeta> GetMethods(TypeDeclarationSyntax typeDeclaration)
+	{
+		return typeDeclaration.Members
+			.OfType<MethodDeclarationSyntax>()
+			.Select(method => new MethodMeta(
+				name: method.Identifier.Text,
+				returnTypeName: method.ReturnType.ToString(),
+				accessibility: GetAccessibilityString(method.Modifiers),
+				parameters: GetParameters(method.ParameterList).ToImmutableArray()));
+	}
+
+	private static IEnumerable<ParameterMeta> GetParameters(ParameterListSyntax parameterList)
+	{
+		return parameterList.Parameters.Select(param =>
+			new ParameterMeta(
+				name: param.Identifier.Text,
+				typeName: param.Type?.ToString() ?? "object",
+				defaultValue: param.Default?.Value.ToString()));
+	}
+
+	private static string GetAccessibilityString(SyntaxTokenList modifiers)
+	{
+		if (modifiers.Any(m => m.IsKind(SyntaxKind.PublicKeyword))) return "public";
+		if (modifiers.Any(m => m.IsKind(SyntaxKind.PrivateKeyword))) return "private";
+		if (modifiers.Any(m => m.IsKind(SyntaxKind.ProtectedKeyword))) return "protected";
+		if (modifiers.Any(m => m.IsKind(SyntaxKind.InternalKeyword))) return "internal";
+		return "private"; // default accessibility
 	}
 }

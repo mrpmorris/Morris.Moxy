@@ -11,6 +11,9 @@ internal class ClassMeta : IEquatable<ClassMeta>
 	public readonly string? DeclaringTypeName;
 	public readonly ImmutableArray<string> GenericParameterNames;
 	public readonly ImmutableArray<AttributeInstance> PossibleTemplates;
+	public readonly ImmutableArray<FieldMeta> Fields;
+	public readonly ImmutableArray<PropertyMeta> Properties;
+	public readonly ImmutableArray<MethodMeta> Methods;
 	public readonly string GenericParametersSignature;
 
 	public string FullName => NamespaceHelper.Combine(Namespace, ClassName);
@@ -24,6 +27,9 @@ internal class ClassMeta : IEquatable<ClassMeta>
 		DeclaringTypeName = string.Empty;
 		GenericParameterNames = ImmutableArray<string>.Empty;
 		PossibleTemplates = ImmutableArray<AttributeInstance>.Empty;
+		Fields = ImmutableArray<FieldMeta>.Empty;
+		Properties = ImmutableArray<PropertyMeta>.Empty;
+		Methods = ImmutableArray<MethodMeta>.Empty;
 		GenericParametersSignature = "";
 		CachedHashCode = new Lazy<int>(() => typeof(ClassMeta).GetHashCode());
 	}
@@ -33,7 +39,10 @@ internal class ClassMeta : IEquatable<ClassMeta>
 		string @namespace,
 		string? declaringTypeName,
 		ImmutableArray<string> genericParameterNames,
-		ImmutableArray<AttributeInstance> possibleTemplates)
+		ImmutableArray<AttributeInstance> possibleTemplates,
+		ImmutableArray<FieldMeta> fields,
+		ImmutableArray<PropertyMeta> properties,
+		ImmutableArray<MethodMeta> methods)
 	{
 		GenericParametersSignature = GetGenericParametersSignature(genericParameterNames);
 		ClassName = className + GenericParametersSignature;
@@ -41,13 +50,19 @@ internal class ClassMeta : IEquatable<ClassMeta>
 		DeclaringTypeName = declaringTypeName;
 		GenericParameterNames = genericParameterNames;
 		PossibleTemplates = possibleTemplates;
+		Fields = fields;
+		Properties = properties;
+		Methods = methods;
 
 		CachedHashCode = new Lazy<int>(() => HashCode.Combine(
 			className,
 			@namespace,
 			declaringTypeName,
 			genericParameterNames.GetContentsHashCode(),
-			possibleTemplates.GetContentsHashCode()));
+			possibleTemplates.GetContentsHashCode(),
+			fields.GetContentsHashCode(),
+			properties.GetContentsHashCode(),
+			methods.GetContentsHashCode()));
 	}
 
 	public static bool operator ==(ClassMeta left, ClassMeta right) => left.Equals(right);
@@ -66,6 +81,9 @@ internal class ClassMeta : IEquatable<ClassMeta>
 			&& DeclaringTypeName == other.DeclaringTypeName
 			&& GenericParameterNames.SequenceEqual(other.GenericParameterNames)
 			&& PossibleTemplates.SequenceEqual(other.PossibleTemplates)
+			&& Fields.SequenceEqual(other.Fields)
+			&& Properties.SequenceEqual(other.Properties)
+			&& Methods.SequenceEqual(other.Methods)
 		);
 
 	public override int GetHashCode() => CachedHashCode.Value;
@@ -76,11 +94,13 @@ internal class ClassMeta : IEquatable<ClassMeta>
 			declaringTypeName: DeclaringTypeName,
 			@namespace: @namespace,
 			genericParameterNames: GenericParameterNames,
-			possibleTemplates: PossibleTemplates);
+			possibleTemplates: PossibleTemplates,
+			fields: Fields,
+			properties: Properties,
+			methods: Methods);
 
 	private static string GetGenericParametersSignature(ImmutableArray<string> genericParameterNames) =>
 		genericParameterNames.IsDefaultOrEmpty
 		? ""
 		: "<" + string.Join(", ", genericParameterNames) + ">";
 }
-

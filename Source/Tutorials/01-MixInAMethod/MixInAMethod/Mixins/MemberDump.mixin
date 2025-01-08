@@ -1,0 +1,35 @@
+﻿// Dump the Moxy Mixin variables
+// Class.Name: {{ moxy.Class.Name }}
+// Class.Namespace: {{ moxy.Class.Namespace }}
+// Class.DeclaringType.Name: {{ moxy.Class.DeclaringType?.Name }}
+
+namespace {{ moxy.Class.Namespace }}
+{
+    partial class {{ moxy.Class.Name }}
+    {
+      public void DumpMembers()
+      {
+        Console.WriteLine("Class.Name: {{ moxy.Class.Name }}");
+        Console.WriteLine("Class.Namespace: {{ moxy.Class.Namespace }}");
+        Console.WriteLine("Class.DeclaringType.Name: {{ moxy.Class.DeclaringType?.Name }}");
+
+        Console.WriteLine("Class.Fields:");
+        {{~ for field in moxy.Class.Fields ~}}
+        Console.WriteLine("  {{field.Accessibility}} {{field.Type}} {{field.Name}}");
+        {{~ end ~}}
+
+        Console.WriteLine("Class.Properties:");
+        {{~ for prop in moxy.Class.Properties ~}}
+        Console.WriteLine("  {{prop.Accessibility}} {{prop.Type}} {{prop.Name}}");
+        {{~ end ~}}
+
+        Console.WriteLine("Class.Methods:");
+        {{~ for method in moxy.Class.Methods ~}}
+        Console.WriteLine("  {{method.Accessibility}} {{method.ReturnType}} {{method.Name}}");
+            {{~ for param in method.Parameters ~}}
+        Console.WriteLine($"    {{param.Type}} {{param.Name}} {{if param.DefaultValue}}= {{param.DefaultValue | string.escape}}{{end}}" );
+            {{~ end ~}}
+        {{~ end ~}}
+      }
+    }
+}
