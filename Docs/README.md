@@ -1,5 +1,5 @@
 # Morris.Moxy - documentation
-![](../Images/Moxy-logo.png)
+![](../Images/logo-large.png)
 
 ## Stuff
 I want to write the library before explaining it :)

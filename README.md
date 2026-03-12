@@ -1,5 +1,5 @@
 # Morris.Moxy
-![](./Images/Moxy-logo.png)
+![](./Images/logo-large.png)
 
 ***Morris.Moxy*** is a code mix-in code generator for [Microsoft .NET](https://dotnet.microsoft.com/)
 

@@ -18,11 +18,11 @@
 
 	<PropertyGroup>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<PackageIcon>moxy-logo-small.png</PackageIcon>
+		<PackageIcon>logo-small.png</PackageIcon>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="..\..\..\Images\moxy-logo-small.png">
+		<None Include="..\..\..\Images\logo-small.png">
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
 		</None>
