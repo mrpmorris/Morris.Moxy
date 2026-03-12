@@ -1,6 +1,9 @@
 # Morris.Moxy
 ![](./Images/logo-small.png)
 
+[![NuGet version](https://img.shields.io/nuget/v/Morris.Moxy.svg)](https://www.nuget.org/packages/Morris.Moxy)
+[![NuGet downloads](https://img.shields.io/nuget/dt/Morris.Moxy.svg)](https://www.nuget.org/packages/Morris.Moxy)
+
 ***Morris.Moxy*** is a code mix-in code generator for [Microsoft .NET](https://dotnet.microsoft.com/)
 
 [![NuGet version (PackageName)](https://img.shields.io/nuget/v/Morris.Moxy.svg?style=flat-square)](https://www.nuget.org/packages/Morris.Moxy/)
