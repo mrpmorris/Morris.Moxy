@@ -8,11 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Mixins\CountDown.mixin" />
-  </ItemGroup>
-
-  <ItemGroup>
     <AdditionalFiles Include="Mixins\CountDown.mixin" />
+    <AdditionalFiles Include="Mixins\AutoInterface.mixin" />
   </ItemGroup>
 
   <ItemGroup>
